@@ -1,0 +1,329 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <link href="css/bootstrap.min.css" rel="stylesheet">
+   <!-- CSS FOR TOGGLE LEFT MENU -->
+     <link href='http://fonts.googleapis.com/css?family=Exo+2:400,600,300,900' rel='stylesheet' type='text/css'>
+     <link href="css/navbar-static-top.css" rel="stylesheet">
+     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+   <!-- END CSS FOR TOGGLE LEFT MENU -->
+   <link href="css/custom.css" rel="stylesheet">
+<script src="phonegap.js"></script>
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+   <script src="js/jquery.min.js"></script>
+   <!-- <script src="js/menu.js"></script>-->
+ <script type="text/javascript" charset="utf-8">
+    // Call onDeviceReady when Cordova is loaded.
+    // At this point, the document has loaded but cordova-1.8.1.js has not.
+    // When Cordova is loaded and talking with the native device,
+    // it will call the event `deviceready`.
+    function onLoad() {
+        document.addEventListener("deviceready", onDeviceReady, false);
+        //alert("onload");
+    }
+    // Cordova is loaded and it is now safe to make calls Cordova methods
+    function onDeviceReady() {
+        document.addEventListener("offline", onOffline, false);
+        document.addEventListener("online", onOnline, false);
+        if (device.model!=null)
+        {
+          localStorage.setItem("duuid", device.uuid);
+          localStorage.setItem("dmodel", device.model);
+          localStorage.setItem("dplatform", device.platform);
+          localStorage.setItem("dversion", device.version);
+        }
+        //alert("onDeviceReady");
+    }
+    // Handle the offline event
+    function onOffline() {
+      $("#offline-alert").alert();
+      $("#offline-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#offline-alert").alert('close');
+      });   
+      //alert("Il dispositivo e' OffLine\nQuesta App richiede una connessione internet!");
+      //btn_login disabled
+      $('#btn_login').addClass( "disabled" );
+    }
+    // Handle the online event
+    function onOnline() {
+      $("#online-alert").alert();
+      $("#online-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#online-alert").alert('close');
+      });   
+      //alert("Il dispositivo e' OnLine!");
+      //btn_login enabled!
+      $('#btn_login').removeClass( "disabled" );
+    }
+    // Handle the back browser button
+    document.addEventListener("backbutton", onBackKeyDown, false);
+    function onBackKeyDown() {
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
+    }
+
+</script>
+<script>
+//var db = openDatabase('GeoNavDB', '1.0', 'GeoNav App DB', 3 * 1024 * 1024);
+$.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '"');
+        } else {
+            o[this.name] = this.value || '"';
+        }
+    });
+    return o;
+};
+
+  function call(){
+    var matricola = localStorage.getItem("matricola");
+    console.log("matricola: " + matricola);
+    if (matricola==null)
+        matricola="test";
+    var random = Math.random();
+    /* METTERE CHIAMATA ALLA NUOVA FUNZIONALITA' CHE ESTRAE LA SQUADRA RELATIVA ALL' ACCESSO EFFETTUATO ad esempio lista calciatori
+    var xmlhttp = new XMLHttpRequest();
+    var url="http://service.cloudmup.com/GOALocale/CCSAppQuery.php?matricola="+matricola+"&random="+random;
+    console.log("url:"+url);
+    xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var lista = xmlhttp.responseText;
+            localStorage.setItem("lista", lista);
+            window.location = "home.html";
+        }
+    }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+    */
+    window.location = "home.html";
+  }
+
+
+  function onSuccess(data, status)
+  {
+    console.log("onSuccess");
+    console.log("data.status: "+data.status);
+    console.log("data: "+ JSON.stringify(data));
+    localStorage.setItem("auth", data.auth);
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("login", data.auth);
+    if (data.auth.localeCompare("OK")==0)
+    {
+      localStorage.setItem("link", "mappa");
+      localStorage.setItem("stato_app", "home");
+      //window.location = "ric_elemento.html";
+      console.log("lista veicoli non presente devo rieffettuare la ricerca...");
+      call();
+    }
+    else
+    {
+      $("#nologin-alert").alert();
+      $("#nologin-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#nologin-alert").alert('close');
+        window.location = "index.html";
+      });   
+    }
+  }
+  function onError(data, status)
+  {
+    //var htmlString = "<p>ERRORE Login!</p>";
+    console.log("onError");
+    console.log("data.status: "+data.status);
+    console.log("data: "+ JSON.stringify(data));
+    localStorage.setItem("link", "menu");
+    localStorage.setItem("login", "KO");
+  }   
+
+  $(document).ready(function() {
+    $("#logo_big").click(function(){
+      window.location.reload();
+    });
+
+    //VERIFICO IL SISTEMA
+    var deviceType = (navigator.userAgent.match(/iPad/i)) == "iPad" ? "IOS" : 
+                     (navigator.userAgent.match(/iPhone/i)) == "iPhone" ? "IOS" : 
+                     (navigator.userAgent.match(/Android/i)) == "Android" ? "ANDROID" : 
+                     (navigator.userAgent.match(/BlackBerry/i)) == "BlackBerry" ? "BlackBerry" : "PC";
+    if (deviceType=="IOS"){
+       console.log("deviceType: " + deviceType + " - userAgent: " + navigator.userAgent);
+       //NASCONDO IL BOTTONE btn_exit PER I DISPOSITI IOS
+       $("#btn_exit").hide();
+    }
+
+    $("#online-alert").hide();
+    $("#offline-alert").hide();
+    $("#nologin-alert").hide();
+
+    //IN CASO DI LOGIN VALIDO NON RIEFFETTUO IL LOGIN...
+    if (localStorage.getItem("auth") != null) {
+      var auth=localStorage.getItem("auth");
+      if (auth.localeCompare("OK")==0)
+      {
+        localStorage.setItem("link", "poi");
+        //window.location = "ric_elemento.html";
+        window.location = "home.html";
+      }
+    }
+
+    //BOTTONE ACCEDI PER EFFETTUARE IL LOGIN:
+    $("#btn_primo").click(function(){
+      //DEBUG alert("btn_primo");
+      window.location = "primo.html";
+    });
+
+    //BOTTONE ACCEDI PER EFFETTUARE IL LOGIN:
+    $("#btn_login").click(function(){
+
+      /*
+        success: onSuccess,
+        error: onError*/
+
+        if ($("#matricola").val() != "" && $("#password").val() != "") {
+            console.log("Utente= "+$("#matricola").val() );
+            console.log("Password= "+$("#password").val() );
+            $.ajax({    url : "http://linkin.it/Projects/SoccerTrainer/STLogin.php",
+              cache : false,
+              dataType : "json",
+              data : { username : $("#matricola").val(), password: $("#password").val()},
+              /*
+              success : function(data) { 
+                console.log("RESULT: " + JSON.stringify(data));
+                if (data.auth == "OK") alert("SUCCESS: SEI AUTENTICATO");
+                else alert("ERROR: Login/password errate.");
+              },
+              error: function (request, status, error) { alert("ERROR "+error); }
+              */
+              success: onSuccess,
+              error: onError
+            });            
+        } else {
+            alert("Inserire Login e Password.");
+        }
+    });
+
+    $('#btn_exit').click(function() {
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
+    });
+
+    $( "#matricola" ).keydown(function( event ) {
+      if ( event.which == 13 ) {
+        event.preventDefault();
+        $( "#password" ).focus();
+      }
+      console.log("Handler for .keydown() called ");
+      console.log("event: "+event.which);
+    });
+
+    $( "#matricola" ).change(function(){
+        this.value = this.value.toLowerCase();
+        //DEBUG alert(this.value);
+    });
+
+
+    $( "#password" ).keydown(function( event ) {
+      if ( event.which == 13 ) {
+        event.preventDefault();
+        $("#btn_login").click();
+      }
+    });
+
+  });  
+</script>
+
+</head>
+<body onload="onLoad()">
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top gradienti">
+      <div class="container">
+        <div class="navbar-header">
+          <!-- solo per la pagina index.html NON ESISTE IL MENU ed il logo ha un margine di 40 pixel -->
+          <div class="navbar-header" style="line-height: 56px;" id="testata" >
+            <b>Soccer Trainer</b>
+            <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
+               <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
+            </a>
+
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- <div class="container-fluid" style="max-width: 540px;" id="fluido" > -->
+    <div class="container-fluid" id="fluido" >
+      <div class="row">
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
+          <center>
+            <img src="icon.png" width='150px' border=0 id="logo_big" style='max-width:835px;' /><br><br>
+          </center>
+
+          <div class="alert alert-success" id="online-alert">
+              <button type="button" class="close" data-dismiss="alert">x</button>
+              Il dispositivo e' <strong>OnLine!</strong>
+          </div>
+
+          <div class="alert alert-danger" id="offline-alert">
+              <button type="button" class="close" data-dismiss="alert">x</button>
+              Il dispositivo e' <strong>OffLine!</strong><br>
+              Questa App richiede una connessione internet.
+          </div>
+
+          <div class="alert alert-danger" id="nologin-alert">
+              <button type="button" class="close" data-dismiss="alert">x</button>
+              Accesso non consentito!</strong><br>
+          </div>
+
+          <form id="callAjaxForm">
+           <!-- <label for='matricola'>Utente</label> -->
+           <div class="input-group">
+           <input type='text' id='matricola' name='matricola' placeholder='matricola / utente' class='form-control-custom' required='true' autofocus 
+                  style="text-transform: lowercase" >
+           <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>  
+           <!-- <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>  -->
+           </div> 
+           <br>
+           <!-- <label for='password'>Password</label> -->
+           <div class="input-group">
+           <input type=password id='password' name='password' placeholder='password' class='form-control-custom' required='true' >
+           <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+           </div>
+           <br>
+           <input id='chiaro' type="checkbox" value="checkbox" onchange="password_in_chiaro(this)" style="margin-left:1px;margin-top:5px;" />
+           <label for='chiaro'>password in chiaro</label>
+           <br>
+           <input id='cred' type="checkbox" value="checkbox" style="margin-left:1px;margin-top:5px;" />
+           <label for='cred'>ricorda credenziali</label>
+           <br><br>
+           <button id="btn_login" type="button" class='btn btn-success btn-lg bottone' style="margin-bottom:10px;" >Entra</button>
+           </form>
+           <br><br>
+        </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+      </div> <!-- close div row --> 
+    </div> <!-- close div container-fluid -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+    function password_in_chiaro(checkbox)
+    {
+        if (checkbox.checked)
+        {
+            var password = document.getElementById("password");
+            password.type="text";
+        }
+        else
+        {
+            var password = document.getElementById("password");
+            password.type="password";
+        }
+    }
+    </script>
+<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSOthkwq0sKfWCDOCUmnfSlzeUi72r7hg&signed_in=true&callback=initMap"></script> -->
+</body>
+</html>
