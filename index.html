@@ -84,42 +84,38 @@ $.fn.serializeObject = function()
 
   function call(){
     var matricola = localStorage.getItem("matricola");
-    console.log("matricola: " + matricola);
     if (matricola==null)
         matricola="test";
     var random = Math.random();
-    /* METTERE CHIAMATA ALLA NUOVA FUNZIONALITA' CHE ESTRAE LA SQUADRA RELATIVA ALL' ACCESSO EFFETTUATO ad esempio lista calciatori
     var xmlhttp = new XMLHttpRequest();
-    var url="http://service.cloudmup.com/GOALocale/CCSAppQuery.php?matricola="+matricola+"&random="+random;
+    var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&random="+random;
     console.log("url:"+url);
     xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             var lista = xmlhttp.responseText;
             localStorage.setItem("lista", lista);
+            //DEBUG alert("lista: " + lista);
             window.location = "home.html";
         }
     }
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
-    */
-    window.location = "home.html";
   }
 
 
   function onSuccess(data, status)
   {
-    console.log("onSuccess");
+    console.log("onSuccess - data.auth: " + data.auth);
     console.log("data.status: "+data.status);
     console.log("data: "+ JSON.stringify(data));
+    //DEBUG alert("onSuccess - data.auth: " + data.auth);
     localStorage.setItem("auth", data.auth);
     localStorage.setItem("token", data.token);
     localStorage.setItem("login", data.auth);
     if (data.auth.localeCompare("OK")==0)
     {
-      localStorage.setItem("link", "mappa");
-      localStorage.setItem("stato_app", "home");
-      //window.location = "ric_elemento.html";
       console.log("lista veicoli non presente devo rieffettuare la ricerca...");
+      //DEBUG alert("lista veicoli non presente devo rieffettuare la ricerca...");
       call();
     }
     else
@@ -131,6 +127,7 @@ $.fn.serializeObject = function()
       });   
     }
   }
+
   function onError(data, status)
   {
     //var htmlString = "<p>ERRORE Login!</p>";
@@ -188,6 +185,8 @@ $.fn.serializeObject = function()
         if ($("#matricola").val() != "" && $("#password").val() != "") {
             console.log("Utente= "+$("#matricola").val() );
             console.log("Password= "+$("#password").val() );
+            localStorage.setItem("matricola", $("#matricola").val() );
+            localStorage.setItem("password", $("#password").val() );
             $.ajax({    url : "http://linkin.it/Projects/SoccerTrainer/STLogin.php",
               cache : false,
               dataType : "json",

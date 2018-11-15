@@ -71,3 +71,34 @@ html {
   line-height: 1.33;
   border-radius: 35px;
 }
+
+.bordo{
+  border-style: solid;
+  border-width: 1px;
+  padding:5px;
+  font-size: 12px;
+}
+.alert-calciatore {
+    background-color: #e0ffff;
+    border-color: #d2e7ff;
+}
+.alert-identificativi {
+    background-color: #e0fae0;
+    border-color: #d6e9c6;
+}
+.alert-fisiche {
+    background-color: #efefef;
+    border-color: #cecece;
+}
+.alert-tecniche {
+    background-color: #FFFFE0;
+    border-color: #ffff00;
+}
+.alert-tattiche {
+    background-color: #f9edd5;
+    border-color: #f5deb3;
+}
+.alert-caratteriali {
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}

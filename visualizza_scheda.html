@@ -1,0 +1,396 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <link href="css/bootstrap.min.css" rel="stylesheet">
+   <!-- CSS FOR TOGGLE LEFT MENU -->
+     <link href='http://fonts.googleapis.com/css?family=Exo+2:400,600,300,900' rel='stylesheet' type='text/css'>
+     <link href="css/navbar-static-top.css" rel="stylesheet">
+     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+   <!-- END CSS FOR TOGGLE LEFT MENU -->
+   <link href="css/custom.css" rel="stylesheet">
+<script src="phonegap.js"></script>
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+   <script src="js/jquery.min.js"></script>
+   <!-- <script src="js/menu.js"></script>-->
+ <script type="text/javascript" charset="utf-8">
+    // Call onDeviceReady when Cordova is loaded.
+    // At this point, the document has loaded but cordova-1.8.1.js has not.
+    // When Cordova is loaded and talking with the native device,
+    // it will call the event `deviceready`.
+    function onLoad() {
+        document.addEventListener("deviceready", onDeviceReady, false);
+        //alert("onload");
+    }
+    // Cordova is loaded and it is now safe to make calls Cordova methods
+    function onDeviceReady() {
+        document.addEventListener("offline", onOffline, false);
+        document.addEventListener("online", onOnline, false);
+        if (device.model!=null)
+        {
+          localStorage.setItem("duuid", device.uuid);
+          localStorage.setItem("dmodel", device.model);
+          localStorage.setItem("dplatform", device.platform);
+          localStorage.setItem("dversion", device.version);
+        }
+        //alert("onDeviceReady");
+    }
+    // Handle the offline event
+    function onOffline() {
+      $("#offline-alert").alert();
+      $("#offline-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#offline-alert").alert('close');
+      });   
+      //alert("Il dispositivo e' OffLine\nQuesta App richiede una connessione internet!");
+      //btn_login disabled
+      $('#btn_login').addClass( "disabled" );
+    }
+    // Handle the online event
+    function onOnline() {
+      $("#online-alert").alert();
+      $("#online-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#online-alert").alert('close');
+      });   
+      //alert("Il dispositivo e' OnLine!");
+      //btn_login enabled!
+      $('#btn_login').removeClass( "disabled" );
+    }
+    // Handle the back browser button
+    document.addEventListener("backbutton", onBackKeyDown, false);
+    function onBackKeyDown() {
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
+    }
+
+  function debugLocalStorage(){
+    console.log("***** START debugLocalStorage *****");
+    for (var i = 0; i < localStorage.length; i++){
+      console.log(i + ") [localStorage] chiave: " + localStorage.key(i) + " - valore: " + localStorage.getItem(localStorage.key(i)));
+    }
+    console.log("*****  END debugLocalStorage  *****");
+  }
+
+</script>
+<script>
+//var db = openDatabase('GeoNavDB', '1.0', 'GeoNav App DB', 3 * 1024 * 1024);
+$.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '"');
+        } else {
+            o[this.name] = this.value || '"';
+        }
+    });
+    return o;
+};
+
+  $(document).ready(function() {
+
+    $("#logo_big").click(function(){
+      window.location = "index.html";
+    });
+
+    $('#btn_exit').click(function() {
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
+    });
+
+    $( "#matricola" ).keydown(function( event ) {
+      if ( event.which == 13 ) {
+        event.preventDefault();
+        $( "#password" ).focus();
+      }
+      console.log("Handler for .keydown() called ");
+      console.log("event: "+event.which);
+    });
+
+    $( "#matricola" ).change(function(){
+        this.value = this.value.toLowerCase();
+        //DEBUG alert(this.value);
+    });
+
+
+    $( "#password" ).keydown(function( event ) {
+      if ( event.which == 13 ) {
+        event.preventDefault();
+        $("#btn_login").click();
+      }
+    });
+
+    $("#btn_logout").click(function(){
+      if (confirm("Effettuare il Log-out?")) {
+        localStorage.clear();
+        console.log("btn_logout: "+localStorage.getItem("login"));
+        window.location.href = 'index.html';
+      }
+    });
+
+    $('#btn_indietro').click(function() {
+      window.location.href = 'home.html';
+    });
+
+    Object.size = function(obj) {
+        var size = 0, key;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) size++;
+        }
+        return size;
+    };
+
+    function getPlayerCardDetails(){
+      var lista = JSON.parse(localStorage.getItem("lista_schede"));
+      var lista_calciatori = JSON.parse(localStorage.getItem("lista_calciatori"));
+      var size = Object.size(lista);
+      var n_cal = Object.size(lista_calciatori);
+
+      var html = "";
+      if (size>0){
+        //DATI CALCIATORE
+        var i=0;
+        for(var n=0;n<n_cal;n++){
+          if (lista_calciatori[n].id_calciatore==lista[0].id_calciatore){
+            i=n;
+          }
+        }
+        var dati = "<div class='alert alert-calciatore' role='alert'>" + 
+                   "<font size='6'><B>" + lista_calciatori[i].nome + " " + lista_calciatori[i].cognome + "</B></font><br>" + 
+                   //"[id: " + lista_calciatori[i].id_calciatore + "]<br>" + 
+                   "nato il <b>" + lista_calciatori[i].data_nascita + "</b> a <b>" + lista_calciatori[i].luogo_nascita + "</b> " + 
+                   "nazionalit&agrave;: <b>" + lista_calciatori[i].nazionalita + "</b> " + 
+                   "altezza <b>" + lista_calciatori[i].altezza_cm + "</b> cm " + 
+                   "peso <b>" + lista_calciatori[i].peso_kg + "</b> kg " + 
+                   "</div>";
+        $("#dati_calciatore").html(dati);
+        //DATI SCHEDA
+        html = "<div class='alert alert-calciatore' role='alert'>DEVO VISUALIZZARE LA SCHEDA "+lista[0].data_gara +"</div>";
+        $("#ruolo").val(lista[0].ruolo);
+        $("#club").val(lista[0].club);
+        $("#gara").val(lista[0].gara);
+        $("#data_gara").val(lista[0].data_gara);
+        $("#campionato").val(lista[0].campionato);
+        $("#situazione_campo").val(lista[0].situazione_campo);
+        $("#temperatura").val(lista[0].temperatura);
+        $("#spettatori").val(lista[0].spettatori);
+        $("#importanza_gara").val(lista[0].importanza_gara);
+        $("#costituzione").val(lista[0].costituzione);
+
+        $("#agilita").val(lista[0].agilita);
+        $("#coordinazione").val(lista[0].coordinazione);
+        $("#elevazione").val(lista[0].elevazione);
+        $("#forza").val(lista[0].forza);
+        $("#resistenza").val(lista[0].resistenza);
+        $("#struttura_fisica").val(lista[0].struttura_fisica);
+        $("#velocita_nel_breve").val(lista[0].velocita_nel_breve);
+        $("#velocita_nel_lungo").val(lista[0].velocita_nel_lungo);
+
+        $("#controllo").val(lista[0].controllo);
+        $("#dribbling").val(lista[0].dribbling);
+        $("#gioco_aereo").val(lista[0].gioco_aereo);
+        $("#modo_di_calciare").val(lista[0].modo_di_calciare);
+        $("#uso_piede_sinistro").val(lista[0].uso_piede_sinistro);
+        $("#uso_piede_destro").val(lista[0].uso_piede_destro);
+
+
+        $("#posizionamento_in_campo").val(lista[0].posizionamento_in_campo);
+        $("#marcamento").val(lista[0].marcamento);
+        $("#smarcamento").val(lista[0].smarcamento);
+        $("#visione_di_gioco").val(lista[0].visione_di_gioco);
+
+        $("#autorita_nel_gioco").val(lista[0].autorita_nel_gioco);
+        $("#concentrazione").val(lista[0].concentrazione);
+        $("#motivazione").val(lista[0].motivazione);
+        $("#spirito_di_sacrificio").val(lista[0].spirito_di_sacrificio);
+      }
+      else
+        html = "<div class='alert alert-calciatore' role='alert'>NON CI SONO SCHEDE</div>";
+      //$("#dettaglio_scheda").html(html);
+    }
+
+    getPlayerCardDetails();
+
+  });  
+</script>
+
+</head>
+<body onload="onLoad()">
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top gradienti">
+      <div class="container">
+        <div class="navbar-header">
+          <!-- solo per la pagina index.html NON ESISTE IL MENU ed il logo ha un margine di 40 pixel -->
+          <div class="navbar-header" style="line-height: 56px;" id="testata" >
+            <b id='logo_big' >Soccer Trainer</b>
+            <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
+               <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
+            </a>
+            <a id="btn_logout" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
+               <span class="  glyphicon glyphicon-log-out" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- <div class="container-fluid" style="max-width: 540px;" id="fluido" > -->
+    <div class="container-fluid" id="fluido" >
+      <div class="row">
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
+          <div id='dati_calciatore'></div>
+          <div id='dettaglio_scheda'>
+
+            <form class="form-inline" id='form_add_player_card' >
+              <input type='hidden' name='id_calciatore' id='id_calciatore' >
+              <input type='hidden' name='matricola' id='matricola' >
+              <div class="alert alert-identificativi" role="alert">
+                <div class="form-group">
+                  <B>DATI IDENTIFICATIVI</B><br>
+                  <label for="ruolo">Ruolo</label><input type='text' readonly class="form-control" id="ruolo" name="ruolo" />
+                  <label for="club">Club di Appartenenza</label><input type='text' readonly class="form-control" id="club" name="club" />
+                  <label for="campionato">Campionato / Categoria</label><input type='text' readonly class="form-control" id="campionato" name="campionato" />
+                  <label for="gara">Gara</label><input type='text' readonly class="form-control" id="gara" name="gara" />
+                  <label for="data_gara">Data Gara</label><input type='text' readonly class="form-control" id="data_gara" name="data_gara" />
+                  <label for="situazione_campo">Situazione Campo</label><input type='text' readonly class="form-control" id="situazione_campo" name="situazione_campo" />
+                  <label for="temperatura">Temperatura</label><input type='text' readonly class="form-control" id="temperatura" name="temperatura" />
+                  <label for="spettatori">N. Spettatori</label><input type='text' readonly class="form-control" id="spettatori" name="spettatori" />
+                  <label for="importanza_gara">Importanza Gara</label><input type='text' readonly class="form-control" id="importanza_gara" name="importanza_gara" />
+                  <label for="costituzione">Costituzione</label><input type='text' readonly class="form-control" id="costituzione" name="costituzione" />
+                </div>
+              </div>
+              <div class="alert alert-fisiche" role="alert">
+                <div class="form-group">
+                  <B>NOTE FISICHE</B><br>
+                  <table border=1>
+                  <tr>
+                  <td width='160px'><label for="agilita">AGILITA'</label></td>
+                  <td><input type='text' readonly class="form-control" id="agilita" /></td>
+                  <tr>
+                  <td><label for="coordinazione">COORDINAZIONE</label></td>
+                  <td><input type='text' readonly class="form-control" id="coordinazione" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="elevazione">ELEVAZIONE ESPLOSIVA</label></td>
+                  <td><input type='text' readonly class="form-control" id="elevazione" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="forza">FORZA</label></td>
+                  <td><input type='text' readonly class="form-control" id="forza" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="resistenza">RESISTENZA</label></td>
+                  <td><input type='text' readonly class="form-control" id="resistenza" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="struttura_fisica">STRUTTURA FISICA</label></td>
+                  <td><input type='text' readonly class="form-control" id="struttura_fisica" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="velocita_nel_breve">VELOCITA' NEL BREVE</label></td>
+                  <td><input type='text' readonly class="form-control" id="velocita_nel_breve" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="velocita_nel_lungo">VELOCITA' NEL LUNGO</label></td>
+                  <td><input type='text' readonly class="form-control" id="velocita_nel_lungo" /></td>
+                  </tr>
+                  </table>
+                </div>
+              </div>
+
+
+
+              <div class="alert alert-tecniche" role="alert">
+                <div class="form-group">
+                  <B>NOTE TECNICHE</B><br>
+                  <table border=1>
+                  <tr>
+                  <td width='160px'><label for="controllo">CONTROLLO</label></td>
+                  <td><input type='text' readonly class="form-control" id="controllo" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="dribbling">DRIBBLING</label></td>
+                  <td><input type='text' readonly class="form-control" id="dribbling" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="gioco_aereo">GIOCO AEREO</label></td>
+                  <td><input type='text' readonly class="form-control" id="gioco_aereo" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="modo_di_calciare">MODO DI CALCIARE</label></td>
+                  <td><input type='text' readonly class="form-control" id="modo_di_calciare" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="uso_piede_destro">USO PIEDE DESTRO</label></td>
+                  <td><input type='text' readonly class="form-control" id="uso_piede_destro" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="uso_piede_sinistro">USO PIEDE SINISTRO</label></td>
+                  <td><input type='text' readonly class="form-control" id="uso_piede_sinistro" /></td>
+                  </tr>
+                  </table>
+                </div>
+              </div>
+
+              <div class="alert alert-tattiche" role="alert">
+                <div class="form-group">
+                  <B>NOTE TATTICHE</B><br>
+                  <table border=1>
+                  <tr>
+                  <td width='160px'><label for="posizionamento_in_campo">POSIZIONAMENTO IN CAMPO</label></td>
+                  <td><input type='text' readonly class="form-control" id="posizionamento_in_campo" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="marcamento">MARCAMENTO</label></td>
+                  <td><input type='text' readonly class="form-control" id="marcamento" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="smarcamento">SMARCAMENTO</label></td>
+                  <td><input type='text' readonly class="form-control" id="smarcamento" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="visione_di_gioco">VISIONE DI GIOCO</label></td>
+                  <td><input type='text' readonly class="form-control" id="visione_di_gioco" /></td>
+                  </table>
+                </div>
+              </div>
+
+              <div class="alert alert-caratteriali" role="alert">
+                <div class="form-group">
+                  <B>NOTE CARATTERIALI</B><br>
+                  <table border=1>
+                  <tr>
+                  <td width='160px'><label for="autorita_nel_gioco">AUTORITA' NEL GIOCO</label></td>
+                  <td><input type='text' readonly class="form-control" id="autorita_nel_gioco" /></td>
+                  <tr>
+                  <td><label for="concentrazione">CONCENTRAZIONE</label></td>
+                  <td><input type='text' readonly class="form-control" id="concentrazione" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="motivazione">MOTIVAZIONE</label></td>
+                  <td><input type='text' readonly class="form-control" id="motivazione" /></td>
+                  </tr>
+                  <tr>
+                  <td><label for="spirito_di_sacrificio">SPIRITO DI SACRIFICIO</label></td>
+                  <td><input type='text' readonly class="form-control" id="spirito_di_sacrificio" /></td>
+                  </table>
+                </div>
+              </div>
+            </form>
+
+
+          </div>
+          <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
+        </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+      </div> <!-- close div row --> 
+    </div> <!-- close div container-fluid -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+    debugLocalStorage();
+    </script>
+    </body>
+</html>
