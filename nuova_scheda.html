@@ -99,7 +99,31 @@ $.fn.serializeObject = function()
       if (confirm("Vuoi aggiungere una nuova scheda?")) {
         var formData = $("#form_add_player_card").serialize();
         console.log(formData);
-        //alert(formData);
+        //DEBUG alert(formData);
+
+        //check dei campi obbligatori club gara e data_gara
+        var club = $("#club").val();
+        if (club === ''){
+          alert("Il campo club e' obbligatorio");
+          $( "#club" ).focus();
+          $("#club").css("border", "5px solid red");
+          return;
+        }
+        var gara = $("#gara").val();
+        if (gara === ''){
+          alert("Il campo gara e' obbligatorio");
+          $( "#gara" ).focus();
+          $("#gara").css("border", "5px solid red");
+          return;
+        }
+        var data_gara = $("#data_gara").val();
+        if (data_gara === ''){
+          alert("Il campo data gara e' obbligatorio");
+          $( "#data_gara" ).focus();
+          $("#data_gara").css("border", "5px solid red");
+          return;
+        }
+
         var url = "http://linkin.it/Projects/SoccerTrainer/STInsPlayerCard.php";
         $.ajax({
           url: url,
@@ -169,7 +193,7 @@ $.fn.serializeObject = function()
       var items = res.split("=");
       var i = items[1];
       console.log("parametro - id=[" + i + "]");
-      var lista_calciatori = JSON.parse( localStorage.getItem("lista") );
+      var lista_calciatori = JSON.parse( localStorage.getItem("lista_calciatori") );
       var html = "<div class='alert alert-calciatore' role='alert'>" + 
                  "<font size='6'><B>" + lista_calciatori[i].nome + " " + lista_calciatori[i].cognome + "</B></font><br>" + 
                  //"[id: " + lista_calciatori[i].id_calciatore + "]<br>" + 
@@ -180,6 +204,7 @@ $.fn.serializeObject = function()
                  "</div>";
       $("#dati_calciatore").html(html);
       $("#id_calciatore").val(lista_calciatori[i].id_calciatore);
+      $("#id").val(i);
       $("#matricola").val(localStorage.getItem("matricola"));
     }
     infoPlayer();
@@ -224,6 +249,7 @@ $.fn.serializeObject = function()
           <div id='dati_calciatore'></div>
           <div id='nuova_scheda'>
             <form class="form-inline" id='form_add_player_card' >
+              <input type='hidden' name='id' id='id' >
               <input type='hidden' name='id_calciatore' id='id_calciatore' >
               <input type='hidden' name='matricola' id='matricola' >
               <div class="alert alert-identificativi" role="alert">
@@ -238,20 +264,20 @@ $.fn.serializeObject = function()
                     <option value='ESTERNO'>ESTERNO</option>
                     <option value='ATTACCANTE'>ATTACCANTE</option>
                   </select>
-                  <label for="club">Club di Appartenenza *</label>
-                  <input type="text" class="form-control" id="club" name="club" placeholder="es. FC APRILIA" required 
-                         onchange="javascript:{this.value = this.value.toUpperCase(); }" />
-                  <label for="campionato">Campionato / Categoria *</label>
-                  <input type="text" class="form-control" id="campionato" name="campionato" placeholder="es. UNDER 12" required 
-                         onchange="javascript:{this.value = this.value.toUpperCase(); }" />
-                  <label for="gara">Gara</label>
-                  <select class="form-control" id="gara" name="gara" placeholder="Gara" />
+                  <label for="club" id='club-label'>Club di Appartenenza *</label>
+                    <input type="text" class="form-control" id="club" name="club" placeholder="es. FC APRILIA"  
+                           onchange="javascript:{this.value = this.value.toUpperCase(); }" />
+                  <label for="campionato">Campionato</label>
+                  <select class="form-control" id="campionato" name="campionato" />
                     <option value='CAMPIONATO' selected >CAMPIONATO</option>
                     <option value='TORNEO' >TORNEO</option>
                     <option value='AMICHEVOLE' >AMICHEVOLE</option>
                   </select>
+                  <label for="gara">Gara *</label>
+                  <input type="text" class="form-control" id="gara" name="gara" placeholder="es. ROMA - LAZIO"  
+                         onchange="javascript:{this.value = this.value.toUpperCase(); }" />
                   <label class="control-label" for="data_gara">Data Gara *</label>
-                  <input type="text" class="form-control" id="data_gara" name="data_gara" placeholder="gg/mm/aaaa" required />
+                  <input type="text" class="form-control" id="data_gara" name="data_gara" placeholder="gg/mm/aaaa" />
                   <label for="situazione_campo">Situazione Campo</label>
                   <select class="form-control" id="situazione_campo" name="situazione_campo" placeholder="Situazione Campo">
                     <option value='OTTIMALE'>OTTIMALE</option>
@@ -260,9 +286,9 @@ $.fn.serializeObject = function()
                     <option value='IMPRATICABILE'>IMPRATICABILE</option>
                   </select>
                   <label for="temperatura">Temperatura</label>
-                  <input type="number" class="form-control" id="temperatura" name="temperatura" placeholder="es. 20" required >
+                  <input type="number" class="form-control" id="temperatura" name="temperatura" placeholder="es. 20" >
                   <label for="spettatori">N. Spettatori</label>
-                  <input type="number" class="form-control" id="spettatori" name="spettatori" placeholder="es. 100" required >
+                  <input type="number" class="form-control" id="spettatori" name="spettatori" placeholder="es. 100" >
                   <label for="importanza_gara">Importanza Gara</label>
                   <select class="form-control" id="importanza_gara" name="importanza_gara" >
                     <option value='FONDAMENTALE'>FONDAMENTALE</option>
@@ -280,70 +306,70 @@ $.fn.serializeObject = function()
               <div class="alert alert-fisiche" role="alert">
                 <div class="form-group">
                   <B>NOTE FISICHE</B><br>
-                  <table border=1>
+                  <table border=1 style='font-size:8px;'>
                   <tr>
                   <td width='160px'><label for="agilita">AGILITA'</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="agilita">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="agilita" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="agilita">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="agilita">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="agilita">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="agilita">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="agilita" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="agilita">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="agilita">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="agilita">OTTIMO</label></td>
                   </tr>
                   <tr>
-                  <td><label for="coordinazione">COORDINAZIONE</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="coordinazione">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="coordinazione" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="coordinazione">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="coordinazione">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="coordinazione">OTTIMO</label></td>
+                  <td><label for="coordinazione">COORDINAZ.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="coordinazione">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="coordinazione" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="coordinazione">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="coordinazione">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="coordinazione">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="elevazione">ELEVAZIONE ESPLOSIVA</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="elevazione">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="elevazione" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="elevazione">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="elevazione">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="elevazione">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="elevazione">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="elevazione" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="elevazione">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="elevazione">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="elevazione">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="forza">FORZA</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="forza">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="forza" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="forza">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="forza">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="forza">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="forza">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="forza" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="forza">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="forza">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="forza">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="resistenza">RESISTENZA</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="resistenza">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="resistenza" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="resistenza">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="resistenza">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="resistenza">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="resistenza">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="resistenza" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="resistenza">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="resistenza">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="resistenza">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="struttura_fisica">STRUTTURA FISICA</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="struttura_fisica">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="struttura_fisica" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="struttura_fisica">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="struttura_fisica">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="struttura_fisica">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="struttura_fisica">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="struttura_fisica" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="struttura_fisica">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="struttura_fisica">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="struttura_fisica">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="velocita_nel_breve">VELOCITA' NEL BREVE</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="velocita_nel_breve">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="velocita_nel_breve" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="velocita_nel_breve">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="velocita_nel_breve">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="velocita_nel_breve">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="velocita_nel_breve">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="velocita_nel_breve" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="velocita_nel_breve">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="velocita_nel_breve">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="velocita_nel_breve">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="velocita_nel_lungo">VELOCITA' NEL LUNGO</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="velocita_nel_lungo">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="velocita_nel_lungo" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="velocita_nel_lungo">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="velocita_nel_lungo">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="velocita_nel_lungo">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="velocita_nel_lungo">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="velocita_nel_lungo" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="velocita_nel_lungo">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="velocita_nel_lungo">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="velocita_nel_lungo">OTTIMO</label></td>
                   </tr>
                   </table>
                 </div>
@@ -354,54 +380,54 @@ $.fn.serializeObject = function()
               <div class="alert alert-tecniche" role="alert">
                 <div class="form-group">
                   <B>NOTE TECNICHE</B><br>
-                  <table border=1>
+                  <table border=1 style='font-size:8px;'>
                   <tr>
-                  <td width='160px'><label for="controllo">CONTROLLO</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="controllo">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="controllo" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="controllo">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="controllo">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="controllo">OTTIMO</label></td>
+                  <td width='160px'><label for="controllo">CONTROLLO DI PALLA</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="controllo">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="controllo" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="controllo">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="controllo">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="controllo">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="dribbling">DRIBBLING</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="dribbling">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="dribbling" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="dribbling">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="dribbling">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="dribbling">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="dribbling">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="dribbling" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="dribbling">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="dribbling">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="dribbling">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="gioco_aereo">GIOCO AEREO</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="gioco_aereo">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="gioco_aereo" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="gioco_aereo">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="gioco_aereo">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="gioco_aereo">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="gioco_aereo">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="gioco_aereo" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="gioco_aereo">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="gioco_aereo">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="gioco_aereo">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="modo_di_calciare">MODO DI CALCIARE</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="modo_di_calciare">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="modo_di_calciare" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="modo_di_calciare">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="modo_di_calciare">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="modo_di_calciare">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="modo_di_calciare">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="modo_di_calciare" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="modo_di_calciare">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="modo_di_calciare">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="modo_di_calciare">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="uso_piede_destro">USO PIEDE DESTRO</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="uso_piede_destro">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="uso_piede_destro" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="uso_piede_destro">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="uso_piede_destro">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="uso_piede_destro">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="uso_piede_destro">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="uso_piede_destro" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="uso_piede_destro">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="uso_piede_destro">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="uso_piede_destro">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="uso_piede_sinistro">USO PIEDE SINISTRO</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="uso_piede_sinistro">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="uso_piede_sinistro" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="uso_piede_sinistro">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="uso_piede_sinistro">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="uso_piede_sinistro">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="uso_piede_sinistro">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="uso_piede_sinistro" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="uso_piede_sinistro">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="uso_piede_sinistro">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="uso_piede_sinistro">OTTIMO</label></td>
                   </tr>
                   </table>
                 </div>
@@ -413,38 +439,38 @@ $.fn.serializeObject = function()
               <div class="alert alert-tattiche" role="alert">
                 <div class="form-group">
                   <B>NOTE TATTICHE</B><br>
-                  <table border=1>
+                  <table border=1 style='font-size:8px;'>
                   <tr>
-                  <td width='160px'><label for="posizionamento_in_campo">POSIZIONAMENTO IN CAMPO</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="posizionamento_in_campo">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="posizionamento_in_campo" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="posizionamento_in_campo">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="posizionamento_in_campo">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="posizionamento_in_campo">OTTIMO</label></td>
+                  <td width='160px'><label for="posizionamento_in_campo">POSIZIONAM. IN CAMPO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="posizionamento_in_campo">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="posizionamento_in_campo" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="posizionamento_in_campo">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="posizionamento_in_campo">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="posizionamento_in_campo">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="marcamento">MARCAMENTO</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="marcamento">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="marcamento" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="marcamento">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="marcamento">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="marcamento">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="marcamento">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="marcamento" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="marcamento">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="marcamento">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="marcamento">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="smarcamento">SMARCAMENTO</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="smarcamento">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="smarcamento" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="smarcamento">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="smarcamento">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="smarcamento">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="smarcamento">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="smarcamento" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="smarcamento">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="smarcamento">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="smarcamento">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="visione_di_gioco">VISIONE DI GIOCO</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="visione_di_gioco">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="visione_di_gioco" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="visione_di_gioco">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="visione_di_gioco">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="visione_di_gioco">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="visione_di_gioco">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="visione_di_gioco" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="visione_di_gioco">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="visione_di_gioco">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="visione_di_gioco">OTTIMO</label></td>
                   </table>
                 </div>
               </div>
@@ -456,38 +482,38 @@ $.fn.serializeObject = function()
               <div class="alert alert-caratteriali" role="alert">
                 <div class="form-group">
                   <B>NOTE CARATTERIALI</B><br>
-                  <table border=1>
+                  <table border=1 style='font-size:8px;'>
                   <tr>
                   <td width='160px'><label for="autorita_nel_gioco">AUTORITA' NEL GIOCO</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="autorita_nel_gioco">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="autorita_nel_gioco" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="autorita_nel_gioco">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="autorita_nel_gioco">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="autorita_nel_gioco">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="autorita_nel_gioco">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="autorita_nel_gioco" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="autorita_nel_gioco">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="autorita_nel_gioco">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="autorita_nel_gioco">OTTIMO</label></td>
                   </tr>
                   <tr>
-                  <td><label for="concentrazione">CONCENTRAZIONE</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="concentrazione">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="concentrazione" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="concentrazione">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="concentrazione">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="concentrazione">OTTIMO</label></td>
+                  <td><label for="concentrazione">CONCENTRAZ.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="concentrazione">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="concentrazione" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="concentrazione">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="concentrazione">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="concentrazione">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="motivazione">MOTIVAZIONE</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="motivazione">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="motivazione" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="motivazione">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="motivazione">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="motivazione">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="motivazione">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="motivazione" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="motivazione">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="motivazione">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="motivazione">OTTIMO</label></td>
                   </tr>
                   <tr>
                   <td><label for="spirito_di_sacrificio">SPIRITO DI SACRIFICIO</label></td>
-                  <td class='bordo'><label><input type="radio" value='INSUFFICIENTE' name="spirito_di_sacrificio">INSUFF.</label></td>
-                  <td class='bordo'><label><input type="radio" value='SUFFICIENTE' name="spirito_di_sacrificio" checked>SUFFICIENTE</label></td>
-                  <td class='bordo'><label><input type="radio" value='DISCRETO' name="spirito_di_sacrificio">DISCRETO</label></td>
-                  <td class='bordo'><label><input type="radio" value='BUONO' name="spirito_di_sacrificio">BUONO</label></td>
-                  <td class='bordo'><label><input type="radio" value='OTTIMO' name="spirito_di_sacrificio">OTTIMO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='INSUFFICIENTE' name="spirito_di_sacrificio">INSUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='SUFFICIENTE' name="spirito_di_sacrificio" checked>SUFF.</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='DISCRETO' name="spirito_di_sacrificio">DISCRETO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='BUONO' name="spirito_di_sacrificio">BUONO</label></td>
+                  <td class='bordo'><label style='font-size:8px;'><input type="radio" value='OTTIMO' name="spirito_di_sacrificio">OTTIMO</label></td>
                   </table>
                 </div>
               </div>

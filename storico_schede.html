@@ -90,6 +90,25 @@ $.fn.serializeObject = function()
     return o;
 };
 
+function delPlayerCard(id, id_calciatore, id_card){
+  if (confirm("Vuoi veramente eliminare la scheda?")) {
+    var url = "http://linkin.it/Projects/SoccerTrainer/STDelPlayerCard.php";
+    console.log("url: " + url + "- id_calciatore: " + id_calciatore + "- id_card: " + id_card );
+    alert("url: " + url + "- id_calciatore: " + id_calciatore + "- id_card: " + id_card );
+    $.ajax({
+      url: url,
+      cache : false,
+      dataType : "json",
+      data : { id_card: id_card ,  id_calciatore: id_calciatore },
+      success: function(s){
+        var result_insert = s;
+        console.log(JSON.stringify(result_insert));
+        window.location = "storico_schede.html?id=" + id ;
+      } 
+    });
+  }
+}
+
   $(document).ready(function() {
 
     $("#logo_big").click(function(){
@@ -144,7 +163,7 @@ $.fn.serializeObject = function()
         return size;
     };
 
-    function getPlayersCards(playerId){
+    function getPlayersCards(idListaPlayer, playerId){
       //DEBUG alert("getPlayersCards");
       var matricola = localStorage.getItem("matricola");
       if (matricola==null)
@@ -172,6 +191,10 @@ $.fn.serializeObject = function()
                   html += "<div class='scheda' id ='"+lista[i].id_scheda+"' >";
                   html += "<a href='./visualizza_scheda.html?id=" +lista[i].id_scheda+ "' class='btn btn-lg btn-primary' style='width: 150px;'>";
                   html += "<font style='font-size:13px;'>"+ lista[i].data_gara + " </font>";
+                  html += "</a>";
+                  html += "&nbsp;";
+                  html += "<a href='javascript:void(0);' onclick='delPlayerCard("+idListaPlayer+","+lista[i].id_calciatore+","+lista[i].id_scheda+");' class='btn btn-lg btn-danger' >";
+                  html += "<span class='glyphicon glyphicon-minus' aria-hidden='true' ></span> ";
                   html += "</a>";
                   html += "</div>";        
                   html += "&nbsp;";
@@ -202,7 +225,7 @@ $.fn.serializeObject = function()
                  "peso <b>" + lista_calciatori[i].peso_kg + "</b> kg " + 
                  "</div>";
       $("#dati_calciatore").html(html);
-      getPlayersCards(lista_calciatori[i].id_calciatore);
+      getPlayersCards(i, lista_calciatori[i].id_calciatore);
     }
     infoPlayer();
 

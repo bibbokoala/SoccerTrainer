@@ -185,8 +185,7 @@ $.fn.serializeObject = function()
       var html = "<h3>LISTA CALCIATORI</h3>";
       for (i=0; i<lista_calciatori.length; i++) { 
         html += "<div class='calciatore'>";
-        //html += "<a href='./scheda.html?id="+lista_calciatori[i].id_calciatore+"' class='btn btn-lg btn-default' style='width: 150px;'>";
-        html += "<a href='./scheda.html?id=" + i + "' class='btn btn-lg btn-primary' style='width: 150px;'>";
+        html += "<a href='./calciatore.html?id=" + i + "' class='btn btn-lg btn-primary' style='width: 150px;'>";
         html += "<font style='font-size:13px;'>"+lista_calciatori[i].cognome + " " + lista_calciatori[i].nome + " </font>";
         html += "</a>";
         html += "&nbsp;";

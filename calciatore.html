@@ -136,6 +136,31 @@ $.fn.serializeObject = function()
       window.location.href = 'home.html';
     });
 
+    function infoPlayer(){
+      var last_params = window.location.search.substr(1);
+      var pos = last_params.indexOf("&");
+      if (pos>0)
+        var res = last_params.substring(0, pos);
+      else
+        var res = last_params;
+      var items = res.split("=");
+      var i = items[1];
+      console.log("parametro - id=[" + i + "]");
+      var lista_calciatori = JSON.parse( localStorage.getItem("lista") );
+      var html = "<div class='alert alert-calciatore' role='alert'>" + 
+                 "<font size='6'><B>" + lista_calciatori[i].nome + " " + lista_calciatori[i].cognome + "</B></font><br>" + 
+                 //"[id: " + lista_calciatori[i].id_calciatore + "]<br>" + 
+                 "nato il <b>" + lista_calciatori[i].data_nascita + "</b> a <b>" + lista_calciatori[i].luogo_nascita + "</b> " + 
+                 "nazionalit&agrave;: <b>" + lista_calciatori[i].nazionalita + "</b> " + 
+                 "altezza <b>" + lista_calciatori[i].altezza_cm + "</b> cm " + 
+                 "peso <b>" + lista_calciatori[i].peso_kg + "</b> kg " + 
+                 "</div>";
+      $("#dati_calciatore").html(html);
+      $("#id_calciatore").val(lista_calciatori[i].id_calciatore);
+      $("#matricola").val(localStorage.getItem("matricola"));
+    }
+    infoPlayer();
+
   });  
 </script>
 
@@ -162,20 +187,8 @@ $.fn.serializeObject = function()
     <div class="container-fluid" id="fluido" >
       <div class="row">
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
-          <script>
-          var last_params = window.location.search.substr(1);
-          var items = last_params.split("=");
-          var i = items[1];
-          console.log("parametro - id=" + i );
-          var lista_calciatori = JSON.parse( localStorage.getItem("lista") );
-          document.write("<h3>"+lista_calciatori[i].nome + " " + lista_calciatori[i].cognome + "</h3>" + 
-                        "nato il <b>" + lista_calciatori[i].data_nascita + "</b> a <b>" + lista_calciatori[i].luogo_nascita + "</b> <br>" + 
-                        "nazionalit&agrave;: <b>" + lista_calciatori[i].nazionalita + "</b> <br>" + 
-                        "altezza <b>" + lista_calciatori[i].altezza_cm + "</b> cm <br>" + 
-                        "peso <b>" + lista_calciatori[i].peso_kg + "</b> kg <br>" + 
-                        "");
-          </script>
-          <br><br>
+          <div id='dati_calciatore' ></div>
+
           <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
