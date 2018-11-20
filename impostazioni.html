@@ -1,0 +1,168 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <link href="css/bootstrap.min.css" rel="stylesheet">
+   <!-- CSS FOR TOGGLE LEFT MENU -->
+     <link href='http://fonts.googleapis.com/css?family=Exo+2:400,600,300,900' rel='stylesheet' type='text/css'>
+     <link href="css/navbar-static-top.css" rel="stylesheet">
+     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+   <!-- END CSS FOR TOGGLE LEFT MENU -->
+   <link href="css/custom.css" rel="stylesheet">
+   <link href="css/toggle-switch.css" rel="stylesheet">
+<script src="phonegap.js"></script>
+<script src="js/jquery.min.js"></script>
+<!-- <script src="fullcalendar/lib/moment.min.js" type="text/javascript"></script> -->
+<script src="js/menu.js"></script>
+   <style>
+   .tabella_elementi table, th, tr, td {
+     border: 2px solid #F3F3F3;
+     border-collapse: collapse;
+     font-size:12px;
+     text-align: left;
+     padding-left:5px;
+     padding-right:5px;
+   }
+   .tabella_elementi th{
+     background-color:#666666;
+     color:#FFFFFF;
+   }
+   .tabella_elementi tr{
+     height:50px;
+     background-color:#FFFFFF;
+     color:#333333;
+   }
+   </style>
+<script src="phonegap.js"></script>
+   <script src="js/jquery.min.js"></script>
+   <script src="js/menu.js"></script>
+   <script type="text/javascript" charset="utf-8">
+    // Call onDeviceReady when Cordova is loaded.
+    // At this point, the document has loaded but cordova-1.8.1.js has not.
+    // When Cordova is loaded and talking with the native device,
+    // it will call the event `deviceready`.
+    function onLoad() {
+        document.addEventListener("deviceready", onDeviceReady, false);
+    }
+    // Cordova is loaded and it is now safe to make calls Cordova methods
+    function onDeviceReady() {
+        document.addEventListener("offline", onOffline, false);
+    }
+    // Handle the offline event
+    function onOffline() {
+       alert("Il dispositivo e' OffLine\nQuesta App richiede una connessione internet!");
+    }
+    // Handle the back browser button
+    document.addEventListener("backbutton", onBackKeyDown, false);
+    function onBackKeyDown() {
+      window.location.href = 'ric_elemento.html';
+    }
+</script>
+</head>
+<body>
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top gradienti">
+      <div class="container">
+        <div class="navbar-header">          
+          <div id="bottone_menu" >
+            <!-- BUTTON FOR TOGGLE LEFT MENU -->
+            <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+            </button>
+          </div>
+          <div class="navbar-header" style="line-height: 56px;" id="testata" >
+            <a id="btn_backward" type="button" class='.navbar-toggle pull-left' style="color: #FFF;" >
+               &nbsp;&nbsp;&nbsp;<span class="  glyphicon glyphicon-step-backward" aria-hidden="true" style="color: #FFF;" ></span>
+            </a>
+            <b id='logo_big' >Soccer Trainer</b>
+            <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
+               <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
+            </a>
+            <a id="btn_logout" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
+               <span class="  glyphicon glyphicon-log-out" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid" id="fluido" >
+      <div class="row">
+      <!-- sidebar LEFT MENU -->      <!-- sidebar -->
+      <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
+        <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
+          <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+            <li><a href="mappa.html"> <i class="fa fa-eye"></i> MAPPA</a></li>
+            <li><a href="calendario.html"> <i class="fa fa-calendar"></i> CALENDARIO</a></li>
+          </ul>
+          <ul id="footer_menu" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+              <li><p>FUNZIONI</p></li>
+              <li><a href="impostazioni.html"> <i class="fa fa-info-circle"></i> Info</a></li>
+              <li><a id="btn_logout"> <i class="fa fa-sign-out"></i> Logout</a></li>
+          </ul>
+        </div> <!-- chiude prova -->  
+      </div>
+      <!-- content -->
+      <div class="col-xs-12  col-sm-8 col-md-9 content">
+          <script>
+          document.write("<table class='tabella_elementi' align=center width=100%>");
+          document.write("<tr><td width=30%>UTENTE CONNESSO: </td><td>" + localStorage.getItem("matricola") + "</td></tr>");
+          /*
+          document.write("<tr><td>ULTIMO INDIRIZZO CERCATO: </td><td>" + localStorage.getItem("indirizzo") + "</td></tr>");
+          document.write("<tr><td>LATITUDINE: </td><td>" + localStorage.getItem("latitudine") + "</td></tr>");
+          document.write("<tr><td>LONGITUDINE: </td><td>" + localStorage.getItem("longitudine") + "</td></tr>");
+          */
+          console.log("window.screen.availHeight: " + window.screen.availHeight);
+          console.log("window.screen.availWidth: " + window.screen.availWidth);
+          var x = "Screen Height: " + screen.availHeight + "px";
+          var y = "Window Height: " + screen.height + "px";
+          var h = "InnerHeight: " + window.innerHeight + "px";
+          //document.write("<tr><td>RISOLUZIONE: </td><td>" + x + " - " + y + " - " + h + "</td></tr>");
+          document.write("<tr><td>RISOLUZIONE SCHERMO: </td><td>" + window.screen.availWidth + " - " + window.screen.availHeight + "</td></tr>");
+          document.write("<tr><td>VERSIONE SOFTWARE: </td><td>" + localStorage.getItem("version") +  "</td></tr>");
+          //NON FUNZIONA document.write("<tr><td>BTLE: </td><td><input tipe=text id='btle' /></td></tr>");
+          document.write("</TABLE>");
+
+          function callNavigator() {
+            address = localStorage.getItem("latitudine") + "," + localStorage.getItem("longitudine") ;
+            window.location = "http://maps.google.com/?q=" + address;
+          }
+
+          </script>
+        </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+
+        <div id="my_footer" class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 " >
+          <button onclick='callNavigator()' type="button" class="btn btn-default btn-lg bottone" style="margin-bottom:10px;" > 
+            <span class="glyphicon glyphicon-map-marker pull-left" aria-hidden="true"></span>Naviga verso indirizzo
+          </button>
+        </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+      </div> <!-- close div row --> 
+    </div> <!-- close div container-fluid -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- TOGGLE MENU -->
+    <script>
+    $(document).ready(function() {
+
+      $("#logo_big").click(function(){
+        window.location = "index.html";
+      });
+
+      $('[data-toggle=offcanvas]').click(function() {
+        if ($( ".sidebar-offcanvas-right" ).hasClass( "active" )){
+          $('.sidebar-offcanvas-right').toggleClass('active', 1000);
+        }
+        $('.sidebar-offcanvas').toggleClass('active', 1000);
+      });
+
+      $('[data-toggle=offcanvas-right]').click(function() {
+        if ($( ".sidebar-offcanvas" ).hasClass( "active" )){
+          $('.sidebar-offcanvas').toggleClass('active', 1000);
+        }
+        $('.sidebar-offcanvas-right').toggleClass('active', 1000);
+      });
+
+    });
+    </script>
+</body>
+</html>

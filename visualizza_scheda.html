@@ -8,10 +8,11 @@
      <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
    <!-- END CSS FOR TOGGLE LEFT MENU -->
    <link href="css/custom.css" rel="stylesheet">
+   <link href="css/toggle-switch.css" rel="stylesheet">
 <script src="phonegap.js"></script>
-   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
-   <script src="js/jquery.min.js"></script>
-   <!-- <script src="js/menu.js"></script>-->
+<script src="js/jquery.min.js"></script>
+<!-- <script src="fullcalendar/lib/moment.min.js" type="text/javascript"></script> -->
+<script src="js/menu.js"></script>
  <script type="text/javascript" charset="utf-8">
     // Call onDeviceReady when Cordova is loaded.
     // At this point, the document has loaded but cordova-1.8.1.js has not.
@@ -149,68 +150,78 @@ $.fn.serializeObject = function()
     };
 
     function getPlayerCardDetails(){
-      var lista = JSON.parse(localStorage.getItem("lista_schede"));
+      var last_params = window.location.search.substr(1);
+      var items = last_params.split("=");
+      var id_scheda = items[1];
+      console.log("parametro - id_scheda=" + id_scheda );
+      var lista_schede = JSON.parse(localStorage.getItem("lista_schede"));
       var lista_calciatori = JSON.parse(localStorage.getItem("lista_calciatori"));
-      var size = Object.size(lista);
-      var n_cal = Object.size(lista_calciatori);
-
+      var n_schede = Object.size(lista_schede);
       var html = "";
-      if (size>0){
-        //DATI CALCIATORE
-        var i=0;
+      if (n_schede>0){
+        //RECUPERO L'INDICE ARRAY SCHEDE
+        var ind_schede=0;
+        for(var n=0;n<n_schede;n++){
+          if (lista_schede[n].id_scheda==id_scheda){
+            ind_schede=n;
+          }
+        }
+        //RECUPERO L'INDICE ARRAY CALCIATORI
+        var ind_calciatori=0;
+        var n_cal = Object.size(lista_calciatori);
         for(var n=0;n<n_cal;n++){
-          if (lista_calciatori[n].id_calciatore==lista[0].id_calciatore){
-            i=n;
+          if (lista_calciatori[n].id_calciatore==lista_schede[ind_schede].id_calciatore){
+            ind_calciatori=n;
           }
         }
         var dati = "<div class='alert alert-calciatore' role='alert'>" + 
-                   "<font size='6'><B>" + lista_calciatori[i].nome + " " + lista_calciatori[i].cognome + "</B></font><br>" + 
-                   //"[id: " + lista_calciatori[i].id_calciatore + "]<br>" + 
-                   "nato il <b>" + lista_calciatori[i].data_nascita + "</b> a <b>" + lista_calciatori[i].luogo_nascita + "</b> " + 
-                   "nazionalit&agrave;: <b>" + lista_calciatori[i].nazionalita + "</b> " + 
-                   "altezza <b>" + lista_calciatori[i].altezza_cm + "</b> cm " + 
-                   "peso <b>" + lista_calciatori[i].peso_kg + "</b> kg " + 
+                   "<font size='6'><B>" + lista_calciatori[ind_calciatori].nome + " " + lista_calciatori[ind_calciatori].cognome + "</B></font><br>" + 
+                   //"[id: " + lista_calciatori[ind_calciatori].id_calciatore + "]<br>" + 
+                   "nato il <b>" + lista_calciatori[ind_calciatori].data_nascita + "</b> a <b>" + lista_calciatori[ind_calciatori].luogo_nascita + "</b> " + 
+                   "nazionalit&agrave;: <b>" + lista_calciatori[ind_calciatori].nazionalita + "</b> " + 
+                   "altezza <b>" + lista_calciatori[ind_calciatori].altezza_cm + "</b> cm " + 
+                   "peso <b>" + lista_calciatori[ind_calciatori].peso_kg + "</b> kg " + 
                    "</div>";
         $("#dati_calciatore").html(dati);
         //DATI SCHEDA
-        html = "<div class='alert alert-calciatore' role='alert'>DEVO VISUALIZZARE LA SCHEDA "+lista[0].data_gara +"</div>";
-        $("#ruolo").val(lista[0].ruolo);
-        $("#club").val(lista[0].club);
-        $("#gara").val(lista[0].gara);
-        $("#data_gara").val(lista[0].data_gara);
-        $("#campionato").val(lista[0].campionato);
-        $("#situazione_campo").val(lista[0].situazione_campo);
-        $("#temperatura").val(lista[0].temperatura);
-        $("#spettatori").val(lista[0].spettatori);
-        $("#importanza_gara").val(lista[0].importanza_gara);
-        $("#costituzione").val(lista[0].costituzione);
+        html = "<div class='alert alert-calciatore' role='alert'>DEVO VISUALIZZARE LA SCHEDA "+lista_schede[ind_schede].data_gara +"</div>";
+        $("#ruolo").val(lista_schede[ind_schede].ruolo);
+        $("#club").val(lista_schede[ind_schede].club);
+        $("#gara").val(lista_schede[ind_schede].gara);
+        $("#data_gara").val(lista_schede[ind_schede].data_gara);
+        $("#campionato").val(lista_schede[ind_schede].campionato);
+        $("#situazione_campo").val(lista_schede[ind_schede].situazione_campo);
+        $("#temperatura").val(lista_schede[ind_schede].temperatura);
+        $("#spettatori").val(lista_schede[ind_schede].spettatori);
+        $("#importanza_gara").val(lista_schede[ind_schede].importanza_gara);
+        $("#costituzione").val(lista_schede[ind_schede].costituzione);
 
-        $("#agilita").val(lista[0].agilita);
-        $("#coordinazione").val(lista[0].coordinazione);
-        $("#elevazione").val(lista[0].elevazione);
-        $("#forza").val(lista[0].forza);
-        $("#resistenza").val(lista[0].resistenza);
-        $("#struttura_fisica").val(lista[0].struttura_fisica);
-        $("#velocita_nel_breve").val(lista[0].velocita_nel_breve);
-        $("#velocita_nel_lungo").val(lista[0].velocita_nel_lungo);
+        $("#agilita").val(lista_schede[ind_schede].agilita);
+        $("#coordinazione").val(lista_schede[ind_schede].coordinazione);
+        $("#elevazione").val(lista_schede[ind_schede].elevazione);
+        $("#forza").val(lista_schede[ind_schede].forza);
+        $("#resistenza").val(lista_schede[ind_schede].resistenza);
+        $("#struttura_fisica").val(lista_schede[ind_schede].struttura_fisica);
+        $("#velocita_nel_breve").val(lista_schede[ind_schede].velocita_nel_breve);
+        $("#velocita_nel_lungo").val(lista_schede[ind_schede].velocita_nel_lungo);
 
-        $("#controllo").val(lista[0].controllo);
-        $("#dribbling").val(lista[0].dribbling);
-        $("#gioco_aereo").val(lista[0].gioco_aereo);
-        $("#modo_di_calciare").val(lista[0].modo_di_calciare);
-        $("#uso_piede_sinistro").val(lista[0].uso_piede_sinistro);
-        $("#uso_piede_destro").val(lista[0].uso_piede_destro);
+        $("#controllo").val(lista_schede[ind_schede].controllo);
+        $("#dribbling").val(lista_schede[ind_schede].dribbling);
+        $("#gioco_aereo").val(lista_schede[ind_schede].gioco_aereo);
+        $("#modo_di_calciare").val(lista_schede[ind_schede].modo_di_calciare);
+        $("#uso_piede_sinistro").val(lista_schede[ind_schede].uso_piede_sinistro);
+        $("#uso_piede_destro").val(lista_schede[ind_schede].uso_piede_destro);
 
 
-        $("#posizionamento_in_campo").val(lista[0].posizionamento_in_campo);
-        $("#marcamento").val(lista[0].marcamento);
-        $("#smarcamento").val(lista[0].smarcamento);
-        $("#visione_di_gioco").val(lista[0].visione_di_gioco);
+        $("#posizionamento_in_campo").val(lista_schede[ind_schede].posizionamento_in_campo);
+        $("#marcamento").val(lista_schede[ind_schede].marcamento);
+        $("#smarcamento").val(lista_schede[ind_schede].smarcamento);
+        $("#visione_di_gioco").val(lista_schede[ind_schede].visione_di_gioco);
 
-        $("#autorita_nel_gioco").val(lista[0].autorita_nel_gioco);
-        $("#concentrazione").val(lista[0].concentrazione);
-        $("#motivazione").val(lista[0].motivazione);
-        $("#spirito_di_sacrificio").val(lista[0].spirito_di_sacrificio);
+        $("#autorita_nel_gioco").val(lista_schede[ind_schede].autorita_nel_gioco);
+        $("#concentrazione").val(lista_schede[ind_schede].concentrazione);
+        $("#motivazione").val(lista_schede[ind_schede].motivazione);
+        $("#spirito_di_sacrificio").val(lista_schede[ind_schede].spirito_di_sacrificio);
       }
       else
         html = "<div class='alert alert-calciatore' role='alert'>NON CI SONO SCHEDE</div>";
@@ -227,8 +238,15 @@ $.fn.serializeObject = function()
     <!-- Static navbar -->
     <nav class="navbar navbar-default navbar-fixed-top gradienti">
       <div class="container">
-        <div class="navbar-header">
-          <!-- solo per la pagina index.html NON ESISTE IL MENU ed il logo ha un margine di 40 pixel -->
+        <div class="navbar-header">          
+          <div id="bottone_menu" >
+            <!-- BUTTON FOR TOGGLE LEFT MENU -->
+            <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+            </button>
+          </div>
           <div class="navbar-header" style="line-height: 56px;" id="testata" >
             <a id="btn_backward" type="button" class='.navbar-toggle pull-left' style="color: #FFF;" >
                &nbsp;&nbsp;&nbsp;<span class="  glyphicon glyphicon-step-backward" aria-hidden="true" style="color: #FFF;" ></span>
@@ -247,6 +265,23 @@ $.fn.serializeObject = function()
     <!-- <div class="container-fluid" style="max-width: 540px;" id="fluido" > -->
     <div class="container-fluid" id="fluido" >
       <div class="row">
+      
+
+      <!-- sidebar LEFT MENU -->      <!-- sidebar -->
+      <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
+        <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
+          <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+            <li><a href="mappa.html"> <i class="fa fa-eye"></i> MAPPA</a></li>
+            <li><a href="calendario.html"> <i class="fa fa-calendar"></i> CALENDARIO</a></li>
+          </ul>
+          <ul id="footer_menu" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+              <li><p>FUNZIONI</p></li>
+              <li><a href="impostazioni.html"> <i class="fa fa-info-circle"></i> Info</a></li>
+              <li><a id="btn_logout"> <i class="fa fa-sign-out"></i> Logout</a></li>
+          </ul>
+        </div> <!-- chiude prova -->  
+      </div>
+
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
           <div id='dati_calciatore'></div>
           <div id='dettaglio_scheda'>
@@ -396,7 +431,25 @@ $.fn.serializeObject = function()
     </div> <!-- close div container-fluid -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+    <!-- TOGGLE MENU -->
     <script>
+    $(document).ready(function() {
+      
+      $('[data-toggle=offcanvas]').click(function() {
+        if ($( ".sidebar-offcanvas-right" ).hasClass( "active" )){
+          $('.sidebar-offcanvas-right').toggleClass('active', 1000);
+        }
+        $('.sidebar-offcanvas').toggleClass('active', 1000);
+      });
+
+      $('[data-toggle=offcanvas-right]').click(function() {
+        if ($( ".sidebar-offcanvas" ).hasClass( "active" )){
+          $('.sidebar-offcanvas').toggleClass('active', 1000);
+        }
+        $('.sidebar-offcanvas-right').toggleClass('active', 1000);
+      });
+
+    });
     debugLocalStorage();
     </script>
     </body>

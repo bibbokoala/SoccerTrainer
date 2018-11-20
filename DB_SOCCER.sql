@@ -1,18 +1,41 @@
-DROP TABLE IF EXISTS `st_utenti`;
+DROP TABLE IF EXISTS `st_profili`;
+CREATE TABLE IF NOT EXISTS `st_profili` (
+  `id_profilo` int(10) NOT NULL AUTO_INCREMENT,
+  `profilo` varchar(100) NULL,
+  `desc_profilo` TEXT NULL,
+  PRIMARY KEY (`id_profilo`),
+  UNIQUE KEY `profilo` (`profilo`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+insert into st_profili(id_profilo, profilo, desc_profilo) values(null, 'ADMIN', 'Profilo AMMINISTRATORE di sistema.');
+insert into st_profili(id_profilo, profilo, desc_profilo) values(null, 'PROFESSIONAL', 'Profilo professionale di sistema.');
+insert into st_profili(id_profilo, profilo, desc_profilo) values(null, 'FREE', 'Profilo gratuito di sistema.');
 
+DROP TABLE IF EXISTS `st_gruppi`;
+CREATE TABLE IF NOT EXISTS `st_gruppi` (
+  `id_gruppo` int(10) NOT NULL AUTO_INCREMENT,
+  `gruppo` varchar(100) NULL,
+  `desc_gruppo` TEXT NULL,
+  PRIMARY KEY (`id_gruppo`),
+  UNIQUE KEY `gruppo` (`gruppo`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+insert into st_gruppi(id_gruppo, gruppo, desc_gruppo) values(null, 'SISTEMA', 'Gruppo di sistema.'); 
+
+DROP TABLE IF EXISTS `st_utenti`;
 CREATE TABLE IF NOT EXISTS `st_utenti` (
   `id_utente` int(10) NOT NULL AUTO_INCREMENT,
-  `username` varchar(100) NULL,
-  `password` varchar(100) NULL,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
   `nome` varchar(100) NULL,
   `cognome` varchar(100) NULL,
-  `email` varchar(100) NULL,
+  `email` varchar(100) NOT NULL,
   `telefono` varchar(20) NULL,
   `indirizzo` varchar(100) NULL,
   `civico` int(10) NULL,
   `cap` varchar(10) NULL,
   `citta` varchar(50) NULL,
   `nazione` varchar(50) NULL,
+  `id_profilo` int(10) NOT NULL,
+  `id_gruppo` int(10) NOT NULL,
   PRIMARY KEY (`id_utente`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
@@ -20,7 +43,6 @@ CREATE TABLE IF NOT EXISTS `st_utenti` (
 
 
 DROP TABLE IF EXISTS `st_calciatori`;
-
 CREATE TABLE IF NOT EXISTS `st_calciatori` (
   `id_calciatore` int(10) NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
@@ -40,9 +62,7 @@ INSERT INTO `st_calciatori` (`id_calciatore`, `nome`, `cognome`, `luogo_nascita`
 (2, 'FRANCESCO', 'TOTTI', 'ROMA', '1976-09-26 23:00:00', 'ITALIANA', 180, 82, 'simone');
 
 
-
 DROP TABLE IF EXISTS `st_schede`;
-
 CREATE TABLE IF NOT EXISTS `st_schede` (
   `id_scheda` int(10) NOT NULL AUTO_INCREMENT,
   `id_calciatore` int(10) NOT NULL,

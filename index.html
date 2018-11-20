@@ -86,14 +86,17 @@ $.fn.serializeObject = function()
     var matricola = localStorage.getItem("matricola");
     if (matricola==null)
         matricola="test";
+    var id_profilo = localStorage.getItem("id_profilo");
+    if (id_profilo==null)
+        id_profilo="3";
     var random = Math.random();
     var xmlhttp = new XMLHttpRequest();
-    var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&random="+random;
+    var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
     console.log("url:"+url);
     xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             var lista = xmlhttp.responseText;
-            localStorage.setItem("lista", lista);
+            localStorage.setItem("lista_calciatori", lista);
             //DEBUG alert("lista: " + lista);
             window.location = "home.html";
         }
@@ -110,6 +113,8 @@ $.fn.serializeObject = function()
     console.log("data: "+ JSON.stringify(data));
     //DEBUG alert("onSuccess - data.auth: " + data.auth);
     localStorage.setItem("auth", data.auth);
+    localStorage.setItem("id_profilo", data.id_profilo);
+    localStorage.setItem("id_gruppo", data.id_gruppo);
     localStorage.setItem("token", data.token);
     localStorage.setItem("login", data.auth);
     if (data.auth.localeCompare("OK")==0)
