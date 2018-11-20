@@ -11,7 +11,7 @@
 <script src="phonegap.js"></script>
    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
    <script src="js/jquery.min.js"></script>
-   <!-- <script src="js/menu.js"></script>-->
+   <script src="js/menu.js"></script>
  <script type="text/javascript" charset="utf-8">
     // Call onDeviceReady when Cordova is loaded.
     // At this point, the document has loaded but cordova-1.8.1.js has not.
@@ -170,6 +170,12 @@ $.fn.serializeObject = function()
     <nav class="navbar navbar-default navbar-fixed-top gradienti">
       <div class="container">
         <div class="navbar-header">
+          <!-- BUTTON FOR TOGGLE LEFT MENU -->
+            <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+            </button>
           <!-- solo per la pagina index.html NON ESISTE IL MENU ed il logo ha un margine di 40 pixel -->
           <div class="navbar-header" style="line-height: 56px;" id="testata" >
             <b id='logo_big' >Soccer Trainer</b>
@@ -186,6 +192,25 @@ $.fn.serializeObject = function()
     <!-- <div class="container-fluid" style="max-width: 540px;" id="fluido" > -->
     <div class="container-fluid" id="fluido" >
       <div class="row">
+
+
+      <!-- sidebar LEFT MENU -->      <!-- sidebar -->
+      <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
+        <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
+          <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+            <li><a href="squadre.html"> <i class="fa fa-eye"></i> SQUADRE</a></li>
+            <li><a href="calciatori.html"> <i class="fa fa-calendar"></i> CALCIATORI</a></li>
+          </ul>
+          <ul id="footer_menu" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+              <li><p>FUNZIONI</p></li>
+              <li><a href="impostazioni.html"> <i class="fa fa-info-circle"></i> Info</a></li>
+              <li><a id="btn_logout"> <i class="fa fa-sign-out"></i> Logout</a></li>
+          </ul>
+        </div> <!-- chiude prova -->  
+      </div>
+
+
+
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
           <div id='dati_calciatore' ></div>
 
@@ -195,7 +220,25 @@ $.fn.serializeObject = function()
     </div> <!-- close div container-fluid -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
-    <script>
+    <script>    
+
+    $(document).ready(function() {
+      
+      $('[data-toggle=offcanvas]').click(function() {
+        if ($( ".sidebar-offcanvas-right" ).hasClass( "active" )){
+          $('.sidebar-offcanvas-right').toggleClass('active', 1000);
+        }
+        $('.sidebar-offcanvas').toggleClass('active', 1000);
+      });
+
+      $('[data-toggle=offcanvas-right]').click(function() {
+        if ($( ".sidebar-offcanvas" ).hasClass( "active" )){
+          $('.sidebar-offcanvas').toggleClass('active', 1000);
+        }
+        $('.sidebar-offcanvas-right').toggleClass('active', 1000);
+      });
+
+    });
     debugLocalStorage();
     </script>
     </body>

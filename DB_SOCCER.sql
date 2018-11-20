@@ -20,6 +20,16 @@ CREATE TABLE IF NOT EXISTS `st_gruppi` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 insert into st_gruppi(id_gruppo, gruppo, desc_gruppo) values(null, 'SISTEMA', 'Gruppo di sistema.'); 
 
+DROP TABLE IF EXISTS `st_squadre`;
+CREATE TABLE IF NOT EXISTS `st_squadre` (
+  `id_squadra` int(10) NOT NULL AUTO_INCREMENT,
+  `squadra` varchar(100) NULL,
+  `desc_squadra` TEXT NULL,
+  PRIMARY KEY (`id_squadra`),
+  UNIQUE KEY `squadra` (`squadra`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+insert into st_gruppi(id_squadra, squadra, desc_squadra) values(null, 'SS LAZIO ELITE 2007', 'Squadra elite della SS LAZIO anno 2007.'); 
+
 DROP TABLE IF EXISTS `st_utenti`;
 CREATE TABLE IF NOT EXISTS `st_utenti` (
   `id_utente` int(10) NOT NULL AUTO_INCREMENT,
