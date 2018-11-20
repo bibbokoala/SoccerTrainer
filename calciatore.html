@@ -146,7 +146,7 @@ $.fn.serializeObject = function()
       var items = res.split("=");
       var i = items[1];
       console.log("parametro - id=[" + i + "]");
-      var lista_calciatori = JSON.parse( localStorage.getItem("lista") );
+      var lista_calciatori = JSON.parse( localStorage.getItem("lista_calciatori") );
       var html = "<div class='alert alert-calciatore' role='alert'>" + 
                  "<font size='6'><B>" + lista_calciatori[i].nome + " " + lista_calciatori[i].cognome + "</B></font><br>" + 
                  //"[id: " + lista_calciatori[i].id_calciatore + "]<br>" + 

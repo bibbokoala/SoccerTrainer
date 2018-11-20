@@ -104,31 +104,13 @@
       </div>
       <!-- content -->
       <div class="col-xs-12  col-sm-8 col-md-9 content">
-          <script>
-          document.write("<table class='tabella_elementi' align=center width=100%>");
-          document.write("<tr><td width=30%>UTENTE CONNESSO: </td><td>" + localStorage.getItem("matricola") + "</td></tr>");
-          /*
-          document.write("<tr><td>ULTIMO INDIRIZZO CERCATO: </td><td>" + localStorage.getItem("indirizzo") + "</td></tr>");
-          document.write("<tr><td>LATITUDINE: </td><td>" + localStorage.getItem("latitudine") + "</td></tr>");
-          document.write("<tr><td>LONGITUDINE: </td><td>" + localStorage.getItem("longitudine") + "</td></tr>");
-          */
-          console.log("window.screen.availHeight: " + window.screen.availHeight);
-          console.log("window.screen.availWidth: " + window.screen.availWidth);
-          var x = "Screen Height: " + screen.availHeight + "px";
-          var y = "Window Height: " + screen.height + "px";
-          var h = "InnerHeight: " + window.innerHeight + "px";
-          //document.write("<tr><td>RISOLUZIONE: </td><td>" + x + " - " + y + " - " + h + "</td></tr>");
-          document.write("<tr><td>RISOLUZIONE SCHERMO: </td><td>" + window.screen.availWidth + " - " + window.screen.availHeight + "</td></tr>");
-          document.write("<tr><td>VERSIONE SOFTWARE: </td><td>" + localStorage.getItem("version") +  "</td></tr>");
-          //NON FUNZIONA document.write("<tr><td>BTLE: </td><td><input tipe=text id='btle' /></td></tr>");
-          document.write("</TABLE>");
+        
 
-          function callNavigator() {
-            address = localStorage.getItem("latitudine") + "," + localStorage.getItem("longitudine") ;
-            window.location = "http://maps.google.com/?q=" + address;
-          }
+        <hr>
+        <h4>CALCIATORI</h4>
+        <hr>
 
-          </script>
+
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
 
         <div id="my_footer" class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 " >
