@@ -239,7 +239,8 @@ $.fn.serializeObject = function()
         }
         html += "<div class='calciatore'>";
         html += "<a href='./calciatore.html?id=" + i + "' class='btn btn-lg btn-"+btn_class+"' style='width: 300px;'>";
-        html += "<font style='font-size:13px;'>"+lista_calciatori[i].cognome + " " + lista_calciatori[i].nome + " </font>";
+        html += "<font style='font-size:13px;'>"+lista_calciatori[i].cognome + " " + lista_calciatori[i].nome + 
+        " ("+lista_calciatori[i].num_calc + " <span class='glyphicon glyphicon-list' aria-hidden='true' ></span>)</font>";
         html += "</a>";
         html += "&nbsp;";
         html += "</div>";
@@ -259,7 +260,8 @@ $.fn.serializeObject = function()
         }
         html += "<div class='squadra'>";
         html += "<a href='./squadra.html?id=" + i + "' class='btn btn-lg btn-"+btn_class+"' style='width: 300px;'>";
-        html += "<font style='font-size:13px;'>"+lista_squadre[i].squadra + " </font>";
+        html += "<font style='font-size:13px;'>"+lista_squadre[i].squadra + " ("+lista_squadre[i].num_calc +
+                " <span class='glyphicon glyphicon-user' aria-hidden='true' ></span>)</font>";
         html += "</a>";
         html += "&nbsp;";
         html += "</div>";

@@ -105,6 +105,24 @@
     }
   }
 
+  function delSquadPlayers(index_squad, id_player, id_squad){
+    if (confirm("Vuoi veramente disassociare il calciatore alla squadra?")) {
+      var url = "http://linkin.it/Projects/SoccerTrainer/STDelSquadPlayers.php";
+      console.log("url: " + url + " - id_calciatore: " + id_player  + " - id_squadra: " + id_squad );
+      $.ajax({
+        url: url,
+        cache : false,
+        dataType : "json",
+        data : { id_calciatore: id_player , id_squadra: id_squad },
+        success: function(s){
+          var result_insert = s;
+          console.log(JSON.stringify(result_insert));
+          window.location = "squadra.html?id=" + index_squad;
+        } 
+      });
+    }
+  }
+
   $(document).ready(function() {
 
     $("#logo_big").click(function(){
@@ -117,7 +135,7 @@
       }
     });
 
-
+    /*
     $("#btn_nuova_scheda").click(function(){
       window.location = "nuova_scheda.html?id=" + $("#indice_squadra").val();
     });
@@ -125,9 +143,10 @@
     $("#btn_storico_schede").click(function(){
       window.location = "storico_schede.html?id=" + $("#indice_squadra").val();
     });
+    */
 
     $("#btn_backward").click(function(){
-      window.location = "home.html";
+      window.location = "squadre.html";
     });
 
     $("#btn_cancella_squadra").click(function(){
@@ -180,12 +199,14 @@
       var i = items[1];
       console.log("parametro - id=[" + i + "]");
       var lista_squadre = JSON.parse( localStorage.getItem("lista_squadre") );
-      var html = "<div class='alert alert-squadra' role='alert'>" + 
-                 "<font size='6'><B>" + lista_squadre[i].squadra + "<br>" + lista_squadre[i].desc_squadra + "</B></font><br>" + 
+      var html = "<div class='alert alert-calciatore' role='alert'>" + 
+                 "<font size='5'><B>" + lista_squadre[i].squadra + "</font><br>" + 
+                 "<font size='4'><B>" + lista_squadre[i].desc_squadra + "</B></font><br>" + 
                  "</div>";
       $("#dati_squadra").html(html);
       $("#indice_squadra").val(i);
       $("#id_squadra").val(lista_squadre[i].id_squadra);
+      $("#id_squadra_assoc").val(lista_squadre[i].id_squadra);
       $("#matricola").val(localStorage.getItem("matricola"));
       if (lista_squadre[i].num_calc>0){
         $('#btn_cancella_squadra').prop("disabled", true);
@@ -196,8 +217,116 @@
     }
     infoSquad();
 
+    $("#btn_add_squad_player").click(function(){
+      if (confirm("Vuoi aggiungere il calciatore alla squadra?")) {
+        var formData = $("#form_add_squad_player").serialize();
+        console.log(formData);
+        var url = "http://linkin.it/Projects/SoccerTrainer/STInsSquadPlayer.php";
+        $.ajax({
+          url: url,
+          type: 'POST', // Send post data
+          data: formData,
+          async: false,
+          success: function(s){
+            var result_insert = s;
+            console.log(JSON.stringify(result_insert));
+            $('#addSquad').modal('hide');
+            window.location = "home.html";
+          } 
+        });
+      }
+      else{
+        //se non si vuole salvare chiudo il modale!
+        $('#addSquad').modal('hide');
+      }
+    });
+
+    function call(){
+      var matricola = localStorage.getItem("matricola");
+      if (matricola==null)
+          matricola="simone";
+      var id_profilo = localStorage.getItem("id_profilo");
+      if (id_profilo==null)
+          id_profilo="1";
+      var random = Math.random();
+
+      //LISTA CALCIATORI ASSOCIATI
+      var xmlhttpSquad = new XMLHttpRequest();
+      var id_squadra = $("#id_squadra").val();
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetSquadPlayers.php?id_squadra="+id_squadra+"&matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
+      console.log("url:"+url);
+      xmlhttpSquad.onreadystatechange=function() {
+        if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {
+            var lista = xmlhttpSquad.responseText;
+            localStorage.setItem("lista_calciatori_squadra", lista);
+            var lista_calciatori_squadra = JSON.parse( lista );
+            var html = getSquadPlayers(lista_calciatori_squadra);
+            $("#lista_calciatori_squadra").html(html);
+        }
+      }
+      xmlhttpSquad.open("GET", url, true);
+      xmlhttpSquad.send();
+
+    }
+
+    call();
+
+    function foundPlayerIndex(lista_calciatori_squadra, ind){
+      var lista = localStorage.getItem("lista_calciatori");
+      var lista_calciatori = JSON.parse( lista );
+      for (var i=0; i<lista_calciatori.length; i++) { 
+        if (lista_calciatori_squadra[ind].id_calciatore == lista_calciatori[i].id_calciatore){
+          return(i);
+        }
+      }
+      return(0);
+    }
+
+    function foundSquadIndex(lista_calciatori_squadra, ind){
+      var lista = localStorage.getItem("lista_squadre");
+      var lista_squadre = JSON.parse( lista );
+      for (var i=0; i<lista_squadre.length; i++) { 
+        if (lista_calciatori_squadra[ind].id_squadra == lista_squadre[i].id_squadra){
+          return(i);
+        }
+      }
+      return(0);
+    }
+
+    function getSquadPlayers(lista_calciatori_squadra){
+      //DEBUG 
+      console.log("DEBUG lista_calciatori_squadra: " + JSON.stringify(lista_calciatori_squadra) );
+      var matricola = localStorage.getItem("matricola");
+      var html = "<h4>LISTA CALCIATORI ASSOCIATI</h4>";
+      for (var i=0; i<lista_calciatori_squadra.length; i++) { 
+        var btn_class = "primary";
+        if (lista_calciatori_squadra[i].creatore!=matricola){
+          btn_class="info";
+        }
+        var indice_calciatore = foundPlayerIndex(lista_calciatori_squadra, i);
+        var indice_squadra = foundPlayerIndex(lista_calciatori_squadra, i);
+        html += "<div class='squadra'>";
+        html += "<a href='./calciatore.html?id=" + indice_calciatore + "' class='btn btn-lg btn-"+btn_class+"' style='width:250px;'>";
+        html += "<font style='font-size:13px;'>"+lista_calciatori_squadra[i].nome +" "+ lista_calciatori_squadra[i].cognome + " </font>";
+        html += "</a>";
+        html += "&nbsp;";
+        html += "<a href='javascript:void(0);' onclick='delSquadPlayers(" + indice_squadra + "," +
+                lista_calciatori_squadra[i].id_calciatore+","+lista_calciatori_squadra[i].id_squadra+");' class='btn btn-lg btn-danger' >";
+        html += "<span class='glyphicon glyphicon-minus' aria-hidden='true' ></span> ";
+        html += "</a>";
+        html += "</div>";
+      }
+      return(html);
+    }
+
   });  
 </script>
+<style>
+  .squadra{
+    background: #FFF;
+    margin-bottom: 5px;
+  }
+</style>
 
 </head>
 <body onload="onLoad()">
@@ -236,8 +365,8 @@
       <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
         <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
           <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
-            <li><a href="squadre.html"> <i class="fa fa-eye"></i> SQUADRE</a></li>
-            <li><a href="calciatori.html"> <i class="fa fa-calendar"></i> CALCIATORI</a></li>
+            <li><a href="squadre.html"> <span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span>  SQUADRE</a></li>
+            <li><a href="calciatori.html"> <span class="glyphicon glyphicon-user" aria-hidden="true" ></span>  CALCIATORI</a></li>
           </ul>
           <ul id="footer_menu" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
               <li><p>FUNZIONI</p></li>
@@ -254,16 +383,17 @@
           <div class='alert alert-identificativi' role='alert'>
             <input type='hidden' name='id_squadra' id='id_squadra' >
             <input type='hidden' name='indice_squadra' id='indice_squadra' >
-            <button id='btn_nuova_scheda' class='btn btn-lg btn-success' >
+            <button id='btn_associa_calciatore' class='btn btn-lg btn-success' data-toggle='modal' data-target='#addSquadPlayer' >
               <span class='glyphicon glyphicon-plus' aria-hidden='true' ></span> 
-            </button>
-            <button id='btn_storico_schede' class='btn btn-lg btn-info' >
-              <span class='glyphicon glyphicon-list' aria-hidden='true' ></span> 
+              <span class='glyphicon glyphicon-user' aria-hidden='true' ></span> 
             </button>
             <button id='btn_cancella_squadra' class='btn btn-lg btn-danger' >
-              <span class='glyphicon glyphicon-minus' aria-hidden='true' ></span> 
+              <span class='glyphicon glyphicon-minus' aria-hidden='true' ></span> SQUADRA
             </button>
           </div>
+          <div class="row">
+            <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori_squadra" ></div>
+          </div> <!-- close div row --> 
           <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
@@ -288,8 +418,56 @@
         $('.sidebar-offcanvas-right').toggleClass('active', 1000);
       });
 
+      function getPlayersOprions(){
+        var lista = localStorage.getItem("lista_calciatori");
+        var lista_calciatori = JSON.parse( lista );
+        var lista = localStorage.getItem("lista_calciatori_squadra");
+        var lista_calciatori_squadra = JSON.parse( lista );
+        var html ="";
+        for(var i=0; i<lista_calciatori.length;i++){
+          for(var n=0; n<lista_calciatori_squadra.length;n++){
+            if (lista_calciatori[i].id_calciatore != lista_calciatori_squadra[n].id_calciatore){
+              html += "<option value='"+lista_calciatori[i].id_calciatore+"'>"+
+                       lista_calciatori[i].nome+ " " +lista_calciatori[i].cognome+ "</option>"
+            }
+          }
+        }
+        $('#id_calciatore').html(html);
+      }
+      getPlayersOprions();
+
     });
     debugLocalStorage();
     </script>
     </body>
+
+
+<!-- Modal addSquadPlayer -->
+  <div class="modal fade" id="addSquadPlayer" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content" style="font-size:75%;line-height:12px;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Associa Calciatore alla Squadra</h4>
+        </div>
+        <div class="modal-body">
+          <form id='form_add_squad_player'>
+            <div class="form-group">
+              <input type='hidden' name='id_squadra_assoc' id='id_squadra_assoc' />
+              <label for="id_calciatore">Calciatore:</label>
+              <select id='id_calciatore' name='id_calciatore' class='form-control'>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" id='btn_add_squad_player' >Salva</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- END Modal -->
+
 </html>

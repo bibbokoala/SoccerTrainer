@@ -123,3 +123,11 @@ CREATE TABLE IF NOT EXISTS `st_schede` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
 
+DROP TABLE IF EXISTS `st_calciatori_squadra`;
+CREATE TABLE IF NOT EXISTS `st_calciatori_squadra` (
+  `id_associazione` int(10) NOT NULL AUTO_INCREMENT,
+  `id_squadra` int(10) NOT NULL ,
+  `id_calciatore` int(10) NOT NULL ,
+  PRIMARY KEY (`id_associazione`),
+  UNIQUE KEY `squadra_calciatore` (`id_squadra`,`id_calciatore`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;

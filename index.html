@@ -114,7 +114,9 @@ $.fn.serializeObject = function()
     //DEBUG alert("onSuccess - data.auth: " + data.auth);
     localStorage.setItem("auth", data.auth);
     localStorage.setItem("id_profilo", data.id_profilo);
+    localStorage.setItem("profilo", data.profilo);
     localStorage.setItem("id_gruppo", data.id_gruppo);
+    localStorage.setItem("gruppo", data.gruppo);
     localStorage.setItem("token", data.token);
     localStorage.setItem("login", data.auth);
     if (data.auth.localeCompare("OK")==0)

@@ -113,8 +113,11 @@ $.fn.serializeObject = function()
       }
     });
 
-    if (localStorage.getItem("matricola")!=null)
+
+    if (localStorage.getItem("matricola")!=null){
       $( "#matricola" ).val( localStorage.getItem("matricola") );
+      $( "#matricola_squad" ).val( localStorage.getItem("matricola") );
+    }
 
     $("#btn_add_player").click(function(){
       if (confirm("Vuoi aggiungere il nuovo calciatore?")) {
@@ -196,7 +199,7 @@ $.fn.serializeObject = function()
     function getSquads(lista_squadre){
       //DEBUG 
       console.log("DEBUG lista_squadre: " + JSON.stringify(lista_squadre) );
-      var matricola = $("#matricola").val();
+      var matricola = $("#matricola_squad").val();
       var html = "<h4>LISTA SQUADRE</h4>";
       for (i=0; i<lista_squadre.length; i++) { 
         var btn_class = "danger";
@@ -205,7 +208,7 @@ $.fn.serializeObject = function()
         }
         html += "<div class='squadra'>";
         html += "<a href='./squadra.html?id=" + i + "' class='btn btn-lg btn-"+btn_class+"' style='width: 300px;'>";
-        html += "<font style='font-size:13px;'>"+lista_squadre[i].squadra + " </font>";
+        html += "<font style='font-size:13px;'>"+lista_squadre[i].squadra + " ("+lista_squadre[i].num_calc+" <span class='glyphicon glyphicon-user' aria-hidden='true' ></span>)</font>";
         html += "</a>";
         html += "&nbsp;";
         html += "</div>";
@@ -232,7 +235,7 @@ $.fn.serializeObject = function()
   });  
 </script>
 <style>
-  .squadre{
+  .squadra{
     background: #FFF;
     margin-bottom: 5px;
   }
