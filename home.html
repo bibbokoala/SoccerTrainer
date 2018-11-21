@@ -157,39 +157,107 @@ $.fn.serializeObject = function()
       }
     });
 
+    $("#btn_add_squad").click(function(){
+      if (confirm("Vuoi aggiungere la nuova squadra?")) {
+        var formData = $("#form_add_squad").serialize();
+        console.log(formData);
+        var url = "http://linkin.it/Projects/SoccerTrainer/STInsSquad.php";
+        $.ajax({
+          url: url,
+          type: 'POST', // Send post data
+          data: formData,
+          async: false,
+          success: function(s){
+            var result_insert = s;
+            console.log(JSON.stringify(result_insert));
+            $('#addSquad').modal('hide');
+            window.location = "home.html";
+          } 
+        });
+      }
+      else{
+        //se non si vuole salvare chiudo il modale!
+        $('#addSquad').modal('hide');
+      }
+    });
+
     function call(){
       var matricola = localStorage.getItem("matricola");
       if (matricola==null)
-          matricola="test";
+          matricola="simone";
       var id_profilo = localStorage.getItem("id_profilo");
       if (id_profilo==null)
-          id_profilo="3";
+          id_profilo="1";
       var random = Math.random();
+
+      //LISTA CALCIATORI
       var xmlhttp = new XMLHttpRequest();
       var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
       console.log("url:"+url);
       xmlhttp.onreadystatechange=function() {
-          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-              var lista = xmlhttp.responseText;
-              localStorage.setItem("lista_calciatori", lista);
-              var lista_calciatori = JSON.parse( lista );
-              var html = getPlayers(lista_calciatori);
-              $("#lista_calciatori").html(html);
-          }
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var lista = xmlhttp.responseText;
+            localStorage.setItem("lista_calciatori", lista);
+            var lista_calciatori = JSON.parse( lista );
+            var html = getPlayers(lista_calciatori);
+            $("#lista_calciatori").html(html);
+        }
       }
       xmlhttp.open("GET", url, true);
       xmlhttp.send();
+
+      //LISTA SQUADRE
+      var xmlhttpSquad = new XMLHttpRequest();
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetSquads.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
+      console.log("url:"+url);
+      xmlhttpSquad.onreadystatechange=function() {
+        if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {
+            var lista = xmlhttpSquad.responseText;
+            localStorage.setItem("lista_squadre", lista);
+            var lista_squadre = JSON.parse( lista );
+            var html = getSquads(lista_squadre);
+            $("#lista_squadre").html(html);
+        }
+      }
+      xmlhttpSquad.open("GET", url, true);
+      xmlhttpSquad.send();
+
     }
 
     call();
 
     function getPlayers(lista_calciatori){
       //DEBUG console.log("DEBUG lista_calciatori: " + JSON.stringify(lista_calciatori) );
+      var matricola = $("#matricola").val();
       var html = "<h4>LISTA CALCIATORI</h4>";
       for (i=0; i<lista_calciatori.length; i++) { 
+        var btn_class = "primary";
+        if (lista_calciatori[i].creatore!=matricola){
+          btn_class="info";
+        }
         html += "<div class='calciatore'>";
-        html += "<a href='./calciatore.html?id=" + i + "' class='btn btn-lg btn-primary' style='width: 300px;'>";
+        html += "<a href='./calciatore.html?id=" + i + "' class='btn btn-lg btn-"+btn_class+"' style='width: 300px;'>";
         html += "<font style='font-size:13px;'>"+lista_calciatori[i].cognome + " " + lista_calciatori[i].nome + " </font>";
+        html += "</a>";
+        html += "&nbsp;";
+        html += "</div>";
+      }
+      return(html);
+    }
+
+    function getSquads(lista_squadre){
+      //DEBUG 
+      console.log("DEBUG lista_squadre: " + JSON.stringify(lista_squadre) );
+      var matricola = $("#matricola").val();
+      var html = "<h4>LISTA SQUADRE</h4>";
+      for (i=0; i<lista_squadre.length; i++) { 
+        var btn_class = "danger";
+        if (lista_squadre[i].creatore!=matricola){
+          btn_class="warning";
+        }
+        html += "<div class='squadra'>";
+        html += "<a href='./squadra.html?id=" + i + "' class='btn btn-lg btn-"+btn_class+"' style='width: 300px;'>";
+        html += "<font style='font-size:13px;'>"+lista_squadre[i].squadra + " </font>";
         html += "</a>";
         html += "&nbsp;";
         html += "</div>";
@@ -269,19 +337,19 @@ $.fn.serializeObject = function()
 
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
-            <button class='btn btn-lg btn-success' data-toggle='modal' data-target='#addPlayer' >
+            <button class='btn btn-lg btn-primary' data-toggle='modal' data-target='#addPlayer' >
               <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
               CALCIATORE
             </button>
-            <button class='btn btn-lg btn-warning' data-toggle='modal' data-target='#addSquad' >
+            <button class='btn btn-lg btn-danger' data-toggle='modal' data-target='#addSquad' >
               <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
               SQUADRA
             </button>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
       <div class="row">
-        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori" >
-        </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori" ></div>
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_squadre" ></div>
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -355,6 +423,37 @@ $.fn.serializeObject = function()
         <div class="modal-footer">
           <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-success" id='btn_add_player' >Salva</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- END Modal -->
+
+<!-- Modal addSquad -->
+  <div class="modal fade" id="addSquad" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content" style="font-size:75%;line-height:12px;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Nuova Squadra</h4>
+        </div>
+        <div class="modal-body">
+          <form id='form_add_squad'>
+            <div class="form-group">
+              <label for="nome">Nome Squadra:</label>
+              <input class='form-control' type='text' id='squadra' name='squadra' value='' autofocus onchange="javascript:{this.value = this.value.toUpperCase(); }" /> 
+            </div>
+            <div class="form-group">
+              <label for="cognome">Descrizione Squadra:</label>
+              <input class='form-control' type='text' id='desc_squadra' name='desc_squadra' value='' onchange="javascript:{this.value = this.value.toUpperCase(); }" />  
+            </div>
+            <input type='hidden' id='matricola' name='matricola' value='' />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" id='btn_add_squad' >Salva</button>
         </div>
       </div>
     </div>

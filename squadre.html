@@ -6,34 +6,14 @@
      <link href='http://fonts.googleapis.com/css?family=Exo+2:400,600,300,900' rel='stylesheet' type='text/css'>
      <link href="css/navbar-static-top.css" rel="stylesheet">
      <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+     <link href="css/bootstrap-datepicker3.css" rel="stylesheet">
    <!-- END CSS FOR TOGGLE LEFT MENU -->
    <link href="css/custom.css" rel="stylesheet">
-   <link href="css/toggle-switch.css" rel="stylesheet">
-<script src="phonegap.js"></script>
-<script src="js/jquery.min.js"></script>
-<!-- <script src="fullcalendar/lib/moment.min.js" type="text/javascript"></script> -->
-<script src="js/menu.js"></script>
-   <style>
-   .tabella_elementi table, th, tr, td {
-     border: 2px solid #F3F3F3;
-     border-collapse: collapse;
-     font-size:12px;
-     text-align: left;
-     padding-left:5px;
-     padding-right:5px;
-   }
-   .tabella_elementi th{
-     background-color:#666666;
-     color:#FFFFFF;
-   }
-   .tabella_elementi tr{
-     height:50px;
-     background-color:#FFFFFF;
-     color:#333333;
-   }
-   </style>
-<script src="phonegap.js"></script>
+   <script src="phonegap.js"></script>
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
    <script src="js/jquery.min.js"></script>
+   <!-- DOCUMENTAZIONE DATEPICKER: https://bootstrap-datepicker.readthedocs.io/en/stable/index.html -->
+   <script src="js/bootstrap-datepicker.min.js"></script>
    <script src="js/menu.js"></script>
    <script type="text/javascript" charset="utf-8">
     // Call onDeviceReady when Cordova is loaded.
@@ -42,39 +22,252 @@
     // it will call the event `deviceready`.
     function onLoad() {
         document.addEventListener("deviceready", onDeviceReady, false);
+        //alert("onload");
     }
     // Cordova is loaded and it is now safe to make calls Cordova methods
     function onDeviceReady() {
         document.addEventListener("offline", onOffline, false);
+        document.addEventListener("online", onOnline, false);
+        if (device.model!=null)
+        {
+          localStorage.setItem("duuid", device.uuid);
+          localStorage.setItem("dmodel", device.model);
+          localStorage.setItem("dplatform", device.platform);
+          localStorage.setItem("dversion", device.version);
+        }
+        //alert("onDeviceReady");
     }
     // Handle the offline event
     function onOffline() {
-       alert("Il dispositivo e' OffLine\nQuesta App richiede una connessione internet!");
+      $("#offline-alert").alert();
+      $("#offline-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#offline-alert").alert('close');
+      });   
+      //alert("Il dispositivo e' OffLine\nQuesta App richiede una connessione internet!");
+      //btn_login disabled
+      $('#btn_login').addClass( "disabled" );
+    }
+    // Handle the online event
+    function onOnline() {
+      $("#online-alert").alert();
+      $("#online-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#online-alert").alert('close');
+      });   
+      //alert("Il dispositivo e' OnLine!");
+      //btn_login enabled!
+      $('#btn_login').removeClass( "disabled" );
     }
     // Handle the back browser button
     document.addEventListener("backbutton", onBackKeyDown, false);
     function onBackKeyDown() {
-      window.location.href = 'ric_elemento.html';
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
     }
+
+  function debugLocalStorage(){
+    console.log("***** START debugLocalStorage *****");
+    for (var i = 0; i < localStorage.length; i++){
+      console.log(i + ") [localStorage] chiave: " + localStorage.key(i) + " - valore: " + localStorage.getItem(localStorage.key(i)));
+    }
+    console.log("*****  END debugLocalStorage  *****");
+  }
+
+  function delPlayer(id_player){
+    if (confirm("Vuoi veramente eliminare il calciatore?")) {
+      var url = "http://linkin.it/Projects/SoccerTrainer/STDelPlayer.php";
+      console.log("url: " + url + "- id_player: " + id_player );
+      $.ajax({
+        url: url,
+        cache : false,
+        dataType : "json",
+        data : { id_calciatore: id_player },
+        success: function(s){
+          var result_insert = s;
+          console.log(JSON.stringify(result_insert));
+          window.location = "home.html";
+        } 
+      });
+    }
+  }
+
 </script>
+<script>
+//var db = openDatabase('GeoNavDB', '1.0', 'GeoNav App DB', 3 * 1024 * 1024);
+$.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '"');
+        } else {
+            o[this.name] = this.value || '"';
+        }
+    });
+    return o;
+};
+
+  $(document).ready(function() {
+    $("#logo_big").click(function(){
+      window.location = "index.html";
+    });
+
+    $('#btn_exit').click(function() {
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
+    });
+
+    $("#btn_logout").click(function(){
+      if (confirm("Effettuare il Log-out?")) {
+        localStorage.clear();
+        console.log("btn_logout: "+localStorage.getItem("login"));
+        window.location.href = 'index.html';
+      }
+    });
+
+    if (localStorage.getItem("matricola")!=null)
+      $( "#matricola" ).val( localStorage.getItem("matricola") );
+
+    $("#btn_add_player").click(function(){
+      if (confirm("Vuoi aggiungere il nuovo calciatore?")) {
+        var formData = $("#form_add_player").serialize();
+        console.log(formData);
+        var url = "http://linkin.it/Projects/SoccerTrainer/STInsPlayer.php";
+        $.ajax({
+          url: url,
+          type: 'POST', // Send post data
+          data: formData,
+          async: false,
+          success: function(s){
+            var result_insert = s;
+            console.log(JSON.stringify(result_insert));
+            $('#addPlayer').modal('hide');
+            window.location = "home.html";
+          } 
+        });
+      }
+      else{
+        //se non si vuole salvare chiudo il modale!
+        $('#addPlayer').modal('hide');
+      }
+    });
+
+    $("#btn_add_squad").click(function(){
+      if (confirm("Vuoi aggiungere la nuova squadra?")) {
+        var formData = $("#form_add_squad").serialize();
+        console.log(formData);
+        var url = "http://linkin.it/Projects/SoccerTrainer/STInsSquad.php";
+        $.ajax({
+          url: url,
+          type: 'POST', // Send post data
+          data: formData,
+          async: false,
+          success: function(s){
+            var result_insert = s;
+            console.log(JSON.stringify(result_insert));
+            $('#addSquad').modal('hide');
+            window.location = "home.html";
+          } 
+        });
+      }
+      else{
+        //se non si vuole salvare chiudo il modale!
+        $('#addSquad').modal('hide');
+      }
+    });
+
+    function call(){
+      var matricola = localStorage.getItem("matricola");
+      if (matricola==null)
+          matricola="simone";
+      var id_profilo = localStorage.getItem("id_profilo");
+      if (id_profilo==null)
+          id_profilo="1";
+      var random = Math.random();
+
+      //LISTA SQUADRE
+      var xmlhttpSquad = new XMLHttpRequest();
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetSquads.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
+      console.log("url:"+url);
+      xmlhttpSquad.onreadystatechange=function() {
+        if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {
+            var lista = xmlhttpSquad.responseText;
+            localStorage.setItem("lista_squadre", lista);
+            var lista_squadre = JSON.parse( lista );
+            var html = getSquads(lista_squadre);
+            $("#lista_squadre").html(html);
+        }
+      }
+      xmlhttpSquad.open("GET", url, true);
+      xmlhttpSquad.send();
+
+    }
+
+    call();
+
+    function getSquads(lista_squadre){
+      //DEBUG 
+      console.log("DEBUG lista_squadre: " + JSON.stringify(lista_squadre) );
+      var matricola = $("#matricola").val();
+      var html = "<h4>LISTA SQUADRE</h4>";
+      for (i=0; i<lista_squadre.length; i++) { 
+        var btn_class = "danger";
+        if (lista_squadre[i].creatore!=matricola){
+          btn_class="warning";
+        }
+        html += "<div class='squadra'>";
+        html += "<a href='./squadra.html?id=" + i + "' class='btn btn-lg btn-"+btn_class+"' style='width: 300px;'>";
+        html += "<font style='font-size:13px;'>"+lista_squadre[i].squadra + " </font>";
+        html += "</a>";
+        html += "&nbsp;";
+        html += "</div>";
+      }
+      return(html);
+    }
+
+    var date_input=$('input[name="data_nascita"]'); //our date input has the name "date"
+    var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+    var options={    
+      format: "dd/mm/yyyy",
+      defaultViewDate: { year: 2000, month: 0, day: 1 },    
+      todayBtn: true,
+      container: container,
+      todayHighlight: true,
+      autoclose: true,
+    };
+    date_input.datepicker(options);
+
+    $('.modal').on('shown.bs.modal', function() {
+      $(this).find('[autofocus]').focus();
+    });
+
+  });  
+</script>
+<style>
+  .calciatore{
+    background: #FFF;
+    margin-bottom: 5px;
+  }
+</style>
 </head>
-<body>
+<body onload="onLoad()">
     <!-- Static navbar -->
     <nav class="navbar navbar-default navbar-fixed-top gradienti">
       <div class="container">
-        <div class="navbar-header">          
-          <div id="bottone_menu" >
-            <!-- BUTTON FOR TOGGLE LEFT MENU -->
+        <div class="navbar-header">
+          <!-- BUTTON FOR TOGGLE LEFT MENU -->
             <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
              <span class="icon-bar" style="background-color: #FFF;"></span>
              <span class="icon-bar" style="background-color: #FFF;"></span>
              <span class="icon-bar" style="background-color: #FFF;"></span>
             </button>
-          </div>
+          <!-- solo per la pagina index.html NON ESISTE IL MENU ed il logo ha un margine di 40 pixel -->
           <div class="navbar-header" style="line-height: 56px;" id="testata" >
-            <a id="btn_backward" type="button" class='.navbar-toggle pull-left' style="color: #FFF;" >
-               &nbsp;&nbsp;&nbsp;<span class="  glyphicon glyphicon-step-backward" aria-hidden="true" style="color: #FFF;" ></span>
-            </a>
             <b id='logo_big' >Soccer Trainer</b>
             <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
                <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
@@ -86,35 +279,37 @@
         </div>
       </div>
     </nav>
+    <!-- <div class="container-fluid" style="max-width: 540px;" id="fluido" > -->
     <div class="container-fluid" id="fluido" >
       <div class="row">
+
+
       <!-- sidebar LEFT MENU -->      <!-- sidebar -->
       <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
         <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
           <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
-            <li><a href="squadre.html"> <i class="fa fa-eye"></i> SQUADRE</a></li>
-            <li><a href="calciatori.html"> <i class="fa fa-calendar"></i> CALCIATORI</a></li>
+            <li><a href="squadre.html"> <span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span>  SQUADRE</a></li>
+            <li><a href="calciatori.html"> <span class="glyphicon glyphicon-user" aria-hidden="true" ></span>  CALCIATORI</a></li>
           </ul>
           <ul id="footer_menu" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
-              <li><p>FUNZIONI</p></li>
-              <li><a href="impostazioni.html"> <i class="fa fa-info-circle"></i> Info</a></li>
-              <li><a id="btn_logout"> <i class="fa fa-sign-out"></i> Logout</a></li>
+              <li><p><B>FUNZIONI</B></p></li>
+              <li><a href="impostazioni.html"> <span class="glyphicon glyphicon-info-sign" aria-hidden="true" ></span> INFORMAZIONI</a></li>
+              <li><a id="btn_logout"> <span class="glyphicon glyphicon-log-out" aria-hidden="true" ></span> LOGOUT</a></li>
           </ul>
         </div> <!-- chiude prova -->  
       </div>
-      <!-- content -->
-      <div class="col-xs-12  col-sm-8 col-md-9 content">
-        
 
-        <hr>
-        <h4>SQUADRE</h4>
-        <hr>
 
+
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
+            <button class='btn btn-lg btn-danger' data-toggle='modal' data-target='#addSquad' >
+              <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
+              SQUADRA
+            </button>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
-
-        <div id="my_footer" class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 " >
-          &copy; Linkin.it
-        </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+      </div> <!-- close div row --> 
+      <div class="row">
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_squadre" ></div>
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -122,11 +317,7 @@
     <!-- TOGGLE MENU -->
     <script>
     $(document).ready(function() {
-
-      $("#logo_big").click(function(){
-        window.location = "index.html";
-      });
-
+      
       $('[data-toggle=offcanvas]').click(function() {
         if ($( ".sidebar-offcanvas-right" ).hasClass( "active" )){
           $('.sidebar-offcanvas-right').toggleClass('active', 1000);
@@ -141,7 +332,41 @@
         $('.sidebar-offcanvas-right').toggleClass('active', 1000);
       });
 
-    });
+    }); 
+
+      debugLocalStorage();
     </script>
-</body>
+    </body>
+
+<!-- Modal addSquad -->
+  <div class="modal fade" id="addSquad" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content" style="font-size:75%;line-height:12px;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Nuova Squadra</h4>
+        </div>
+        <div class="modal-body">
+          <form id='form_add_squad'>
+            <div class="form-group">
+              <label for="nome">Nome Squadra:</label>
+              <input class='form-control' type='text' id='squadra' name='squadra' value='' autofocus onchange="javascript:{this.value = this.value.toUpperCase(); }" /> 
+            </div>
+            <div class="form-group">
+              <label for="cognome">Descrizione Squadra:</label>
+              <input class='form-control' type='text' id='desc_squadra' name='desc_squadra' value='' onchange="javascript:{this.value = this.value.toUpperCase(); }" />  
+            </div>
+            <input type='hidden' id='matricola' name='matricola' value='' />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" id='btn_add_squad' >Salva</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- END Modal -->
+
 </html>

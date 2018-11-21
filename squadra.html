@@ -1,0 +1,295 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <link href="css/bootstrap.min.css" rel="stylesheet">
+   <!-- CSS FOR TOGGLE LEFT MENU -->
+     <link href='http://fonts.googleapis.com/css?family=Exo+2:400,600,300,900' rel='stylesheet' type='text/css'>
+     <link href="css/navbar-static-top.css" rel="stylesheet">
+     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+   <!-- END CSS FOR TOGGLE LEFT MENU -->
+   <link href="css/custom.css" rel="stylesheet">
+<script src="phonegap.js"></script>
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+   <script src="js/jquery.min.js"></script>
+   <script src="js/menu.js"></script>
+ <script type="text/javascript" charset="utf-8">
+    // Call onDeviceReady when Cordova is loaded.
+    // At this point, the document has loaded but cordova-1.8.1.js has not.
+    // When Cordova is loaded and talking with the native device,
+    // it will call the event `deviceready`.
+    function onLoad() {
+        document.addEventListener("deviceready", onDeviceReady, false);
+        //alert("onload");
+    }
+    // Cordova is loaded and it is now safe to make calls Cordova methods
+    function onDeviceReady() {
+        document.addEventListener("offline", onOffline, false);
+        document.addEventListener("online", onOnline, false);
+        if (device.model!=null)
+        {
+          localStorage.setItem("duuid", device.uuid);
+          localStorage.setItem("dmodel", device.model);
+          localStorage.setItem("dplatform", device.platform);
+          localStorage.setItem("dversion", device.version);
+        }
+        //alert("onDeviceReady");
+    }
+    // Handle the offline event
+    function onOffline() {
+      $("#offline-alert").alert();
+      $("#offline-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#offline-alert").alert('close');
+      });   
+      //alert("Il dispositivo e' OffLine\nQuesta App richiede una connessione internet!");
+      //btn_login disabled
+      $('#btn_login').addClass( "disabled" );
+    }
+    // Handle the online event
+    function onOnline() {
+      $("#online-alert").alert();
+      $("#online-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#online-alert").alert('close');
+      });   
+      //alert("Il dispositivo e' OnLine!");
+      //btn_login enabled!
+      $('#btn_login').removeClass( "disabled" );
+    }
+    // Handle the back browser button
+    document.addEventListener("backbutton", onBackKeyDown, false);
+    function onBackKeyDown() {
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
+    }
+
+  function debugLocalStorage(){
+    console.log("***** START debugLocalStorage *****");
+    for (var i = 0; i < localStorage.length; i++){
+      console.log(i + ") [localStorage] chiave: " + localStorage.key(i) + " - valore: " + localStorage.getItem(localStorage.key(i)));
+    }
+    console.log("*****  END debugLocalStorage  *****");
+  }
+
+  $.fn.serializeObject = function()
+  {
+      var o = {};
+      var a = this.serializeArray();
+      $.each(a, function() {
+          if (o[this.name] !== undefined) {
+              if (!o[this.name].push) {
+                  o[this.name] = [o[this.name]];
+              }
+              o[this.name].push(this.value || '"');
+          } else {
+              o[this.name] = this.value || '"';
+          }
+      });
+      return o;
+  };
+
+  function delSquad(id_squad){
+    if (confirm("Vuoi veramente eliminare il squadra?")) {
+      var url = "http://linkin.it/Projects/SoccerTrainer/STDelSquad.php";
+      console.log("url: " + url + "- id_squad: " + id_squad );
+      $.ajax({
+        url: url,
+        cache : false,
+        dataType : "json",
+        data : { id_squadra: id_squad },
+        success: function(s){
+          var result_insert = s;
+          console.log(JSON.stringify(result_insert));
+          window.location = "home.html";
+        } 
+      });
+    }
+  }
+
+  $(document).ready(function() {
+
+    $("#logo_big").click(function(){
+      window.location = "index.html";
+    });
+
+    $('#btn_exit').click(function() {
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
+    });
+
+
+    $("#btn_nuova_scheda").click(function(){
+      window.location = "nuova_scheda.html?id=" + $("#indice_squadra").val();
+    });
+
+    $("#btn_storico_schede").click(function(){
+      window.location = "storico_schede.html?id=" + $("#indice_squadra").val();
+    });
+
+    $("#btn_backward").click(function(){
+      window.location = "home.html";
+    });
+
+    $("#btn_cancella_squadra").click(function(){
+      delSquad($("#indice_squadra").val());
+    });
+
+
+    $( "#matricola" ).keydown(function( event ) {
+      if ( event.which == 13 ) {
+        event.preventDefault();
+        $( "#password" ).focus();
+      }
+      console.log("Handler for .keydown() called ");
+      console.log("event: "+event.which);
+    });
+
+    $( "#matricola" ).change(function(){
+        this.value = this.value.toLowerCase();
+        //DEBUG alert(this.value);
+    });
+
+
+    $( "#password" ).keydown(function( event ) {
+      if ( event.which == 13 ) {
+        event.preventDefault();
+        $("#btn_login").click();
+      }
+    });
+
+    $("#btn_logout").click(function(){
+      if (confirm("Effettuare il Log-out?")) {
+        localStorage.clear();
+        console.log("btn_logout: "+localStorage.getItem("login"));
+        window.location.href = 'index.html';
+      }
+    });
+
+    $('#btn_indietro').click(function() {
+      window.location.href = 'home.html';
+    });
+
+    function infoSquad(){
+      var last_params = window.location.search.substr(1);
+      var pos = last_params.indexOf("&");
+      if (pos>0)
+        var res = last_params.substring(0, pos);
+      else
+        var res = last_params;
+      var items = res.split("=");
+      var i = items[1];
+      console.log("parametro - id=[" + i + "]");
+      var lista_squadre = JSON.parse( localStorage.getItem("lista_squadre") );
+      var html = "<div class='alert alert-squadra' role='alert'>" + 
+                 "<font size='6'><B>" + lista_squadre[i].squadra + "<br>" + lista_squadre[i].desc_squadra + "</B></font><br>" + 
+                 "</div>";
+      $("#dati_squadra").html(html);
+      $("#indice_squadra").val(i);
+      $("#id_squadra").val(lista_squadre[i].id_squadra);
+      $("#matricola").val(localStorage.getItem("matricola"));
+      if (lista_squadre[i].num_calc>0){
+        $('#btn_cancella_squadra').prop("disabled", true);
+      }
+      else{
+        $('#btn_cancella_squadra').prop("disabled", false);
+      }
+    }
+    infoSquad();
+
+  });  
+</script>
+
+</head>
+<body onload="onLoad()">
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top gradienti">
+      <div class="container">
+        <div class="navbar-header">
+          <!-- BUTTON FOR TOGGLE LEFT MENU -->
+            <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+            </button>
+          <!-- solo per la pagina index.html NON ESISTE IL MENU ed il logo ha un margine di 40 pixel -->
+          <div class="navbar-header" style="line-height: 56px;" id="testata" >
+            <a id="btn_backward" type="button" class='.navbar-toggle pull-left' style="color: #FFF;" >
+               &nbsp;&nbsp;&nbsp;<span class="  glyphicon glyphicon-step-backward" aria-hidden="true" style="color: #FFF;" ></span>
+            </a>
+            <b id='logo_big' >Soccer Trainer</b>
+            <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
+               <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
+            </a>
+            <a id="btn_logout" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
+               <span class="  glyphicon glyphicon-log-out" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- <div class="container-fluid" style="max-width: 540px;" id="fluido" > -->
+    <div class="container-fluid" id="fluido" >
+      <div class="row">
+
+
+      <!-- sidebar LEFT MENU -->      <!-- sidebar -->
+      <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
+        <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
+          <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+            <li><a href="squadre.html"> <i class="fa fa-eye"></i> SQUADRE</a></li>
+            <li><a href="calciatori.html"> <i class="fa fa-calendar"></i> CALCIATORI</a></li>
+          </ul>
+          <ul id="footer_menu" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+              <li><p>FUNZIONI</p></li>
+              <li><a href="impostazioni.html"> <i class="fa fa-info-circle"></i> Info</a></li>
+              <li><a id="btn_logout"> <i class="fa fa-sign-out"></i> Logout</a></li>
+          </ul>
+        </div> <!-- chiude prova -->  
+      </div>
+
+
+
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
+          <div id='dati_squadra' ></div>
+          <div class='alert alert-identificativi' role='alert'>
+            <input type='hidden' name='id_squadra' id='id_squadra' >
+            <input type='hidden' name='indice_squadra' id='indice_squadra' >
+            <button id='btn_nuova_scheda' class='btn btn-lg btn-success' >
+              <span class='glyphicon glyphicon-plus' aria-hidden='true' ></span> 
+            </button>
+            <button id='btn_storico_schede' class='btn btn-lg btn-info' >
+              <span class='glyphicon glyphicon-list' aria-hidden='true' ></span> 
+            </button>
+            <button id='btn_cancella_squadra' class='btn btn-lg btn-danger' >
+              <span class='glyphicon glyphicon-minus' aria-hidden='true' ></span> 
+            </button>
+          </div>
+          <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
+        </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+      </div> <!-- close div row --> 
+    </div> <!-- close div container-fluid -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script>    
+
+    $(document).ready(function() {
+      
+      $('[data-toggle=offcanvas]').click(function() {
+        if ($( ".sidebar-offcanvas-right" ).hasClass( "active" )){
+          $('.sidebar-offcanvas-right').toggleClass('active', 1000);
+        }
+        $('.sidebar-offcanvas').toggleClass('active', 1000);
+      });
+
+      $('[data-toggle=offcanvas-right]').click(function() {
+        if ($( ".sidebar-offcanvas" ).hasClass( "active" )){
+          $('.sidebar-offcanvas').toggleClass('active', 1000);
+        }
+        $('.sidebar-offcanvas-right').toggleClass('active', 1000);
+      });
+
+    });
+    debugLocalStorage();
+    </script>
+    </body>
+</html>
