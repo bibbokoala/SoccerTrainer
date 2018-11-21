@@ -121,8 +121,8 @@ function delPlayerCard(id, id_calciatore, id_card){
       }
     });
 
-    $('#btn_backward').click(function() {
-      window.location = "index.html";
+    $("#btn_backward").click(function(){
+      window.location = "calciatore.html?id=" + $("#id").val();
     });
 
     $( "#matricola" ).keydown(function( event ) {
@@ -229,6 +229,7 @@ function delPlayerCard(id, id_calciatore, id_card){
                  "peso <b>" + lista_calciatori[i].peso_kg + "</b> kg " + 
                  "</div>";
       $("#dati_calciatore").html(html);
+      $("#id").val(i);
       getPlayersCards(i, lista_calciatori[i].id_calciatore);
     }
     infoPlayer();
@@ -289,6 +290,7 @@ function delPlayerCard(id, id_calciatore, id_card){
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
           <div id='dati_calciatore'></div><br>
           <div id='lista_schede'></div><br>
+          <input type='hidden' name='id' id='id' >
           <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 

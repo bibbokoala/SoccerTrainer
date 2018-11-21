@@ -150,8 +150,8 @@ $.fn.serializeObject = function()
       }
     });
 
-    $('#btn_backward').click(function() {
-      window.location = "index.html";
+    $("#btn_backward").click(function(){
+      window.location = "calciatore.html?id=" + $("#id").val();
     });
 
     $( "#matricola" ).keydown(function( event ) {

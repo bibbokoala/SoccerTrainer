@@ -185,29 +185,13 @@ $.fn.serializeObject = function()
 
     function getPlayers(lista_calciatori){
       //DEBUG console.log("DEBUG lista_calciatori: " + JSON.stringify(lista_calciatori) );
-      var html = "<h3>LISTA CALCIATORI</h3>";
+      var html = "<h4>LISTA CALCIATORI</h4>";
       for (i=0; i<lista_calciatori.length; i++) { 
         html += "<div class='calciatore'>";
-        html += "<a href='./calciatore.html?id=" + i + "' class='btn btn-lg btn-primary' style='width: 150px;'>";
+        html += "<a href='./calciatore.html?id=" + i + "' class='btn btn-lg btn-primary' style='width: 300px;'>";
         html += "<font style='font-size:13px;'>"+lista_calciatori[i].cognome + " " + lista_calciatori[i].nome + " </font>";
         html += "</a>";
         html += "&nbsp;";
-        html += "<a href='./nuova_scheda.html?id=" + i + "' class='btn btn-lg btn-success' >";
-        html += "<span class='glyphicon glyphicon-plus' aria-hidden='true' ></span> ";
-        html += "</a>";
-        html += "&nbsp;";
-        html += "<a href='./storico_schede.html?id=" + i + "' class='btn btn-lg btn-info' >";
-        html += "<span class='glyphicon glyphicon-list' aria-hidden='true' ></span> ";
-        html += "</a>";
-        html += "&nbsp;";
-        var disabled = '';
-        if (lista_calciatori[i].num_calc>0){
-          disabled = ' DISABLED ';
-        }
-        html += "<a href='javascript:void(0);' onclick='delPlayer("+lista_calciatori[i].id_calciatore+");' " +
-                " class='btn btn-lg btn-danger' " + disabled + " >";
-        html += "<span class='glyphicon glyphicon-minus' aria-hidden='true' ></span> ";
-        html += "</a>";
         html += "</div>";
       }
       return(html);
@@ -271,23 +255,27 @@ $.fn.serializeObject = function()
       <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
         <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
           <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
-            <li><a href="squadre.html"> <i class="fa fa-eye"></i> SQUADRE</a></li>
-            <li><a href="calciatori.html"> <i class="fa fa-calendar"></i> CALCIATORI</a></li>
+            <li><a href="squadre.html"> <span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span>  SQUADRE</a></li>
+            <li><a href="calciatori.html"> <span class="glyphicon glyphicon-user" aria-hidden="true" ></span>  CALCIATORI</a></li>
           </ul>
           <ul id="footer_menu" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
-              <li><p>FUNZIONI</p></li>
-              <li><a href="impostazioni.html"> <i class="fa fa-info-circle"></i> Info</a></li>
-              <li><a id="btn_logout"> <i class="fa fa-sign-out"></i> Logout</a></li>
+              <li><p><B>FUNZIONI</B></p></li>
+              <li><a href="impostazioni.html"> <span class="glyphicon glyphicon-info-sign" aria-hidden="true" ></span> INFORMAZIONI</a></li>
+              <li><a id="btn_logout"> <span class="glyphicon glyphicon-log-out" aria-hidden="true" ></span> LOGOUT</a></li>
           </ul>
         </div> <!-- chiude prova -->  
       </div>
 
 
 
-        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="nuovo_calciatore" >
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
             <button class='btn btn-lg btn-success' data-toggle='modal' data-target='#addPlayer' >
               <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
-              nuovo calciatore
+              CALCIATORE
+            </button>
+            <button class='btn btn-lg btn-warning' data-toggle='modal' data-target='#addSquad' >
+              <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
+              SQUADRA
             </button>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
