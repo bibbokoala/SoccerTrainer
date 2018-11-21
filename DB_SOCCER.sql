@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS `st_squadre` (
   PRIMARY KEY (`id_squadra`),
   UNIQUE KEY `squadra` (`squadra`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-insert into st_gruppi(id_squadra, squadra, desc_squadra) values(null, 'SS LAZIO ELITE 2007', 'Squadra elite della SS LAZIO anno 2007.','simone'); 
+insert into st_squadre(id_squadra, squadra, desc_squadra, creatore) 
+values(1, 'SS LAZIO ELITE 2007', 'Squadra elite della SS LAZIO anno 2007.','simone');
 
 DROP TABLE IF EXISTS `st_utenti`;
 CREATE TABLE IF NOT EXISTS `st_utenti` (

@@ -192,22 +192,6 @@ $.fn.serializeObject = function()
           id_profilo="1";
       var random = Math.random();
 
-      //LISTA CALCIATORI
-      var xmlhttp = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
-      console.log("url:"+url);
-      xmlhttp.onreadystatechange=function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            var lista = xmlhttp.responseText;
-            localStorage.setItem("lista_calciatori", lista);
-            var lista_calciatori = JSON.parse( lista );
-            var html = getPlayers(lista_calciatori);
-            $("#lista_calciatori").html(html);
-        }
-      }
-      xmlhttp.open("GET", url, true);
-      xmlhttp.send();
-
       //LISTA SQUADRE
       var xmlhttpSquad = new XMLHttpRequest();
       var url="http://linkin.it/Projects/SoccerTrainer/STGetSquads.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
@@ -223,6 +207,22 @@ $.fn.serializeObject = function()
       }
       xmlhttpSquad.open("GET", url, true);
       xmlhttpSquad.send();
+
+      //LISTA CALCIATORI
+      var xmlhttp = new XMLHttpRequest();
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
+      console.log("url:"+url);
+      xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var lista = xmlhttp.responseText;
+            localStorage.setItem("lista_calciatori", lista);
+            var lista_calciatori = JSON.parse( lista );
+            var html = getPlayers(lista_calciatori);
+            $("#lista_calciatori").html(html);
+        }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
 
     }
 
@@ -343,19 +343,19 @@ $.fn.serializeObject = function()
 
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
-            <button class='btn btn-lg btn-primary' data-toggle='modal' data-target='#addPlayer' >
-              <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
-              CALCIATORE
-            </button>
             <button class='btn btn-lg btn-danger' data-toggle='modal' data-target='#addSquad' >
               <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
               SQUADRA
             </button>
+            <button class='btn btn-lg btn-primary' data-toggle='modal' data-target='#addPlayer' >
+              <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
+              CALCIATORE
+            </button>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
       <div class="row">
-        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori" ></div>
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_squadre" ></div>
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori" ></div>
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
