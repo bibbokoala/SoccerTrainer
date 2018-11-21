@@ -130,8 +130,10 @@ $.fn.serializeObject = function()
       }
     });
 
-    if (localStorage.getItem("matricola")!=null)
+    if (localStorage.getItem("matricola")!=null){
       $( "#matricola" ).val( localStorage.getItem("matricola") );
+      $( "#matricola_squad" ).val( localStorage.getItem("matricola") );
+    }
 
     $("#btn_add_player").click(function(){
       if (confirm("Vuoi aggiungere il nuovo calciatore?")) {
@@ -285,6 +287,10 @@ $.fn.serializeObject = function()
 </script>
 <style>
   .calciatore{
+    background: #FFF;
+    margin-bottom: 5px;
+  }
+  .squadra{
     background: #FFF;
     margin-bottom: 5px;
   }
@@ -448,7 +454,7 @@ $.fn.serializeObject = function()
               <label for="cognome">Descrizione Squadra:</label>
               <input class='form-control' type='text' id='desc_squadra' name='desc_squadra' value='' onchange="javascript:{this.value = this.value.toUpperCase(); }" />  
             </div>
-            <input type='hidden' id='matricola' name='matricola' value='' />
+            <input type='hidden' id='matricola_squad' name='matricola_squad' value='' />
           </form>
         </div>
         <div class="modal-footer">

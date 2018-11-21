@@ -73,23 +73,6 @@
     console.log("*****  END debugLocalStorage  *****");
   }
 
-  function delPlayer(id_player){
-    if (confirm("Vuoi veramente eliminare il calciatore?")) {
-      var url = "http://linkin.it/Projects/SoccerTrainer/STDelPlayer.php";
-      console.log("url: " + url + "- id_player: " + id_player );
-      $.ajax({
-        url: url,
-        cache : false,
-        dataType : "json",
-        data : { id_calciatore: id_player },
-        success: function(s){
-          var result_insert = s;
-          console.log(JSON.stringify(result_insert));
-          window.location = "home.html";
-        } 
-      });
-    }
-  }
 
 </script>
 <script>
@@ -249,7 +232,7 @@ $.fn.serializeObject = function()
   });  
 </script>
 <style>
-  .calciatore{
+  .squadre{
     background: #FFF;
     margin-bottom: 5px;
   }
@@ -357,7 +340,7 @@ $.fn.serializeObject = function()
               <label for="cognome">Descrizione Squadra:</label>
               <input class='form-control' type='text' id='desc_squadra' name='desc_squadra' value='' onchange="javascript:{this.value = this.value.toUpperCase(); }" />  
             </div>
-            <input type='hidden' id='matricola' name='matricola' value='' />
+            <input type='hidden' id='matricola_squad' name='matricola_squad' value='' />
           </form>
         </div>
         <div class="modal-footer">
