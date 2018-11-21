@@ -262,6 +262,7 @@
             var lista_calciatori_squadra = JSON.parse( lista );
             var html = getSquadPlayers(lista_calciatori_squadra);
             $("#lista_calciatori_squadra").html(html);
+            getPlayersOptions();
         }
       }
       xmlhttpSquad.open("GET", url, true);
@@ -318,6 +319,30 @@
       }
       return(html);
     }
+
+      function getPlayersOptions(){
+        var lista = localStorage.getItem("lista_calciatori");
+        var lista_calciatori = JSON.parse( lista );
+        var lista_sq = localStorage.getItem("lista_calciatori_squadra");
+        var lista_calciatori_squadra = JSON.parse( lista_sq );
+        var html ="";
+        for(var i=0; i<lista_calciatori.length;i++){
+          var found=0;
+          for(var n=0; n<lista_calciatori_squadra.length;n++){
+            console.log("id_calciatore: " + lista_calciatori[i].id_calciatore + " - id_calc_sq: " + lista_calciatori_squadra[n].id_calciatore );
+            if (lista_calciatori[i].id_calciatore == lista_calciatori_squadra[n].id_calciatore){
+               found=1;
+               break;
+            }
+          }
+          if (found==0){
+            //solo se non lo trovo nella lista dei calciatori_squadra lo posso proporre x l'associazione.
+            html += "<option value='"+lista_calciatori[i].id_calciatore+"'>"+
+                     lista_calciatori[i].nome+ " " +lista_calciatori[i].cognome+ "</option>";
+          }
+        }
+        $('#id_calciatore').html(html);
+      }
 
   });  
 </script>
@@ -417,24 +442,6 @@
         }
         $('.sidebar-offcanvas-right').toggleClass('active', 1000);
       });
-
-      function getPlayersOprions(){
-        var lista = localStorage.getItem("lista_calciatori");
-        var lista_calciatori = JSON.parse( lista );
-        var lista = localStorage.getItem("lista_calciatori_squadra");
-        var lista_calciatori_squadra = JSON.parse( lista );
-        var html ="";
-        for(var i=0; i<lista_calciatori.length;i++){
-          for(var n=0; n<lista_calciatori_squadra.length;n++){
-            if (lista_calciatori[i].id_calciatore != lista_calciatori_squadra[n].id_calciatore){
-              html += "<option value='"+lista_calciatori[i].id_calciatore+"'>"+
-                       lista_calciatori[i].nome+ " " +lista_calciatori[i].cognome+ "</option>"
-            }
-          }
-        }
-        $('#id_calciatore').html(html);
-      }
-      getPlayersOprions();
 
     });
     debugLocalStorage();
