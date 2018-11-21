@@ -9,7 +9,7 @@
     <name>SoccerTrainer</name>
 
     <description>
-        SoccerTrainer - App per la gestione degli allenamenti e le squadre di calcio.
+        SoccerTrainer - App per la gestione delle schede di valutazione calciatori e le squadre di calcio.
     </description>
 
     <author href="http://www.egluesolutions.com/" email="simone.tonni@egluesolutions.com">
@@ -104,9 +104,10 @@
     <platform name="android">
         <allow-intent href="market:*" />
     </platform>
-    <platform name="ios">
+    <!-- <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+    -->
 
 </widget>
