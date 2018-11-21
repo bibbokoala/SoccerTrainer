@@ -305,7 +305,7 @@
           btn_class="info";
         }
         var indice_calciatore = foundPlayerIndex(lista_calciatori_squadra, i);
-        var indice_squadra = foundPlayerIndex(lista_calciatori_squadra, i);
+        var indice_squadra = foundSquadIndex(lista_calciatori_squadra, i);
         html += "<div class='squadra'>";
         html += "<a href='./calciatore.html?id=" + indice_calciatore + "' class='btn btn-lg btn-"+btn_class+"' style='width:250px;'>";
         html += "<font style='font-size:13px;'>"+lista_calciatori_squadra[i].nome +" "+ lista_calciatori_squadra[i].cognome + " </font>";
