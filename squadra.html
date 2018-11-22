@@ -205,7 +205,7 @@
                  "</div>";
       $("#dati_squadra").html(html);
       //servono x il modale changeSquad
-      $("id_squadra_change").val(lista_squadre[i].id_squadra);
+      $("#id_squadra_change").val(lista_squadre[i].id_squadra);
       $("#nome_squadra").val(lista_squadre[i].squadra);
       $("#desc_squadra").val(lista_squadre[i].desc_squadra);
       //serve per risalire alla squadra dalla lista_squadre
@@ -225,7 +225,7 @@
     infoSquad();
 
     $("#btn_change_squad").click(function(){
-      if (confirm("Vuoi aggiungere il calciatore alla squadra?")) {
+      if (confirm("Vuoi modificare la squadra?")) {
         var formData = $("#form_change_squad").serialize();
         console.log(formData);
         var url = "http://linkin.it/Projects/SoccerTrainer/STUpdSquad.php";
