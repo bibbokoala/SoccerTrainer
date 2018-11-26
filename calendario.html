@@ -265,8 +265,7 @@
     $("#btn_upd_event").click(function(){
       console.log("btn_upd_event");
       var booking_id = $("#upd_id_evento").val();
-      //
-      alert("booking_id: " + booking_id);
+      // alert("booking_id: " + booking_id);
       if ( (booking_id==null)||
            (booking_id.localeCompare("")==0) )
       {
@@ -291,7 +290,7 @@
         success: function(s){
           var result_upd = s;
           console.log(JSON.stringify(result_upd));
-          alert(JSON.stringify(result_upd));
+          //DEBUG alert(JSON.stringify(result_upd));
           setTimeout(function(){ window.location = "calendario.html"; }, 1500);
         }
       });
