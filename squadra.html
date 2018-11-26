@@ -221,6 +221,7 @@
       else{
         $('#btn_cancella_squadra').prop("disabled", false);
       }
+      $("#creatore").html("<br><i>creatore: " + lista_squadre[i].creatore + "</i>");
     }
     infoSquad();
 
@@ -422,12 +423,13 @@
         <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
           <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
             <li><a href="squadre.html"> <span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span>  SQUADRE</a></li>
+            <li><a href="calendario.html"> <span class="glyphicon glyphicon-calendar" aria-hidden="true" ></span>  CALENDARIO</a></li>
             <li><a href="calciatori.html"> <span class="glyphicon glyphicon-user" aria-hidden="true" ></span>  CALCIATORI</a></li>
           </ul>
           <ul id="footer_menu" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
-              <li><p>FUNZIONI</p></li>
-              <li><a href="impostazioni.html"> <i class="fa fa-info-circle"></i> Info</a></li>
-              <li><a id="btn_logout"> <i class="fa fa-sign-out"></i> Logout</a></li>
+              <li><p><B>FUNZIONI</B></p></li>
+              <li><a href="impostazioni.html"> <span class="glyphicon glyphicon-info-sign" aria-hidden="true" ></span> INFORMAZIONI</a></li>
+              <li><a id="btn_logout"> <span class="glyphicon glyphicon-log-out" aria-hidden="true" ></span> LOGOUT</a></li>
           </ul>
         </div> <!-- chiude prova -->  
       </div>
@@ -456,6 +458,7 @@
             <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori_squadra" ></div>
           </div> <!-- close div row --> 
           <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
+          <br><span id='creatore' style='font-size:12px;'></span>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->

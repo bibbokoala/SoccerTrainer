@@ -131,3 +131,19 @@ CREATE TABLE IF NOT EXISTS `st_calciatori_squadra` (
   PRIMARY KEY (`id_associazione`),
   UNIQUE KEY `squadra_calciatore` (`id_squadra`,`id_calciatore`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+
+DROP TABLE IF EXISTS `st_eventi`;
+CREATE TABLE IF NOT EXISTS `st_eventi` (
+  `id_evento` bigint(20) NOT NULL AUTO_INCREMENT,
+  `nome_evento` varchar(100) NOT NULL,
+  `desc_evento` TEXT NULL,
+  `tipo_evento` ENUM('ALLENAMENTO', 'PARTITA', 'RIUNIONE') DEFAULT 'ALLENAMENTO' NOT NULL,
+  `data_inizio` datetime NOT NULL,
+  `data_fine` datetime NOT NULL,
+  `id_squadra` int(10) NULL,
+  `creatore` varchar(100) NULL,
+  PRIMARY KEY (`id_evento`),
+  UNIQUE KEY `id_evento` (`id_evento`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+
+

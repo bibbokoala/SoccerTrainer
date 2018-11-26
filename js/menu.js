@@ -91,14 +91,17 @@
 
     //var hm = window.screen.availHeight - 500;
     //var hm = $(window).height() - 370 ;
-    var hm = window.innerHeight -320;
+    var hm = window.innerHeight -375;
     console.log("footer_menu - hm: " +hm);
     var padding_top = hm + "px";
     $( "#footer_menu" ).css( "padding-top", padding_top );
-    var hmc = window.innerHeight -555;
-    console.log("footer_menu - hmc: " +hmc);
+    
+    var hmc = window.innerHeight -485;
+    console.log("footer_menu_cal - hmc: " +hmc);
+    
     var padding_top_cal = hmc + "px";
     $( "#footer_menu_cal" ).css( "padding-top", padding_top_cal );
+
     var hmr = window.innerHeight -430;
     console.log("footer_menu_right - hmc: " +hmc);
     var padding_top_right = hmr + "px";
