@@ -190,14 +190,14 @@ function delPlayerCard(id, id_calciatore, id_card){
                 var html = "<div class='alert alert-calciatore' role='alert'>";
                 //DEBUG html += "<pre>" + JSON.stringify(lista) + "</pre>";
                 //renderizzare la scheda...
-                html += "<h3>LISTA SCHEDE</h3>";
+                html += "<b>LISTA SCHEDE</b><br><br>";
                 for (i=0; i<lista.length; i++) { 
                   html += "<div class='scheda' id ='"+lista[i].id_scheda+"' >";
-                  html += "<a href='./visualizza_scheda.html?id=" +lista[i].id_scheda+ "' class='btn btn-lg btn-primary' style='width: 150px;'>";
+                  html += "<a href='./visualizza_scheda.html?id=" +lista[i].id_scheda+ "' class='btn  btn-primary' style='width: 150px;'>";
                   html += "<font style='font-size:13px;'>"+ lista[i].data_gara + " </font>";
                   html += "</a>";
                   html += "&nbsp;";
-                  html += "<a href='javascript:void(0);' onclick='delPlayerCard("+idListaPlayer+","+lista[i].id_calciatore+","+lista[i].id_scheda+");' class='btn btn-lg btn-danger' >";
+                  html += "<a href='javascript:void(0);' onclick='delPlayerCard("+idListaPlayer+","+lista[i].id_calciatore+","+lista[i].id_scheda+");' class='btn  btn-danger' >";
                   html += "<span class='glyphicon glyphicon-minus' aria-hidden='true' ></span> ";
                   html += "</a>";
                   html += "</div>";        
@@ -288,10 +288,10 @@ function delPlayerCard(id, id_calciatore, id_card){
 
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
-          <div id='dati_calciatore'></div><br>
-          <div id='lista_schede'></div><br>
+          <div id='dati_calciatore'></div>
+          <div id='lista_schede'></div>
           <input type='hidden' name='id' id='id' >
-          <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
+          <button id='btn_indietro' class='btn  btn-warning' >INDIETRO</button> 
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->
