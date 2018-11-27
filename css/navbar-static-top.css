@@ -50,10 +50,10 @@ body {
 		left: -100%;
 	}
 	/*.sidebar-offcanvas ul {width:90%; background-color: #323232;} */
-	.sidebar-offcanvas ul {width:90%; background-color: #DDDDDD;}
+	.sidebar-offcanvas ul {width:90%; background-color: #EEEEEE;}
 	.sidebar-offcanvas ul li{margin:0}
-	.sidebar-offcanvas ul li p{padding: 15px 20px;margin:0;border-bottom: 1px solid #939393} /* color:#fff; font-size: 15px; solid #d6474d */
-	.sidebar-offcanvas ul li a{color:#286090;padding: 15px 20px;margin:0;border-bottom: 1px solid #939393} /* font-size: 15px; solid #d6474d */
+	.sidebar-offcanvas ul li p{padding: 10px 20px;margin:0;border-bottom: 1px solid #939393} /* color:#fff; font-size: 15px; solid #d6474d */
+	.sidebar-offcanvas ul li a{color:#286090;padding: 10px 20px;margin:0;border-bottom: 1px solid #939393} /* font-size: 15px; solid #d6474d */
 	.sidebar-offcanvas ul li a:hover{background:#CCCCCC;border:none; border-radius:0} /* background:#54303a; */
 	.nav{margin-top: 0px;}
 	.nav > li > a:hover, 

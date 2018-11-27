@@ -91,6 +91,8 @@
 
     //var hm = window.screen.availHeight - 500;
     //var hm = $(window).height() - 370 ;
+
+    /****** DIMENSIONAMENTO AUTOMATICO DELLE FUNZIONALITA DI MENU LEFT
     var hm = window.innerHeight -375;
     console.log("footer_menu - hm: " +hm);
     var padding_top = hm + "px";
@@ -106,5 +108,6 @@
     console.log("footer_menu_right - hmc: " +hmc);
     var padding_top_right = hmr + "px";
     $( "#footer_menu_right" ).css( "padding-top", padding_top_right );
+    *********/
 
   });  

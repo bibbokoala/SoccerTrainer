@@ -6,13 +6,18 @@
      <link href='http://fonts.googleapis.com/css?family=Exo+2:400,600,300,900' rel='stylesheet' type='text/css'>
      <link href="css/navbar-static-top.css" rel="stylesheet">
      <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+     <link href="css/jquery.datetimepicker.css" rel="stylesheet" type="text/css"/>
+     <link href="css/bootstrap-datepicker3.css" rel="stylesheet">
    <!-- END CSS FOR TOGGLE LEFT MENU -->
    <link href="css/custom.css" rel="stylesheet">
-<script src="phonegap.js"></script>
+   <script src="phonegap.js"></script>
    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
    <script src="js/jquery.min.js"></script>
+   <!-- DOCUMENTAZIONE DATEPICKER: https://bootstrap-datepicker.readthedocs.io/en/stable/index.html -->
+  <script src="js/jquery.datetimepicker.full.min.js" type="text/javascript"></script>
+  <script src="js/moment_with_locales.js"></script>
    <script src="js/menu.js"></script>
- <script type="text/javascript" charset="utf-8">
+   <script type="text/javascript" charset="utf-8">
     // Call onDeviceReady when Cordova is loaded.
     // At this point, the document has loaded but cordova-1.8.1.js has not.
     // When Cordova is loaded and talking with the native device,
@@ -70,6 +75,7 @@
     console.log("*****  END debugLocalStorage  *****");
   }
 
+
 </script>
 <script>
 //var db = openDatabase('GeoNavDB', '1.0', 'GeoNav App DB', 3 * 1024 * 1024);
@@ -90,27 +96,7 @@ $.fn.serializeObject = function()
     return o;
 };
 
-function delPlayerCard(id, id_calciatore, id_card){
-  if (confirm("Vuoi veramente eliminare la scheda?")) {
-    var url = "http://linkin.it/Projects/SoccerTrainer/STDelPlayerCard.php";
-    console.log("url: " + url + "- id_calciatore: " + id_calciatore + "- id_card: " + id_card );
-    //DEBUG alert("url: " + url + "- id_calciatore: " + id_calciatore + "- id_card: " + id_card );
-    $.ajax({
-      url: url,
-      cache : false,
-      dataType : "json",
-      data : { id_card: id_card ,  id_calciatore: id_calciatore },
-      success: function(s){
-        var result_insert = s;
-        console.log(JSON.stringify(result_insert));
-        window.location = "storico_schede.html?id=" + id ;
-      } 
-    });
-  }
-}
-
   $(document).ready(function() {
-
     $("#logo_big").click(function(){
       window.location = "index.html";
     });
@@ -118,32 +104,6 @@ function delPlayerCard(id, id_calciatore, id_card){
     $('#btn_exit').click(function() {
       if (confirm("Chiudere l'applicazione?")) {
         navigator.app.exitApp();
-      }
-    });
-
-    $("#btn_backward").click(function(){
-      window.location = "calciatore.html?id=" + $("#id").val();
-    });
-
-    $( "#matricola" ).keydown(function( event ) {
-      if ( event.which == 13 ) {
-        event.preventDefault();
-        $( "#password" ).focus();
-      }
-      console.log("Handler for .keydown() called ");
-      console.log("event: "+event.which);
-    });
-
-    $( "#matricola" ).change(function(){
-        this.value = this.value.toLowerCase();
-        //DEBUG alert(this.value);
-    });
-
-
-    $( "#password" ).keydown(function( event ) {
-      if ( event.which == 13 ) {
-        event.preventDefault();
-        $("#btn_login").click();
       }
     });
 
@@ -155,106 +115,136 @@ function delPlayerCard(id, id_calciatore, id_card){
       }
     });
 
-    $('#btn_indietro').click(function() {
-      window.location.href = 'home.html';
+
+    if (localStorage.getItem("matricola")!=null){
+      $( "#matricola" ).val( localStorage.getItem("matricola") );
+      $( "#matricola_squad" ).val( localStorage.getItem("matricola") );
+    }
+
+    $("#btn_add_event").click(function(){
+      if (confirm("Vuoi aggiungere un nuovo allenamento?")) {
+        var formData = $("#form_add_event").serialize();
+        console.log(formData);
+        var url = "http://linkin.it/Projects/SoccerTrainer/STInsEvent.php";
+        $.ajax({
+          url: url,
+          type: 'POST', // Send post data
+          data: formData,
+          async: false,
+          success: function(s){
+            var result_insert = s;
+            console.log(JSON.stringify(result_insert));
+            $('#new_event').modal('hide');
+            window.location = "allenamenti.html";
+          } 
+        });
+      }
+      else{
+        //se non si vuole salvare chiudo il modale!
+        $('#new_event').modal('hide');
+      }
     });
 
-    Object.size = function(obj) {
-        var size = 0, key;
-        for (key in obj) {
-            if (obj.hasOwnProperty(key)) size++;
-        }
-        return size;
-    };
-
-    function getPlayersCards(idListaPlayer, playerId){
-      //DEBUG alert("getPlayersCards");
+    function call(){
       var matricola = localStorage.getItem("matricola");
       if (matricola==null)
           matricola="simone";
+      var id_profilo = localStorage.getItem("id_profilo");
+      if (id_profilo==null)
+          id_profilo="1";
       var random = Math.random();
-      var xmlhttp = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayersCard.php?matricola="+matricola+"&id_player="+playerId+"&random="+random;
+
+      //LISTA ALLENAMENTI
+      var xmlhttpSquad = new XMLHttpRequest();
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetEvents.php?matricola="+matricola+"&tipo_evento=ALLENAMENTO&id_profilo="+id_profilo+"&random="+random;
       console.log("url:"+url);
-      //DEBUG alert("url:"+url);
-      xmlhttp.onreadystatechange=function() {
-          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-              var result = xmlhttp.responseText;
-              localStorage.setItem("lista_schede", result);
-              var lista = JSON.parse(result);
-              var size = Object.size(lista);
-              //DEBUG alert("lista: " + lista);
-              console.log("lista: " + lista);
-              if (size>0){
-                //NON LO SO SE SERVE localStorage.setItem("lista_schede", lista);
-                var html = "<div class='alert alert-calciatore' role='alert'>";
-                //DEBUG html += "<pre>" + JSON.stringify(lista) + "</pre>";
-                //renderizzare la scheda...
-                html += "<b>LISTA SCHEDE</b><br><br>";
-                for (i=0; i<lista.length; i++) { 
-                  html += "<div class='scheda' id ='"+lista[i].id_scheda+"' >";
-                  html += "<a href='./visualizza_scheda.html?id=" +lista[i].id_scheda+ "' class='btn  btn-primary' style='width: 150px;'>";
-                  html += "<font style='font-size:13px;'>"+ lista[i].data_gara + " </font>";
-                  html += "</a>";
-                  html += "&nbsp;";
-                  html += "<a href='javascript:void(0);' onclick='delPlayerCard("+idListaPlayer+","+lista[i].id_calciatore+","+lista[i].id_scheda+");' class='btn  btn-danger' >";
-                  html += "<span class='glyphicon glyphicon-minus' aria-hidden='true' ></span> ";
-                  html += "</a>";
-                  html += "</div>";        
-                  html += "&nbsp;";
-                }
-                html += "</div>";
-                $("#lista_schede").html(html);
-              }
-              else
-                $("#lista_schede").html("<div class='alert alert-calciatore' role='alert'>NON CI SONO SCHEDE</div>");
-          }
+      xmlhttpSquad.onreadystatechange=function() {
+        if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {
+            var lista = xmlhttpSquad.responseText;
+            localStorage.setItem("lista_eventi", lista);
+            var lista_eventi = JSON.parse( lista );
+            var html = getEvents(lista_eventi);
+            $("#lista_eventi").html(html);
+        }
       }
-      xmlhttp.open("GET", url, true);
-      xmlhttp.send();
+      xmlhttpSquad.open("GET", url, true);
+      xmlhttpSquad.send();
+
     }
 
-    function infoPlayer(){
-      var last_params = window.location.search.substr(1);
-      var items = last_params.split("=");
-      var i = items[1];
-      console.log("parametro - id=" + i );
-      var lista_calciatori = JSON.parse( localStorage.getItem("lista_calciatori") );
-      var html = "<div class='alert alert-calciatore' role='alert'>" + 
-                 "<font size='6'><B>" + lista_calciatori[i].nome + " " + lista_calciatori[i].cognome + "</B></font><br>" + 
-                 //"[id: " + lista_calciatori[i].id_calciatore + "]<br>" + 
-                 "nato il <b>" + lista_calciatori[i].data_nascita + "</b> a <b>" + lista_calciatori[i].luogo_nascita + "</b> " + 
-                 "nazionalit&agrave;: <b>" + lista_calciatori[i].nazionalita + "</b> " + 
-                 "altezza <b>" + lista_calciatori[i].altezza_cm + "</b> cm " + 
-                 "peso <b>" + lista_calciatori[i].peso_kg + "</b> kg " + 
-                 "</div>";
-      $("#dati_calciatore").html(html);
-      $("#id").val(i);
-      getPlayersCards(i, lista_calciatori[i].id_calciatore);
+    call();
+
+    function getEvents(lista_eventi){
+      //DEBUG 
+      console.log("DEBUG lista_eventi: " + JSON.stringify(lista_eventi) );
+      var matricola = $("#matricola_squad").val();
+      var html = "<h4>ALLENAMENTI</h4>";
+      for (i=0; i<lista_eventi.length; i++) { 
+        var btn_class = "danger";
+        if (lista_eventi[i].creatore!=matricola){
+          btn_class="success";
+        }
+        html += "<div class='allenamento'>";
+        html += "<a href='./allenamento.html?id=" + i + "' class='btn  btn-"+btn_class+"' style='width: 300px;'>";
+        html += "<font style='font-size:13px;'>"+lista_eventi[i].start + " - "+lista_eventi[i].title+"  </font>";
+        html += "</a>";
+        html += "&nbsp;";
+        html += "</div>";
+      }
+      return(html);
     }
-    infoPlayer();
+
+    $('#start_date').datetimepicker({
+       format:'Y-m-d H:i',
+       minDate: 0,
+       minTime: 0,
+       step: 15,
+       minTime:'08:00',
+       maxTime:'18:00',
+       onChangeDateTime:function(dp,$input){
+          console.log("start_date onchange value: " + $input.val());
+          $('#start_date').val($input.val());
+       }
+    });
+    $('#end_date').datetimepicker({
+       format:'Y-m-d H:i',
+       minDate: 0,
+       minTime: 0,
+       step: 15,
+       minTime:'08:00',
+       maxTime:'22:00',
+       onChangeDateTime:function(dp,$input){
+          console.log("end_date onchange value: " + $input.val());
+          $('#end_date').val($input.val());
+       }
+    });
+
+    $('.modal').on('shown.bs.modal', function() {
+      $(this).find('[autofocus]').focus();
+    });
 
   });  
 </script>
-
+<style>
+  .allenamento{
+    background: #FFF;
+    margin-bottom: 5px;
+  }
+</style>
 </head>
 <body onload="onLoad()">
     <!-- Static navbar -->
     <nav class="navbar navbar-default navbar-fixed-top gradienti">
       <div class="container">
-        <div class="navbar-header">          
-          <div id="bottone_menu" >
-            <!-- BUTTON FOR TOGGLE LEFT MENU -->
+        <div class="navbar-header">
+          <!-- BUTTON FOR TOGGLE LEFT MENU -->
             <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
              <span class="icon-bar" style="background-color: #FFF;"></span>
              <span class="icon-bar" style="background-color: #FFF;"></span>
              <span class="icon-bar" style="background-color: #FFF;"></span>
             </button>
-          </div>
+          <!-- solo per la pagina index.html NON ESISTE IL MENU ed il logo ha un margine di 40 pixel -->
           <div class="navbar-header" style="line-height: 56px;" id="testata" >
-            <a id="btn_backward" type="button" class='.navbar-toggle pull-left' style="color: #FFF;" >
-               &nbsp;&nbsp;&nbsp;<span class="  glyphicon glyphicon-step-backward" aria-hidden="true" style="color: #FFF;" ></span>
-            </a>
             <b id='logo_big' >Soccer Trainer</b>
             <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
                <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
@@ -268,7 +258,7 @@ function delPlayerCard(id, id_calciatore, id_card){
     </nav>
     <!-- <div class="container-fluid" style="max-width: 540px;" id="fluido" > -->
     <div class="container-fluid" id="fluido" >
-      <div class="row">      
+      <div class="row">
 
 
       <!-- sidebar LEFT MENU -->      <!-- sidebar -->
@@ -292,12 +282,16 @@ function delPlayerCard(id, id_calciatore, id_card){
       </div>
 
 
-        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
-          <div id='dati_calciatore'></div>
-          <div id='lista_schede'></div>
-          <input type='hidden' name='id' id='id' >
-          <button id='btn_indietro' class='btn  btn-warning' >INDIETRO</button> 
+
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
+            <button class='btn btn-success' data-toggle='modal' data-target='#new_event' >
+              <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
+              ALLENAMENTO 
+            </button>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+      </div> <!-- close div row --> 
+      <div class="row">
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_eventi" ></div>
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -320,8 +314,82 @@ function delPlayerCard(id, id_calciatore, id_card){
         $('.sidebar-offcanvas-right').toggleClass('active', 1000);
       });
 
-    });
-    debugLocalStorage();
+    }); 
+
+      debugLocalStorage();
     </script>
     </body>
+
+
+
+<!-- Modal new_event -->
+  <div class="modal fade" id="new_event" role="dialog" style="color:#000000;" >
+    <div class="modal-dialog">
+      <form class="form" id="form_new_event" name="form_new_event" >  
+      <input type="hidden" name='matricola' id='matricola' />
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title"><span class="glyphicon glyphicon-calendar"></span> Nuovo Allenamento</h4>
+        </div>
+        <div class="modal-body">
+        <table class='table_pren' width="100%" style="color:#000000;" >
+          <tr>
+            <td colspan='2'>
+              <label for='nome_evento' >Nome Allenamento <font color=red>*</font> </label>
+              <input type="text" required id="nome_evento" name="nome_evento" class="form-control" />
+            </td>
+          </tr>
+          <input type='hidden' id="tipo_evento" name="tipo_evento" value="ALLENAMENTO" >
+            <!--
+          <tr>
+            <td colspan='2'>
+              <label for='tipo_evento' >Tipo Allenamento <font color=red>*</font> </label>
+              <select required id="tipo_evento" name="tipo_evento" class="form-control" >
+                <option value="ALLENAMENTO">ALLENAMENTO</option>
+                <option value="PARTITA">PARTITA</option>
+                <option value="RIUNIONE">RIUNIONE</option>
+              </select>
+            </td>
+          </tr>
+             -->
+          <tr>
+            <td colspan='2'>
+              <label for='id_squadra' >Squadra </label>
+              <select id="id_squadra" name="id_squadra" class="form-control"></select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for='date_start' >Data Inizio <font color=red>*</font> </label>
+                <input type="text" class="form-control pull-right" id="start_date" name="start_date"/>
+            </td>
+            <td>
+              <label for='date_end' >Data Fine <font color=red>*</font> </label>
+                <input type="text" class="form-control pull-right" id="end_date" name="end_date"/>
+            </td>
+          </tr>
+            <td colspan='2'>
+              <label for='desc_evento' >Descrizione Allenamento </label>
+              <textarea type="text" rows="4" id="desc_evento" name="desc_evento" class="form-control" ></textarea>
+            </td>
+          </tr>
+          <tr>
+        </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">
+            <span class="glyphicon glyphicon-remove"></span> Annulla
+          </button>
+          <button type="button" class="btn btn-primary" id="btn_add_event" data-dismiss="modal">
+            <span class="glyphicon glyphicon-ok"></span> Inserisci
+          </button>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+<!-- END Modal -->
+
 </html>

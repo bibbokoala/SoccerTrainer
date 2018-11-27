@@ -102,32 +102,6 @@
       var ref = cordova.InAppBrowser.open(url, '_system', 'location=yes');
     }
 
-    function iniziaNoleggio(path,qrcode){
-      console.log("iniziaNoleggio");
-      //tabella_dettagli
-      //$("#tabella_dettagli").hide();
-      document.getElementById('tabella_dettagli').style.display = 'none';
-      $("#div_qrcode").html("<br><center><a onclick=\"openExternal('"+path+qrcode+"');\" class='btn btn-primary' >DOWNLOAD QRCODE APERTURA</a></center><br>"+
-                                  "<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
-                                  "  <img src='"+path+qrcode+"' width='100%' />" + 
-                                  "</a>");
-      document.getElementById('div_qrcode').style.display = 'block';
-      //var ref = cordova.InAppBrowser.open(path+qrcode, '_system', 'location=yes');
-    }
-
-    function chiudiNoleggio(path,qrcode){
-      console.log("chiudiNoleggio");
-      //tabella_dettagli
-      //$("#tabella_dettagli").hide();
-      document.getElementById('tabella_dettagli').style.display = 'none';
-      $("#div_qrcode").html("<br><center><a onclick=\"openExternal('"+path+qrcode+"');\" class='btn btn-primary' >DOWNLOAD QRCODE CHIUSURA</a></center><br>"+ 
-                                  "<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
-                                  "  <img src='"+path+qrcode+"' width='100%' />" + 
-                                  "</a>");
-      document.getElementById('div_qrcode').style.display = 'block';
-      //var ref = cordova.InAppBrowser.open(path+qrcode, '_system', 'location=yes');
-    }
-
   $( function() {
 
     $('#start_date').datetimepicker({
@@ -511,29 +485,35 @@ $('#calendar').fullCalendar('option', 'height', 700);
     <div class="container-fluid" id="fluido" >
       <div class="row">
 
+
       <!-- sidebar LEFT MENU -->      <!-- sidebar -->
       <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
         <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
           <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
-            <li><a href="squadre.html"> <span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span>  SQUADRE</a></li>
-            <li><a href="calendario.html"> <span class="glyphicon glyphicon-calendar" aria-hidden="true" ></span>  CALENDARIO</a></li>
-            <li><a href="calciatori.html"> <span class="glyphicon glyphicon-user" aria-hidden="true" ></span>  CALCIATORI</a></li>            
-            <li>
-              <div style="padding:20px;">
+            <li><p><B>FUNZIONALITA'</B></p></li>
+            <li><a href="squadre.html"> <span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span>&nbsp;&nbsp;SQUADRE</a></li>
+            <li><a href="calciatori.html"> <span class="glyphicon glyphicon-user" aria-hidden="true" ></span>&nbsp;&nbsp;CALCIATORI</a></li>
+            <li><a href="calendario.html"> <span class="glyphicon glyphicon-calendar" aria-hidden="true" ></span>&nbsp;&nbsp;CALENDARIO
+              <div style="padding-left:26px;">
                 <label>Legenda:</label><br>
                 <small class="badge bg-green"><font color="white">ALLENAMENTO</font></small><br>
                 <small class="badge bg-red"><font color="white">PARTITA</font></small><br>
                 <small class="badge bg-navy"><font color="white">RIUNIONE</font></small><br>
-            </div>
+              </div>
+              </a>
             </li>
+            <li><a href="allenamenti.html"> <span class="glyphicon glyphicon-bullhorn" aria-hidden="true" ></span>&nbsp;&nbsp;ALLENAMENTI</a></li>
+            <li><a href="partite.html"> <span class="glyphicon glyphicon-play-circle" aria-hidden="true" ></span>&nbsp;&nbsp;PARTITE</a></li>
+            <li><a href="riunioni.html"> <span class="glyphicon glyphicon-briefcase" aria-hidden="true" ></span>&nbsp;&nbsp;RIUNIONI</a></li>
           </ul>
-          <ul id="footer_menu_cal" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
-              <li><p><B>FUNZIONI</B></p></li>
-              <li><a href="impostazioni.html"> <span class="glyphicon glyphicon-info-sign" aria-hidden="true" ></span> INFORMAZIONI</a></li>
-              <li><a id="btn_logout"> <span class="glyphicon glyphicon-log-out" aria-hidden="true" ></span> LOGOUT</a></li>
+          <ul id="footer_menu" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+            <li><p><B>EXTRA</B></p></li>
+            <li><a href="impostazioni.html"> <span class="glyphicon glyphicon-info-sign" aria-hidden="true" ></span>&nbsp;&nbsp;INFORMAZIONI</a></li>
+            <li><a id="btn_logout"> <span class="glyphicon glyphicon-log-out" aria-hidden="true" ></span>&nbsp;&nbsp;LOGOUT</a></li>
           </ul>
         </div> <!-- chiude prova -->  
       </div>
+
 
       <!-- content -->
       <div class="col-xs-12  col-sm-8 col-md-9 content">
@@ -675,6 +655,7 @@ label{
           </tr>
           <tr>
         </table>
+        <div id='presenze' style='display: none;' ></div>
         </div>
         <div class="modal-footer">
           <input type="hidden" id="booking_id" name="booking_id" value="" />
@@ -695,7 +676,59 @@ label{
 
     <!-- TOGGLE MENU -->
     <script>
+
+      function getPresenze(){
+        var evento_id  = $("#booking_id").val();
+        var id_squadra = $("#upd_id_squadra").val();
+        var squadra    = $("#upd_id_squadra").text();
+        if (id_squadra!=null){
+          var matricola = localStorage.getItem("matricola");
+          if (matricola==null)
+              matricola="simone";
+          var id_profilo = localStorage.getItem("id_profilo");
+          if (id_profilo==null)
+              id_profilo="1";
+          var random = Math.random();
+          //LISTA CALCIATORI ASSOCIATI ALLA SQUADRA
+          var url = "http://linkin.it/Projects/SoccerTrainer/STGetSquadPlayers.php";
+          $.ajax({
+            url: url,
+                type: 'POST', // Send post data
+                data: {id_squadra: id_squadra, matricola: matricola, id_profilo: id_profilo, random: random},
+                async: false,
+                success: function(s){
+                  html = "<h4>PRESENZE "+squadra+"</h4>";
+                  obj_players_squad = s;
+                  console.log(JSON.stringify(obj_players_squad));
+                  var squadre = "";
+                  for(var o=0; o<obj_players_squad.length;o++){
+                    var valore = obj_players_squad[o].id_calciatore;
+                    var descrizione = obj_players_squad[o].nome + " "  +obj_players_squad[o].cognome;
+                    html += "<input type='checkbox' id='"+valore+"' name='"+valore+"' value='"+valore+"'> "+descrizione+" <br>";
+                    console.log("<input type='checkbox' id='"+valore+"' name='"+valore+"' value='"+valore+"'> "+descrizione+" <br>");
+                    console.log(html);
+                    $( "#presenze" ).html(html);
+                    $( "#presenze" ).show();
+                  }
+                }
+          });
+        }
+      }
+
       $(document).ready(function() {
+
+      $( "#upd_tipo_evento" ).change(function() {
+        var tipo_value = $( "#upd_tipo_evento" ).val();
+        //DEBUG alert( "Handler for .change() upd_tipo_evento value: " + tipo_value );
+        if (tipo_value==="ALLENAMENTO"){
+          getPresenze();
+        }
+        else{
+          $( "#presenze" ).hide();
+          $( "#presenze" ).html("");
+        }
+      });
+
       $('[data-toggle=offcanvas]').click(function() {
         $('.sidebar-offcanvas').toggleClass('active', 1000);
       });
