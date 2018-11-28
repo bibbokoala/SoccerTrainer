@@ -87,37 +87,37 @@
       return o;
   };
 
-  function delSquad(id_squad){
-    if (confirm("Vuoi veramente eliminare il squadra?")) {
-      var url = "http://linkin.it/Projects/SoccerTrainer/STDelSquad.php";
-      console.log("url: " + url + "- id_squad: " + id_squad );
+  function delEvent(booking_id){
+    if (confirm("Vuoi veramente eliminare l'evento?")) {
+      var url = "http://linkin.it/Projects/SoccerTrainer/STDelEvent.php";
+      console.log("url: " + url + "- booking_id: " + booking_id );
       $.ajax({
         url: url,
         cache : false,
         dataType : "json",
-        data : { id_squadra: id_squad },
+        data : { booking_id: booking_id },
         success: function(s){
           var result_insert = s;
           console.log(JSON.stringify(result_insert));
-          window.location = "home.html";
+          window.location = "allenamenti.html";
         } 
       });
     }
   }
 
-  function delSquadPlayers(index_squad, id_player, id_squad){
-    if (confirm("Vuoi veramente disassociare il calciatore alla squadra?")) {
-      var url = "http://linkin.it/Projects/SoccerTrainer/STDelSquadPlayers.php";
-      console.log("url: " + url + " - id_calciatore: " + id_player  + " - id_squadra: " + id_squad );
+  function delEventPlayers(index_squad, id_player, booking_id){
+    if (confirm("Vuoi veramente togliere la presenza al calciatore?")) {
+      var url = "http://linkin.it/Projects/SoccerTrainer/STDelEventPlayers.php";
+      console.log("url: " + url + " - id_calciatore: " + id_player  + " - booking_id: " + booking_id );
       $.ajax({
         url: url,
         cache : false,
         dataType : "json",
-        data : { id_calciatore: id_player , id_squadra: id_squad },
+        data : { id_calciatore: id_player , booking_id: booking_id },
         success: function(s){
           var result_insert = s;
           console.log(JSON.stringify(result_insert));
-          window.location = "squadra.html?id=" + index_squad;
+          window.location = "allenamento.html?id=" + index_squad;
         } 
       });
     }
@@ -135,22 +135,12 @@
       }
     });
 
-    /*
-    $("#btn_nuova_scheda").click(function(){
-      window.location = "nuova_scheda.html?id=" + $("#indice_squadra").val();
-    });
-
-    $("#btn_storico_schede").click(function(){
-      window.location = "storico_schede.html?id=" + $("#indice_squadra").val();
-    });
-    */
-
     $("#btn_backward").click(function(){
       window.location = "squadre.html";
     });
 
-    $("#btn_cancella_squadra").click(function(){
-      delSquad($("#id_squadra").val());
+    $("#btn_cancella_evento").click(function(){
+      delEvent($("#id_evento").val());
     });
 
 
@@ -205,32 +195,65 @@
                  "</div>";
       $("#dati_evento").html(html);
       //servono x il modale changeSquad
-      $("#id_squadra_change").val(lista_eventi[i].id_squadra);
-      $("#nome_squadra").val(lista_eventi[i].squadra);
-      $("#desc_squadra").val(lista_eventi[i].desc_squadra);
+      $("#upd_nome_evento").val(lista_eventi[i].title);
+      $("#upd_desc_evento").val(lista_eventi[i].desc_evento);
+      $("#upd_tipo_evento").val(lista_eventi[i].status);
+      $("#upd_start_date").val(lista_eventi[i].start);
+      $("#upd_end_date").val(lista_eventi[i].end);
+      $("#upd_id_squadra").val(lista_eventi[i].id_squadra);
+      $("#upd_matricola").val(localStorage.getItem("matricola"));
+      $("#upd_id_evento").val(lista_eventi[i].id);
       //serve per risalire alla squadra dalla lista_eventi
       $("#indice_squadra").val(i);
       //serve per conoscere l'id della squadra sul DB
       $("#id_squadra").val(lista_eventi[i].id_squadra);
+      $("#id_evento").val(lista_eventi[i].id);
       localStorage.setItem("id_squadra_evento", lista_eventi[i].id_squadra);
       //serve per il modale di associazione calciatore alla squadra
-      $("#id_squadra_assoc").val(lista_eventi[i].id_squadra);
+      $("#id_evento_assoc").val(lista_eventi[i].id);
+      $("#indice_evento").val(i);
       $("#matricola").val(localStorage.getItem("matricola"));
       if (lista_eventi[i].num_calc>0){
-        $('#btn_cancella_squadra').prop("disabled", true);
+        $('#btn_cancella_evento').prop("disabled", true);
       }
       else{
-        $('#btn_cancella_squadra').prop("disabled", false);
+        $('#btn_cancella_evento').prop("disabled", false);
       }
       //$("#creatore").html("<br><i>creatore: " + lista_eventi[i].creatore + "</i>");
     }
     infoEvent();
 
-    $("#btn_add_squad_player").click(function(){
-      if (confirm("Vuoi aggiungere il calciatore alla squadra?")) {
-        var formData = $("#form_add_squad_player").serialize();
+    $("#btn_change_event").click(function(){
+      if (confirm("Vuoi modificare l' evento'?")) {
+        var formData = $("#form_change_event").serialize();
         console.log(formData);
-        var url = "http://linkin.it/Projects/SoccerTrainer/STInsSquadPlayer.php";
+        var url = "http://linkin.it/Projects/SoccerTrainer/STUpdEvent.php";
+        $.ajax({
+          url: url,
+          type: 'POST', // Send post data
+          data: formData,
+          async: false,
+          success: function(s){
+            var result_insert = s;
+            console.log(JSON.stringify(result_insert));
+            $('#changeSquad').modal('hide');
+            /*var i = $("#indice_evento").val();
+            window.location = "allenamento.html?id=" + i;*/
+            window.location = "allenamenti.html";
+          } 
+        });
+      }
+      else{
+        //se non si vuole salvare chiudo il modale!
+        $('#changeSquad').modal('hide');
+      }
+    });
+
+    $("#btn_add_event_player").click(function(){
+      if (confirm("Vuoi aggiungere il calciatore alla squadra?")) {
+        var formData = $("#form_add_event_player").serialize();
+        console.log(formData);
+        var url = "http://linkin.it/Projects/SoccerTrainer/STInsEventPlayer.php";
         $.ajax({
           url: url,
           type: 'POST', // Send post data
@@ -240,7 +263,8 @@
             var result_insert = s;
             console.log(JSON.stringify(result_insert));
             $('#addSquad').modal('hide');
-            window.location = "home.html";
+            var i = $("#indice_evento").val();
+            window.location = "allenamento.html?id=" + i;
           } 
         });
       }
@@ -258,19 +282,19 @@
       if (id_profilo==null)
           id_profilo="1";
       var random = Math.random();
-
       //PRESENZE CALCIATORI
       var xmlhttpSquad = new XMLHttpRequest();
       var id_squadra = localStorage.getItem("id_squadra_evento");
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetSquadPlayers.php?id_squadra="+id_squadra+"&matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
+      var id_evento = $('#id_evento').val();
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetEventPlayers.php?id_evento="+id_evento+"&matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
       console.log("url:"+url);
       xmlhttpSquad.onreadystatechange=function() {
         if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {
             var lista = xmlhttpSquad.responseText;
-            localStorage.setItem("lista_calciatori_squadra", lista);
-            var lista_calciatori_squadra = JSON.parse( lista );
-            var html = getSquadPlayers(lista_calciatori_squadra);
-            $("#lista_calciatori_squadra").html(html);
+            localStorage.setItem("lista_calciatori_evento", lista);
+            var lista_calciatori_evento = JSON.parse( lista );
+            var html = getSquadPlayers(lista_calciatori_evento);
+            $("#lista_calciatori_evento").html(html);
             getPlayersOptions();
         }
       }
@@ -281,79 +305,67 @@
 
     call();
 
-    function foundPlayerIndex(lista_calciatori_squadra, ind){
+    function foundPlayerIndex(lista_calciatori_evento, ind){
       var lista = localStorage.getItem("lista_calciatori");
       var lista_calciatori = JSON.parse( lista );
       for (var i=0; i<lista_calciatori.length; i++) { 
-        if (lista_calciatori_squadra[ind].id_calciatore == lista_calciatori[i].id_calciatore){
+        if (lista_calciatori_evento[ind].id_calciatore == lista_calciatori[i].id_calciatore){
           return(i);
         }
       }
       return(0);
     }
 
-    function foundSquadIndex(lista_calciatori_squadra, ind){
+    function foundSquadIndex(lista_calciatori_evento, ind){
       var lista = localStorage.getItem("lista_squadre");
       var lista_squadre = JSON.parse( lista );
       for (var i=0; i<lista_squadre.length; i++) { 
-        if (lista_calciatori_squadra[ind].id_squadra == lista_squadre[i].id_squadra){
+        if (lista_calciatori_evento[ind].id_squadra == lista_squadre[i].id_squadra){
           return(i);
         }
       }
       return(0);
     }
 
-    function getSquadPlayers(lista_calciatori_squadra){
+    function getSquadPlayers(lista_calciatori_evento){
       //DEBUG 
-      console.log("DEBUG lista_calciatori_squadra: " + JSON.stringify(lista_calciatori_squadra) );
+      console.log("DEBUG lista_calciatori_evento: " + JSON.stringify(lista_calciatori_evento) );
       var matricola = localStorage.getItem("matricola");
-      var html = "<b>PRESENZE CALCIATORI</b><br>";
-      html += "<form id='presenze_calciatori' >";
-      for (var i=0; i<lista_calciatori_squadra.length; i++) { 
+      var html = "<b>LISTA PRESENZE CALCIATORI</b><br>";
+      for (var i=0; i<lista_calciatori_evento.length; i++) { 
         var btn_class = "primary";
-        if (lista_calciatori_squadra[i].creatore!=matricola){
+        if (lista_calciatori_evento[i].creatore!=matricola){
           btn_class="info";
         }
-        var indice_calciatore = foundPlayerIndex(lista_calciatori_squadra, i);
-        var indice_squadra = foundSquadIndex(lista_calciatori_squadra, i);
-        /*
-<div class='form-check'>
-    <input type='checkbox' class='form-check-input' id='materialUnchecked'>
-    <label class='form-check-label' for='materialUnchecked">Material unchecked</label>
-</div>
-        */
-        html += "<input type='checkbox' id='"+lista_calciatori_squadra[i].id_calciatore+
-                "' name='"+lista_calciatori_squadra[i].id_calciatore+
-                "' value='"+lista_calciatori_squadra[i].id_calciatore+"'> "+
-                lista_calciatori_squadra[i].nome +" "+ lista_calciatori_squadra[i].cognome+" <br>";
-        /*
+        var indice_calciatore = foundPlayerIndex(lista_calciatori_evento, i);
+        var indice_squadra = foundSquadIndex(lista_calciatori_evento, i);
         html += "<div class='squadra'>";
-        html += "<a href='./calciatore.html?id=" + indice_calciatore + "' class='btn  btn-"+btn_class+"' style='width:250px;'>";
-        html += "<font style='font-size:13px;'>"+lista_calciatori_squadra[i].nome +" "+ lista_calciatori_squadra[i].cognome + " </font>";
-        html += "</a>";
+        //html += "<a href='./calciatore.html?id=" + indice_calciatore + "' class='btn  btn-"+btn_class+"' style='width:250px;'>";
+        html += "<p class='presenza_calciatore'>";
+        html += lista_calciatori_evento[i].nome +" "+ lista_calciatori_evento[i].cognome;
+        //html += "</a>";
         html += "&nbsp;";
-        html += "<a href='javascript:void(0);' onclick='delSquadPlayers(" + indice_squadra + "," +
-                lista_calciatori_squadra[i].id_calciatore+","+lista_calciatori_squadra[i].id_squadra+");' class='btn  btn-danger' >";
+        html += "<a href='javascript:void(0);' onclick='delEventPlayers(" + indice_squadra + "," +
+                lista_calciatori_evento[i].id_calciatore+","+lista_calciatori_evento[i].id_evento+");' class='btn btn-danger pull-right' >";
         html += "<span class='glyphicon glyphicon-remove' aria-hidden='true' ></span> ";
         html += "</a>";
+        html += " </p>";
         html += "</div>";
-        */
       }
-      html += "</form>";
       return(html);
     }
 
       function getPlayersOptions(){
         var lista = localStorage.getItem("lista_calciatori");
         var lista_calciatori = JSON.parse( lista );
-        var lista_sq = localStorage.getItem("lista_calciatori_squadra");
-        var lista_calciatori_squadra = JSON.parse( lista_sq );
+        var lista_sq = localStorage.getItem("lista_calciatori_evento");
+        var lista_calciatori_evento = JSON.parse( lista_sq );
         var html ="";
         for(var i=0; i<lista_calciatori.length;i++){
           var found=0;
-          for(var n=0; n<lista_calciatori_squadra.length;n++){
-            console.log("id_calciatore: " + lista_calciatori[i].id_calciatore + " - id_calc_sq: " + lista_calciatori_squadra[n].id_calciatore );
-            if (lista_calciatori[i].id_calciatore == lista_calciatori_squadra[n].id_calciatore){
+          for(var n=0; n<lista_calciatori_evento.length;n++){
+            console.log("id_calciatore: " + lista_calciatori[i].id_calciatore + " - id_calc_sq: " + lista_calciatori_evento[n].id_calciatore );
+            if (lista_calciatori[i].id_calciatore == lista_calciatori_evento[n].id_calciatore){
                found=1;
                break;
             }
@@ -367,12 +379,46 @@
         $('#id_calciatore').html(html);
       }
 
+    $('#upd_start_date').datetimepicker({
+       format:'Y-m-d H:i',
+       minDate: 0,
+       minTime: 0,
+       step: 15,
+       minTime:'08:00',
+       maxTime:'18:00',
+       onChangeDateTime:function(dp,$input){
+          console.log("upd_start_date onchange value: " + $input.val());
+          $('#upd_start_date').val($input.val());
+       }
+    });
+    $('#upd_end_date').datetimepicker({
+       format:'Y-m-d H:i',
+       minDate: 0,
+       minTime: 0,
+       step: 15,
+       minTime:'08:00',
+       maxTime:'22:00',
+       onChangeDateTime:function(dp,$input){
+          console.log("upd_end_date onchange value: " + $input.val());
+          $('#upd_end_date').val($input.val());
+       }
+    });
+
+
   });  
 </script>
 <style>
   .squadra{
     background: #FFF;
     margin-bottom: 5px;
+  }
+  .presenza_calciatore{
+    background: #EEE;
+    font-size:13px;
+    line-height:28px;
+    border: 1px solid #ccc !important;
+    border-radius: 4px;
+    padding-left:10px;
   }
 </style>
 
@@ -433,8 +479,25 @@
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
           <div id='dati_evento' ></div>
+          <div class='alert alert-identificativi' role='alert'>
+            <input type='hidden' name='id_evento' id='id_evento' >
+            <input type='hidden' name='id_squadra' id='id_squadra' >
+            <input type='hidden' name='indice_squadra' id='indice_squadra' >
+            <button id='btn_associa_calciatore' class='btn  btn-success' data-toggle='modal' data-target='#addSquadPlayer' >
+              <span class='glyphicon glyphicon-plus' aria-hidden='true' ></span> 
+              <span class='glyphicon glyphicon-user' aria-hidden='true' ></span> 
+            </button>
+            <button id='btn_modifica_evento' class='btn  btn-warning' data-toggle='modal' data-target='#changeSquad' >
+              <span class='glyphicon glyphicon-pencil' aria-hidden='true' ></span> 
+              <span class='glyphicon glyphicon-transfer' aria-hidden='true' ></span> 
+            </button>
+            <button id='btn_cancella_evento' class='btn  btn-danger' >
+              <span class='glyphicon glyphicon-remove' aria-hidden='true' ></span> 
+              <span class='glyphicon glyphicon-transfer' aria-hidden='true' ></span> 
+            </button>
+          </div>
           <div class="row">
-            <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori_squadra" ></div>
+            <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori_evento" ></div>
           </div> <!-- close div row --> 
           <button id='btn_indietro' class='btn  btn-warning' >INDIETRO</button> 
           <br><span id='creatore' style='font-size:12px;'></span>
@@ -442,7 +505,12 @@
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
+<link href="css/jquery.datetimepicker.css" rel="stylesheet" type="text/css"/>
+  <script src="js/bootstrap.min.js"></script>  
+  <!-- <script src="js/jquery-ui.js"></script> -->
+  <script src="js/jquery.datetimepicker.full.min.js" type="text/javascript"></script>
+<!-- DOCUMENTATIONS AND EXAMPLES: http://xdsoft.net/jqplugins/datetimepicker/ -->
+  <script src="js/moment_with_locales.js"></script>
     <script>    
 
     $(document).ready(function() {
@@ -465,5 +533,109 @@
     debugLocalStorage();
     </script>
     </body>
+
+<!-- Modal addSquadPlayer -->
+  <div class="modal fade" id="addSquadPlayer" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content" style="font-size:75%;line-height:12px;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Aggiungi Presenza Calciatore all' Evento</h4>
+        </div>
+        <div class="modal-body">
+          <form id='form_add_event_player'>
+            <div class="form-group">
+              <input type='hidden' name='indice_evento' id='indice_evento' />
+              <input type='hidden' name='id_evento_assoc' id='id_evento_assoc' />
+              <label for="id_calciatore">Calciatore:</label>
+              <select id='id_calciatore' name='id_calciatore' class='form-control'>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" id='btn_add_event_player' >Salva</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- END Modal -->
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="changeSquad" role="dialog" style="color:#000000;" >
+    <div class="modal-dialog">
+      <form class="form" id="form_change_event" name="form_upd_event" >  
+      <input type="hidden" name='upd_matricola' id='upd_matricola' />
+      <input type="hidden" name='upd_id_evento' id='upd_id_evento' />
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title"><span class="glyphicon glyphicon-calendar"></span> Modifica Evento</h4>
+        </div>
+        <div class="modal-body">
+        <table class='tabella_dettagli' width="100%" style="color:#000000;" >
+          <tr>
+            <td colspan='2'>
+              <label for='upd_nome_evento' >Nome Evento <font color=red>*</font> </label>
+              <input type="text" id="upd_nome_evento" name="upd_nome_evento" class="form-control" />
+            </td>
+          </tr>
+          <input type="hidden" id="upd_tipo_evento" name="upd_tipo_evento" value="" />
+          <input type="hidden" id="upd_id_squadra" name="upd_id_squadra" value="" />
+          <!-- DEVO PENSARE SE SERVONO
+          <tr>
+            <td colspan='2'>
+              <label for='upd_tipo_evento' >Tipo Evento <font color=red>*</font> </label>
+              <select required id="upd_tipo_evento" name="upd_tipo_evento" class="form-control" >
+                <option value="ALLENAMENTO">ALLENAMENTO</option>
+                <option value="PARTITA">PARTITA</option>
+                <option value="RIUNIONE">RIUNIONE</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td colspan='2'>
+              <label for='upd_id_squadra' >Squadra </label>
+              <select id="upd_id_squadra" name="upd_id_squadra" class="form-control"></select>
+            </td>
+          </tr>
+        -->
+          <tr>
+            <td>
+              <label for='upd_date_start' >Data Inizio <font color=red>*</font> </label>
+                <input type="text" class="form-control pull-right" id="upd_start_date" name="upd_start_date"/>
+            </td>
+            <td>
+              <label for='upd_date_end' >Data Fine <font color=red>*</font> </label>
+                <input type="text" class="form-control pull-right" id="upd_end_date" name="upd_end_date"/>
+            </td>
+          </tr>
+            <td colspan='2'>
+              <label for='upd_desc_evento' >Descrizione Evento </label>
+              <textarea type="text" rows="4" id="upd_desc_evento" name="upd_desc_evento" class="form-control" ></textarea>
+            </td>
+          </tr>
+          <tr>
+        </table>
+        <div id='presenze' style='display: none;' ></div>
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" id="booking_id" name="booking_id" value="" />
+          <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">
+            <span class="glyphicon glyphicon-remove"></span> Chiudi
+          </button>
+          <button type="button" class="btn btn-primary" id="btn_change_event" data-dismiss="modal">
+            <span class="glyphicon glyphicon-ok"></span> Modifica
+          </button>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
 
 </html>

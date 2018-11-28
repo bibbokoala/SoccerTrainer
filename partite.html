@@ -6,6 +6,7 @@
      <link href='http://fonts.googleapis.com/css?family=Exo+2:400,600,300,900' rel='stylesheet' type='text/css'>
      <link href="css/navbar-static-top.css" rel="stylesheet">
      <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+     <link href="css/jquery.datetimepicker.css" rel="stylesheet" type="text/css"/>
      <link href="css/bootstrap-datepicker3.css" rel="stylesheet">
    <!-- END CSS FOR TOGGLE LEFT MENU -->
    <link href="css/custom.css" rel="stylesheet">
@@ -13,7 +14,8 @@
    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
    <script src="js/jquery.min.js"></script>
    <!-- DOCUMENTAZIONE DATEPICKER: https://bootstrap-datepicker.readthedocs.io/en/stable/index.html -->
-   <script src="js/bootstrap-datepicker.min.js"></script>
+  <script src="js/jquery.datetimepicker.full.min.js" type="text/javascript"></script>
+  <script src="js/moment_with_locales.js"></script>
    <script src="js/menu.js"></script>
    <script type="text/javascript" charset="utf-8">
     // Call onDeviceReady when Cordova is loaded.
@@ -99,6 +101,34 @@ $.fn.serializeObject = function()
       window.location = "index.html";
     });
 
+
+    if (localStorage.getItem("matricola")!=null){
+      $( "#matricola" ).val( localStorage.getItem("matricola") );
+      var matricola = localStorage.getItem("matricola");
+      $( "#matricola_squad" ).val( localStorage.getItem("matricola") );
+    }
+    
+    //RECUPERO LE SQUADRE X CREATORE:
+    var remote_url = "http://linkin.it/Projects/SoccerTrainer/STGetSquads.php";
+    $.ajax({
+      url: remote_url,
+          type: 'POST', // Send post data
+          data: 'matricola=' + matricola,
+          async: false,
+          success: function(s){
+            obj_squads = s;
+            console.log(JSON.stringify(obj_squads));
+            var squadre = "";
+            for(var o=0; o<obj_squads.length;o++){
+              var valore = obj_squads[o].id_squadra;
+              var descrizione = obj_squads[o].squadra;
+              squadre += "<option value='"+valore+"'>"+descrizione+"</option>";
+            }
+            $('#upd_id_squadra').html(squadre);
+            $('#id_squadra').html(squadre);
+          }
+    });
+
     $('#btn_exit').click(function() {
       if (confirm("Chiudere l'applicazione?")) {
         navigator.app.exitApp();
@@ -113,17 +143,11 @@ $.fn.serializeObject = function()
       }
     });
 
-
-    if (localStorage.getItem("matricola")!=null){
-      $( "#matricola" ).val( localStorage.getItem("matricola") );
-      $( "#matricola_squad" ).val( localStorage.getItem("matricola") );
-    }
-
-    $("#btn_add_player").click(function(){
-      if (confirm("Vuoi aggiungere il nuovo calciatore?")) {
-        var formData = $("#form_add_player").serialize();
+    $("#btn_add_event").click(function(){
+      if (confirm("Vuoi aggiungere una nuova partita?")) {
+        var formData = $("#form_add_event").serialize();
         console.log(formData);
-        var url = "http://linkin.it/Projects/SoccerTrainer/STInsPlayer.php";
+        var url = "http://linkin.it/Projects/SoccerTrainer/STInsEvent.php";
         $.ajax({
           url: url,
           type: 'POST', // Send post data
@@ -132,38 +156,14 @@ $.fn.serializeObject = function()
           success: function(s){
             var result_insert = s;
             console.log(JSON.stringify(result_insert));
-            $('#addPlayer').modal('hide');
-            window.location = "home.html";
+            $('#new_event').modal('hide');
+            window.location = "partite.html";
           } 
         });
       }
       else{
         //se non si vuole salvare chiudo il modale!
-        $('#addPlayer').modal('hide');
-      }
-    });
-
-    $("#btn_add_squad").click(function(){
-      if (confirm("Vuoi aggiungere la nuova squadra?")) {
-        var formData = $("#form_add_squad").serialize();
-        console.log(formData);
-        var url = "http://linkin.it/Projects/SoccerTrainer/STInsSquad.php";
-        $.ajax({
-          url: url,
-          type: 'POST', // Send post data
-          data: formData,
-          async: false,
-          success: function(s){
-            var result_insert = s;
-            console.log(JSON.stringify(result_insert));
-            $('#addSquad').modal('hide');
-            window.location = "home.html";
-          } 
-        });
-      }
-      else{
-        //se non si vuole salvare chiudo il modale!
-        $('#addSquad').modal('hide');
+        $('#new_event').modal('hide');
       }
     });
 
@@ -176,17 +176,17 @@ $.fn.serializeObject = function()
           id_profilo="1";
       var random = Math.random();
 
-      //LISTA SQUADRE
+      //LISTA PARTITE
       var xmlhttpSquad = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetSquads.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetEvents.php?matricola="+matricola+"&tipo_evento=PARTITA&id_profilo="+id_profilo+"&random="+random;
       console.log("url:"+url);
       xmlhttpSquad.onreadystatechange=function() {
         if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {
             var lista = xmlhttpSquad.responseText;
-            localStorage.setItem("lista_squadre", lista);
-            var lista_squadre = JSON.parse( lista );
-            var html = getSquads(lista_squadre);
-            $("#lista_squadre").html(html);
+            localStorage.setItem("lista_eventi", lista);
+            var lista_eventi = JSON.parse( lista );
+            var html = getEvents(lista_eventi);
+            $("#lista_eventi").html(html);
         }
       }
       xmlhttpSquad.open("GET", url, true);
@@ -196,19 +196,19 @@ $.fn.serializeObject = function()
 
     call();
 
-    function getSquads(lista_squadre){
+    function getEvents(lista_eventi){
       //DEBUG 
-      console.log("DEBUG lista_squadre: " + JSON.stringify(lista_squadre) );
+      console.log("DEBUG lista_eventi: " + JSON.stringify(lista_eventi) );
       var matricola = $("#matricola_squad").val();
-      var html = "<h4>LISTA SQUADRE</h4>";
-      for (i=0; i<lista_squadre.length; i++) { 
+      var html = "<h4>PARTITE</h4>";
+      for (i=0; i<lista_eventi.length; i++) { 
         var btn_class = "danger";
-        if (lista_squadre[i].creatore!=matricola){
-          btn_class="warning";
+        if (lista_eventi[i].creatore!=matricola){
+          btn_class="danger";
         }
-        html += "<div class='squadra'>";
-        html += "<a href='./squadra.html?id=" + i + "' class='btn  btn-"+btn_class+"' style='width: 300px;'>";
-        html += "<font style='font-size:13px;'>"+lista_squadre[i].squadra + " ("+lista_squadre[i].num_calc+" <span class='glyphicon glyphicon-user' aria-hidden='true' ></span>)</font>";
+        html += "<div class='partita'>";
+        html += "<a href='./partita.html?id=" + i + "' class='btn  btn-"+btn_class+"' style='width: 300px;'>";
+        html += "<font style='font-size:13px;'>"+lista_eventi[i].start + " - "+lista_eventi[i].title+"  </font>";
         html += "</a>";
         html += "&nbsp;";
         html += "</div>";
@@ -216,17 +216,30 @@ $.fn.serializeObject = function()
       return(html);
     }
 
-    var date_input=$('input[name="data_nascita"]'); //our date input has the name "date"
-    var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-    var options={    
-      format: "dd/mm/yyyy",
-      defaultViewDate: { year: 2000, month: 0, day: 1 },    
-      todayBtn: true,
-      container: container,
-      todayHighlight: true,
-      autoclose: true,
-    };
-    date_input.datepicker(options);
+    $('#start_date').datetimepicker({
+       format:'Y-m-d H:i',
+       minDate: 0,
+       minTime: 0,
+       step: 15,
+       minTime:'08:00',
+       maxTime:'18:00',
+       onChangeDateTime:function(dp,$input){
+          console.log("start_date onchange value: " + $input.val());
+          $('#start_date').val($input.val());
+       }
+    });
+    $('#end_date').datetimepicker({
+       format:'Y-m-d H:i',
+       minDate: 0,
+       minTime: 0,
+       step: 15,
+       minTime:'08:00',
+       maxTime:'22:00',
+       onChangeDateTime:function(dp,$input){
+          console.log("end_date onchange value: " + $input.val());
+          $('#end_date').val($input.val());
+       }
+    });
 
     $('.modal').on('shown.bs.modal', function() {
       $(this).find('[autofocus]').focus();
@@ -235,7 +248,7 @@ $.fn.serializeObject = function()
   });  
 </script>
 <style>
-  .squadra{
+  .partita{
     background: #FFF;
     margin-bottom: 5px;
   }
@@ -293,14 +306,14 @@ $.fn.serializeObject = function()
 
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
-            <button class='btn  btn-danger' data-toggle='modal' data-target='#addSquad' >
+            <button class='btn btn-danger' data-toggle='modal' data-target='#new_event' >
               <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
-              SQUADRA
+              PARTITA 
             </button>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
       <div class="row">
-        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_squadre" ></div>
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_eventi" ></div>
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -329,33 +342,74 @@ $.fn.serializeObject = function()
     </script>
     </body>
 
-<!-- Modal addSquad -->
-  <div class="modal fade" id="addSquad" role="dialog">
+
+
+<!-- Modal new_event -->
+  <div class="modal fade" id="new_event" role="dialog" style="color:#000000;" >
     <div class="modal-dialog">
+      <form class="form" id="form_add_event" name="form_new_event" >  
+      <input type="hidden" name='matricola' id='matricola' />
       <!-- Modal content-->
-      <div class="modal-content" style="font-size:75%;line-height:12px;">
+      <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Nuova Squadra</h4>
+          <h4 class="modal-title"><span class="glyphicon glyphicon-calendar"></span> Nuovo Partita</h4>
         </div>
         <div class="modal-body">
-          <form id='form_add_squad'>
-            <div class="form-group">
-              <label for="nome">Nome Squadra:</label>
-              <input class='form-control' type='text' id='squadra' name='squadra' value='' autofocus onchange="javascript:{this.value = this.value.toUpperCase(); }" /> 
-            </div>
-            <div class="form-group">
-              <label for="cognome">Descrizione Squadra:</label>
-              <input class='form-control' type='text' id='desc_squadra' name='desc_squadra' value='' onchange="javascript:{this.value = this.value.toUpperCase(); }" />  
-            </div>
-            <input type='hidden' id='matricola_squad' name='matricola_squad' value='' />
-          </form>
+        <table class='table_pren' width="100%" style="color:#000000;" >
+          <tr>
+            <td colspan='2'>
+              <label for='nome_evento' >Nome Partita <font color=red>*</font> </label>
+              <input type="text" required id="nome_evento" name="nome_evento" class="form-control" />
+            </td>
+          </tr>
+          <input type='hidden' id="tipo_evento" name="tipo_evento" value="PARTITA" >
+            <!--
+          <tr>
+            <td colspan='2'>
+              <label for='tipo_evento' >Tipo Allenamento <font color=red>*</font> </label>
+              <select required id="tipo_evento" name="tipo_evento" class="form-control" >
+                <option value="ALLENAMENTO">ALLENAMENTO</option>
+                <option value="PARTITA">PARTITA</option>
+                <option value="RIUNIONE">RIUNIONE</option>
+              </select>
+            </td>
+          </tr>
+             -->
+          <tr>
+            <td colspan='2'>
+              <label for='id_squadra' >Squadra </label>
+              <select id="id_squadra" name="id_squadra" class="form-control"></select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for='date_start' >Data Inizio <font color=red>*</font> </label>
+                <input type="text" class="form-control pull-right" id="start_date" name="start_date"/>
+            </td>
+            <td>
+              <label for='date_end' >Data Fine <font color=red>*</font> </label>
+                <input type="text" class="form-control pull-right" id="end_date" name="end_date"/>
+            </td>
+          </tr>
+            <td colspan='2'>
+              <label for='desc_evento' >Descrizione Partita </label>
+              <textarea type="text" rows="4" id="desc_evento" name="desc_evento" class="form-control" ></textarea>
+            </td>
+          </tr>
+          <tr>
+        </table>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-success" id='btn_add_squad' >Salva</button>
+          <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">
+            <span class="glyphicon glyphicon-remove"></span> Annulla
+          </button>
+          <button type="button" class="btn btn-primary" id="btn_add_event" data-dismiss="modal">
+            <span class="glyphicon glyphicon-ok"></span> Inserisci
+          </button>
         </div>
       </div>
+      </form>
     </div>
   </div>
 <!-- END Modal -->

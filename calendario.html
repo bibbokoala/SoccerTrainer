@@ -286,6 +286,7 @@
       var formData = $("#form_new_event").serialize();
       console.log(formData);
       var url = "http://linkin.it/Projects/SoccerTrainer/STInsEvent.php";
+      //DEBUG alert(url + " " + formData);
       $.ajax({
         url: url,
             type: 'POST', // Send post data

@@ -101,9 +101,10 @@ $.fn.serializeObject = function()
       window.location = "index.html";
     });
 
+
     if (localStorage.getItem("matricola")!=null){
-      var matricola = localStorage.getItem("matricola");
       $( "#matricola" ).val( localStorage.getItem("matricola") );
+      var matricola = localStorage.getItem("matricola");
       $( "#matricola_squad" ).val( localStorage.getItem("matricola") );
     }
     
@@ -143,11 +144,10 @@ $.fn.serializeObject = function()
     });
 
     $("#btn_add_event").click(function(){
-      if (confirm("Vuoi aggiungere un nuovo allenamento?")) {
+      if (confirm("Vuoi aggiungere una nuova partita?")) {
         var formData = $("#form_add_event").serialize();
         console.log(formData);
         var url = "http://linkin.it/Projects/SoccerTrainer/STInsEvent.php";
-        //alert("url: " + url + formData);
         $.ajax({
           url: url,
           type: 'POST', // Send post data
@@ -157,7 +157,7 @@ $.fn.serializeObject = function()
             var result_insert = s;
             console.log(JSON.stringify(result_insert));
             $('#new_event').modal('hide');
-            window.location = "allenamenti.html";
+            window.location = "partite.html";
           } 
         });
       }
@@ -176,9 +176,9 @@ $.fn.serializeObject = function()
           id_profilo="1";
       var random = Math.random();
 
-      //LISTA ALLENAMENTI
+      //LISTA PARTITE
       var xmlhttpSquad = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetEvents.php?matricola="+matricola+"&tipo_evento=ALLENAMENTO&id_profilo="+id_profilo+"&random="+random;
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetEvents.php?matricola="+matricola+"&tipo_evento=PARTITA&id_profilo="+id_profilo+"&random="+random;
       console.log("url:"+url);
       xmlhttpSquad.onreadystatechange=function() {
         if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {
@@ -200,14 +200,14 @@ $.fn.serializeObject = function()
       //DEBUG 
       console.log("DEBUG lista_eventi: " + JSON.stringify(lista_eventi) );
       var matricola = $("#matricola_squad").val();
-      var html = "<h4>ALLENAMENTI</h4>";
+      var html = "<h4>PARTITE</h4>";
       for (i=0; i<lista_eventi.length; i++) { 
         var btn_class = "danger";
         if (lista_eventi[i].creatore!=matricola){
-          btn_class="success";
+          btn_class="primary";
         }
-        html += "<div class='allenamento'>";
-        html += "<a href='./allenamento.html?id=" + i + "' class='btn  btn-"+btn_class+"' style='width: 300px;'>";
+        html += "<div class='partita'>";
+        html += "<a href='./partita.html?id=" + i + "' class='btn  btn-"+btn_class+"' style='width: 300px;'>";
         html += "<font style='font-size:13px;'>"+lista_eventi[i].start + " - "+lista_eventi[i].title+"  </font>";
         html += "</a>";
         html += "&nbsp;";
@@ -248,7 +248,7 @@ $.fn.serializeObject = function()
   });  
 </script>
 <style>
-  .allenamento{
+  .partita{
     background: #FFF;
     margin-bottom: 5px;
   }
@@ -306,9 +306,9 @@ $.fn.serializeObject = function()
 
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
-            <button class='btn btn-success' data-toggle='modal' data-target='#new_event' >
+            <button class='btn btn-primary' data-toggle='modal' data-target='#new_event' >
               <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
-              ALLENAMENTO 
+              PARTITA 
             </button>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
@@ -347,23 +347,23 @@ $.fn.serializeObject = function()
 <!-- Modal new_event -->
   <div class="modal fade" id="new_event" role="dialog" style="color:#000000;" >
     <div class="modal-dialog">
-      <form class="form" id="form_add_event" name="form_new_event" >  
+      <form class="form" id="form_new_event" name="form_new_event" >  
       <input type="hidden" name='matricola' id='matricola' />
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title"><span class="glyphicon glyphicon-calendar"></span> Nuovo Allenamento</h4>
+          <h4 class="modal-title"><span class="glyphicon glyphicon-calendar"></span> Nuovo Partita</h4>
         </div>
         <div class="modal-body">
         <table class='table_pren' width="100%" style="color:#000000;" >
           <tr>
             <td colspan='2'>
-              <label for='nome_evento' >Nome Allenamento <font color=red>*</font> </label>
+              <label for='nome_evento' >Nome Partita <font color=red>*</font> </label>
               <input type="text" required id="nome_evento" name="nome_evento" class="form-control" />
             </td>
           </tr>
-          <input type='hidden' id="tipo_evento" name="tipo_evento" value="ALLENAMENTO" >
+          <input type='hidden' id="tipo_evento" name="tipo_evento" value="PARTITA" >
             <!--
           <tr>
             <td colspan='2'>
@@ -393,7 +393,7 @@ $.fn.serializeObject = function()
             </td>
           </tr>
             <td colspan='2'>
-              <label for='desc_evento' >Descrizione Allenamento </label>
+              <label for='desc_evento' >Descrizione Partita </label>
               <textarea type="text" rows="4" id="desc_evento" name="desc_evento" class="form-control" ></textarea>
             </td>
           </tr>
