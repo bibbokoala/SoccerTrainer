@@ -73,24 +73,6 @@
     console.log("*****  END debugLocalStorage  *****");
   }
 
-  function delPlayer(id_player){
-    if (confirm("Vuoi veramente eliminare il calciatore?")) {
-      var url = "http://linkin.it/Projects/SoccerTrainer/STDelPlayer.php";
-      console.log("url: " + url + "- id_player: " + id_player );
-      $.ajax({
-        url: url,
-        cache : false,
-        dataType : "json",
-        data : { id_calciatore: id_player },
-        success: function(s){
-          var result_insert = s;
-          console.log(JSON.stringify(result_insert));
-          window.location = "home.html";
-        } 
-      });
-    }
-  }
-
 </script>
 <script>
 //var db = openDatabase('GeoNavDB', '1.0', 'GeoNav App DB', 3 * 1024 * 1024);
@@ -133,140 +115,6 @@ $.fn.serializeObject = function()
     if (localStorage.getItem("matricola")!=null){
       $( "#matricola" ).val( localStorage.getItem("matricola") );
       $( "#matricola_squad" ).val( localStorage.getItem("matricola") );
-    }
-
-    $("#btn_add_player").click(function(){
-      if (confirm("Vuoi aggiungere il nuovo calciatore?")) {
-        var formData = $("#form_add_player").serialize();
-        console.log(formData);
-        var url = "http://linkin.it/Projects/SoccerTrainer/STInsPlayer.php";
-        $.ajax({
-          url: url,
-          type: 'POST', // Send post data
-          data: formData,
-          async: false,
-          success: function(s){
-            var result_insert = s;
-            console.log(JSON.stringify(result_insert));
-            $('#addPlayer').modal('hide');
-            window.location = "home.html";
-          } 
-        });
-      }
-      else{
-        //se non si vuole salvare chiudo il modale!
-        $('#addPlayer').modal('hide');
-      }
-    });
-
-    $("#btn_add_squad").click(function(){
-      if (confirm("Vuoi aggiungere la nuova squadra?")) {
-        var formData = $("#form_add_squad").serialize();
-        console.log(formData);
-        var url = "http://linkin.it/Projects/SoccerTrainer/STInsSquad.php";
-        $.ajax({
-          url: url,
-          type: 'POST', // Send post data
-          data: formData,
-          async: false,
-          success: function(s){
-            var result_insert = s;
-            console.log(JSON.stringify(result_insert));
-            $('#addSquad').modal('hide');
-            window.location = "home.html";
-          } 
-        });
-      }
-      else{
-        //se non si vuole salvare chiudo il modale!
-        $('#addSquad').modal('hide');
-      }
-    });
-
-    function call(){
-      var matricola = localStorage.getItem("matricola");
-      if (matricola==null)
-          matricola="simone";
-      var id_profilo = localStorage.getItem("id_profilo");
-      if (id_profilo==null)
-          id_profilo="1";
-      var random = Math.random();
-
-      //LISTA SQUADRE
-      var xmlhttpSquad = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetSquads.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
-      console.log("url:"+url);
-      xmlhttpSquad.onreadystatechange=function() {
-        if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {
-            var lista = xmlhttpSquad.responseText;
-            localStorage.setItem("lista_squadre", lista);
-            var lista_squadre = JSON.parse( lista );
-            var html = getSquads(lista_squadre);
-            $("#lista_squadre").html(html);
-        }
-      }
-      xmlhttpSquad.open("GET", url, true);
-      xmlhttpSquad.send();
-
-      //LISTA CALCIATORI
-      var xmlhttp = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
-      console.log("url:"+url);
-      xmlhttp.onreadystatechange=function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            var lista = xmlhttp.responseText;
-            localStorage.setItem("lista_calciatori", lista);
-            var lista_calciatori = JSON.parse( lista );
-            var html = getPlayers(lista_calciatori);
-            $("#lista_calciatori").html(html);
-        }
-      }
-      xmlhttp.open("GET", url, true);
-      xmlhttp.send();
-
-    }
-
-    call();
-
-    function getPlayers(lista_calciatori){
-      //DEBUG console.log("DEBUG lista_calciatori: " + JSON.stringify(lista_calciatori) );
-      var matricola = $("#matricola").val();
-      var html = "<h4>LISTA CALCIATORI</h4>";
-      for (i=0; i<lista_calciatori.length; i++) { 
-        var btn_class = "primary";
-        if (lista_calciatori[i].creatore!=matricola){
-          btn_class="info";
-        }
-        html += "<div class='calciatore'>";
-        html += "<a href='./calciatore.html?id=" + i + "' class='btn  btn-"+btn_class+"' style='width: 300px;'>";
-        html += "<font style='font-size:13px;'>"+lista_calciatori[i].cognome + " " + lista_calciatori[i].nome + 
-        " ("+lista_calciatori[i].num_calc + " <span class='glyphicon glyphicon-list' aria-hidden='true' ></span>)</font>";
-        html += "</a>";
-        html += "&nbsp;";
-        html += "</div>";
-      }
-      return(html);
-    }
-
-    function getSquads(lista_squadre){
-      //DEBUG 
-      console.log("DEBUG lista_squadre: " + JSON.stringify(lista_squadre) );
-      var matricola = $("#matricola").val();
-      var html = "<h4>LISTA SQUADRE</h4>";
-      for (i=0; i<lista_squadre.length; i++) { 
-        var btn_class = "danger";
-        if (lista_squadre[i].creatore!=matricola){
-          btn_class="warning";
-        }
-        html += "<div class='squadra'>";
-        html += "<a href='./squadra.html?id=" + i + "' class='btn  btn-"+btn_class+"' style='width: 300px;'>";
-        html += "<font style='font-size:13px;'>"+lista_squadre[i].squadra + " ("+lista_squadre[i].num_calc +
-                " <span class='glyphicon glyphicon-user' aria-hidden='true' ></span>)</font>";
-        html += "</a>";
-        html += "&nbsp;";
-        html += "</div>";
-      }
-      return(html);
     }
 
     var date_input=$('input[name="data_nascita"]'); //our date input has the name "date"
@@ -346,23 +194,38 @@ $.fn.serializeObject = function()
           </ul>
         </div> <!-- chiude prova -->  
       </div>
-
-
-
+<style>
+.home-button {
+    padding: 1px;
+    margin-bottom: 5px;
+    background-color: #eeeeee;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    text-align: center;
+    cursor:pointer;
+}
+</style>
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
-            <button class='btn  btn-danger' data-toggle='modal' data-target='#addSquad' >
-              <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
-              SQUADRA
-            </button>
-            <button class='btn  btn-primary' data-toggle='modal' data-target='#addPlayer' >
-              <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
-              CALCIATORE
-            </button>
+          <div class="col-lg-6 home-button" onclick="window.open('squadre.html');" style='color:#ac2925;;' >
+            <h1><span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span></h1><b>SQUADRE</b>
+          </div>
+          <div class="col-lg-6 home-button" onclick="window.open('calciatori.html');" style='color:#2e6da4;' >
+            <h1><span class="glyphicon glyphicon-user" aria-hidden="true" ></span></h1><b>CALCIATORI</b>
+          </div>
+          <div class="col-lg-6 home-button" onclick="window.open('calendario.html');">
+            <h1><span class="glyphicon glyphicon-calendar" aria-hidden="true" ></h1><b>CALENDARIO</b>
+          </div>
+          <div class="col-lg-6 home-button" onclick="window.open('allenamenti.html');" style='color:#008000;' >
+            <h1><span class="glyphicon glyphicon-bullhorn" aria-hidden="true" ></h1><b>ALLENAMENTI</b>
+          </div>
+          <div class="col-lg-6 home-button" onclick="window.open('partite.html');" style='color:#5F0000;' >
+            <h1><span class="glyphicon glyphicon-play-circle" aria-hidden="true" ></h1><b>PARTITE</b>
+          </div>
+          <div class="col-lg-6 home-button" onclick="window.open('riunioni.html');" style='color:#005F5F;' >
+            <h1><span class="glyphicon glyphicon-briefcase" aria-hidden="true" ></h1><b>RIUNIONI</b>
+          </div>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
-      </div> <!-- close div row --> 
-      <div class="row">
-        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_squadre" ></div>
-        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori" ></div>
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -390,87 +253,5 @@ $.fn.serializeObject = function()
       debugLocalStorage();
     </script>
     </body>
-
-<!-- Modal addPlayer -->
-  <div class="modal fade" id="addPlayer" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content" style="font-size:75%;line-height:12px;">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Nuovo Calciatore</h4>
-        </div>
-        <div class="modal-body">
-          <form id='form_add_player'>
-            <div class="form-group">
-              <label for="nome">Nome:</label>
-              <input class='form-control' type='text' id='nome' name='nome' value='' autofocus onchange="javascript:{this.value = this.value.toUpperCase(); }" /> 
-            </div>
-            <div class="form-group">
-              <label for="cognome">Cognome:</label>
-              <input class='form-control' type='text' id='cognome' name='cognome' value='' onchange="javascript:{this.value = this.value.toUpperCase(); }" />  
-            </div>
-            <div class="form-group">
-              <label for="luogo_nascita">Luogo Nascita:</label>
-              <input class='form-control' type='text' id='luogo_nascita' name='luogo_nascita' value='ROMA' onchange="javascript:{this.value = this.value.toUpperCase(); }" />  
-            </div>
-            <div class="form-group"> <!-- Date input -->
-              <label class="control-label" for="data_nascita">Data di Nascita</label>
-              <input class="form-control" id="data_nascita" name="data_nascita" placeholder="gg/mm/aaaa" type="text"/>
-            </div>
-            <div class="form-group">
-              <label for="nazionalita">Nazionalita:</label>
-              <input class='form-control' type='text' id='nazionalita' name='nazionalita' value='ITALIANA' onchange="javascript:{this.value = this.value.toUpperCase(); }" /> 
-            </div>
-            <div class="form-group">
-              <label for="altezza_cm">Altezza in cm:</label>
-              <input class='form-control' type='number' id='altezza_cm' name='altezza_cm' value='' /> 
-            </div>
-            <div class="form-group">
-              <label for="peso_kg">Peso in kg:</label>
-              <input class='form-control' type='number' id='peso_kg' name='peso_kg' value='' /> 
-            </div>
-            <input type='hidden' id='matricola' name='matricola' value='' />
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-success" id='btn_add_player' >Salva</button>
-        </div>
-      </div>
-    </div>
-  </div>
-<!-- END Modal -->
-
-<!-- Modal addSquad -->
-  <div class="modal fade" id="addSquad" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content" style="font-size:75%;line-height:12px;">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Nuova Squadra</h4>
-        </div>
-        <div class="modal-body">
-          <form id='form_add_squad'>
-            <div class="form-group">
-              <label for="nome">Nome Squadra:</label>
-              <input class='form-control' type='text' id='squadra' name='squadra' value='' autofocus onchange="javascript:{this.value = this.value.toUpperCase(); }" /> 
-            </div>
-            <div class="form-group">
-              <label for="cognome">Descrizione Squadra:</label>
-              <input class='form-control' type='text' id='desc_squadra' name='desc_squadra' value='' onchange="javascript:{this.value = this.value.toUpperCase(); }" />  
-            </div>
-            <input type='hidden' id='matricola_squad' name='matricola_squad' value='' />
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-success" id='btn_add_squad' >Salva</button>
-        </div>
-      </div>
-    </div>
-  </div>
-<!-- END Modal -->
 
 </html>
