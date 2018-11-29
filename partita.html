@@ -252,7 +252,7 @@
     });
 
     $("#btn_add_minute_player").click(function(){
-      if (confirm("Vuoi salvare i valori per il calciatore?")) {
+      //if (confirm("Vuoi salvare i valori per il calciatore?")) {
         var formData = $("#form_add_event_player_minute").serialize();
         console.log(formData);
         var url = "http://linkin.it/Projects/SoccerTrainer/STUpdEventPlayerMinute.php";
@@ -269,11 +269,13 @@
             window.location = "partita.html?id=" + i;
           } 
         });
+      /*
       }
       else{
         //se non si vuole salvare chiudo il modale!
         $('#addMinutePlayer').modal('hide');
       }
+      */
     });
 
     $("#btn_add_event_player").click(function(){
