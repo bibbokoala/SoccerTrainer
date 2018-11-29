@@ -99,7 +99,7 @@
         success: function(s){
           var result_insert = s;
           console.log(JSON.stringify(result_insert));
-          window.location = "home.html";
+          window.location = "calciatori.html";
         } 
       });
     }
@@ -127,7 +127,7 @@
     });
 
     $("#btn_backward").click(function(){
-      window.location = "home.html";
+      window.location = "calciatori.html";
     });
 
     $("#btn_cancella_calciatore").click(function(){
@@ -166,7 +166,7 @@
     });
 
     $('#btn_indietro').click(function() {
-      window.location.href = 'home.html';
+      window.location.href = 'calciatori.html';
     });
 
     function infoPlayer(){
@@ -227,7 +227,7 @@
             var result_insert = s;
             console.log(JSON.stringify(result_insert));
             $('#changePlayer').modal('hide');
-            window.location = "home.html";
+            window.location = "calciatori.html";
           } 
         });
       }
