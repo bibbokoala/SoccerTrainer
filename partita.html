@@ -213,6 +213,7 @@
       //serve per il modale di associazione calciatore alla squadra
       $("#id_evento_assoc").val(lista_eventi[i].id);
       $("#indice_evento").val(i);
+      $("#indice_evento_minute").val(i);
       $("#matricola").val(localStorage.getItem("matricola"));
       if (lista_eventi[i].num_calc>0){
         $('#btn_cancella_evento').prop("disabled", true);
