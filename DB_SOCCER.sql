@@ -153,6 +153,8 @@ CREATE TABLE IF NOT EXISTS `st_calciatori_evento` (
   `id_associazione` int(10) NOT NULL AUTO_INCREMENT,
   `id_evento` bigint(20) NOT NULL ,
   `id_calciatore` int(10) NOT NULL ,
+  `minutaggio` int(10) NOT NULL ,
+  `valutazione` ENUM('INSUFFICIENTE', 'SUFFICIENTE', 'DISCRETO', 'BUONO', 'OTTIMO') NULL,
   PRIMARY KEY (`id_associazione`),
   UNIQUE KEY `evento_calciatore` (`id_evento`,`id_calciatore`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;

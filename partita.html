@@ -192,6 +192,7 @@
       var html = "<div class='alert alert-calciatore' role='alert'>" + 
                  "<font size='5'><B>" + lista_eventi[i].start + "</font><br>" + 
                  "<font size='4'><B>" + lista_eventi[i].title + "</B></font><br>" + 
+                 "<font size='3'><B>" + lista_eventi[i].desc_evento + "</B></font><br>" + 
                  "</div>";
       $("#dati_evento").html(html);
       //servono x il modale changeSquad
@@ -249,6 +250,31 @@
       }
     });
 
+    $("#btn_add_minute_player").click(function(){
+      if (confirm("Vuoi aggiungere il calciatore alla squadra?")) {
+        var formData = $("#form_add_event_player_minute").serialize();
+        console.log(formData);
+        var url = "http://linkin.it/Projects/SoccerTrainer/STUpdEventPlayerMinute.php";
+        $.ajax({
+          url: url,
+          type: 'POST', // Send post data
+          data: formData,
+          async: false,
+          success: function(s){
+            var result_insert = s;
+            console.log(JSON.stringify(result_insert));
+            $('#addMinutePlayer').modal('hide');
+            var i = $("#indice_evento_minute").val();
+            window.location = "partita.html?id=" + i;
+          } 
+        });
+      }
+      else{
+        //se non si vuole salvare chiudo il modale!
+        $('#addMinutePlayer').modal('hide');
+      }
+    });
+
     $("#btn_add_event_player").click(function(){
       if (confirm("Vuoi aggiungere il calciatore alla squadra?")) {
         var formData = $("#form_add_event_player").serialize();
@@ -262,7 +288,7 @@
           success: function(s){
             var result_insert = s;
             console.log(JSON.stringify(result_insert));
-            $('#addSquad').modal('hide');
+            $('#addSquadPlayer').modal('hide');
             var i = $("#indice_evento").val();
             window.location = "partita.html?id=" + i;
           } 
@@ -270,7 +296,7 @@
       }
       else{
         //se non si vuole salvare chiudo il modale!
-        $('#addSquad').modal('hide');
+        $('#addSquadPlayer').modal('hide');
       }
     });
 
@@ -328,15 +354,26 @@
         }
         var indice_calciatore = foundPlayerIndex(lista_calciatori_evento, i);
         html += "<div class='squadra'>";
-        //html += "<a href='./calciatore.html?id=" + indice_calciatore + "' class='btn  btn-"+btn_class+"' style='width:250px;'>";
         html += "<p class='presenza_calciatore'>";
-        html += lista_calciatori_evento[i].nome +" "+ lista_calciatori_evento[i].cognome;
-        //html += "</a>";
-        html += "&nbsp;";
-        html += "<a href='javascript:void(0);' onclick='delEventPlayers(" + i + "," +
+        html += "<a href='javascript:void(0);' style='top: 0px;' onclick='delEventPlayers(" + i + "," +
                 lista_calciatori_evento[i].id_calciatore+","+lista_calciatori_evento[i].id_evento+");' class='btn btn-danger pull-right' >";
         html += "<span class='glyphicon glyphicon-remove' aria-hidden='true' ></span> ";
         html += "</a>";
+        html += "&nbsp;";
+        html += "<a href='javascript:void(0);' class='btn btn-primary pull-right open-addMinutePlayer' data-id='"+lista_calciatori_evento[i].id_evento+"' " + 
+                " data-minuti='"+lista_calciatori_evento[i].minutaggio+"' data-valutaz='"+lista_calciatori_evento[i].valutazione+"' " + 
+                " data-calciatore='"+lista_calciatori_evento[i].id_calciatore+"' data-toggle='modal' data-target='#addMinutePlayer'> ";
+        html += "<span class='glyphicon glyphicon-time' aria-hidden='true' ></span> ";
+        html += "</a>";
+        //html += "<a href='./calciatore.html?id=" + indice_calciatore + "' class='btn  btn-"+btn_class+"' style='width:250px;'>";
+        html += lista_calciatori_evento[i].nome +" "+ lista_calciatori_evento[i].cognome;
+        html += "<br><i>minutaggio: " + lista_calciatori_evento[i].minutaggio;
+        var valutazione = 'n.d.';
+        if (lista_calciatori_evento[i].valutazione!=null)
+          valutazione = lista_calciatori_evento[i].valutazione;
+        html += " - valutazione: "+ valutazione + "</i>";
+        //html += "</a>";
+        html += "&nbsp;";
         html += " </p>";
         html += "</div>";
       }
@@ -519,8 +556,58 @@
 
     });
     debugLocalStorage();
+
+    $(document).on("click", ".open-addMinutePlayer", function () {
+      var myBookId   = $(this).data('id');
+      var myPlayerId = $(this).data('calciatore');
+      var myMinute   = $(this).data('minuti');
+      var myValutaz  = $(this).data('valutaz');
+      $("#player_id").val( myPlayerId );
+      $("#event_id").val( myBookId );
+      $("#minuti").val( myMinute );
+      $("#valutaz").val( myValutaz );
+    });
+
     </script>
     </body>
+
+<!-- Modal addMinutePlayer -->
+  <div class="modal fade" id="addMinutePlayer" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content" style="font-size:75%;line-height:12px;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Gestione Minutaggio e Valutazione Calciatore</h4>
+        </div>
+        <div class="modal-body">
+          <form id='form_add_event_player_minute'>
+            <div class="form-group">
+              <input type='hidden' name='indice_evento_minute' id='indice_evento' />
+              <input type="text" name="id_evento" id="event_id" READONLY value=""/>
+              <input type="text" name="id_calciatore" id="player_id" READONLY value=""/>
+              <label for='minutaggio'>Minutaggio</label>
+              <input type="text" name="minutaggio" id="minuti" value="" class='form-control '/>
+              <br>
+              <label for='valutaz'>Valutazione</label>
+              <select name="valutazione" id="valutaz" value="" class='form-control '/>
+                <option value='INSUFFICIENTE'>INSUFFICIENTE</option>
+                <option value='SUFFICIENTE'>SUFFICIENTE</option>
+                <option value='DISCRETO'>DISCRETO</option>
+                <option value='BUONO'>BUONO</option>
+                <option value='OTTIMO'>OTTIMO</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" id='btn_add_minute_player' >Salva</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- END Modal -->
 
 <!-- Modal addSquadPlayer -->
   <div class="modal fade" id="addSquadPlayer" role="dialog">
