@@ -117,7 +117,7 @@
         success: function(s){
           var result_insert = s;
           console.log(JSON.stringify(result_insert));
-          window.location = "partita.html?id=" + index_squad;
+          window.location = "partita.html?id=" + index_event;
         } 
       });
     }
@@ -343,6 +343,17 @@
       return(0);
     }
 
+    function foundEventIndex(id_evento){
+      var lista = localStorage.getItem("lista_eventi");
+      var lista_eventi = JSON.parse( lista );
+      for (var i=0; i<lista_eventi.length; i++) { 
+        if (lista_eventi[i].id_evento == id_evento){
+          return(i);
+        }
+      }
+      return(0);
+    }
+
     function getSquadPlayers(lista_calciatori_evento){
       //DEBUG 
       console.log("DEBUG lista_calciatori_evento: " + JSON.stringify(lista_calciatori_evento) );
@@ -354,15 +365,16 @@
           btn_class="info";
         }
         var indice_calciatore = foundPlayerIndex(lista_calciatori_evento, i);
+        var index_event = foundPlayerIndex(lista_calciatori_evento[i].id_evento);
         html += "<div class='squadra'>";
         html += "<p class='presenza_calciatore'>";
-        html += "<a href='javascript:void(0);' style='top: 0px;' onclick='delEventPlayers(" + i + "," +
+        html += "<a href='javascript:void(0);' style='top: 0px;' onclick='delEventPlayers(" + index_event + "," +
                 lista_calciatori_evento[i].id_calciatore+","+lista_calciatori_evento[i].id_evento+");' class='btn btn-danger pull-right' >";
         html += "<span class='glyphicon glyphicon-remove' aria-hidden='true' ></span> ";
         html += "</a>";
         html += "&nbsp;";
         html += "<a href='javascript:void(0);' class='btn btn-primary pull-right open-addMinutePlayer'  " + 
-                " data-id='"+i+"' "+
+                " data-id='"+index_event+"' "+
                 " data-evento='"+lista_calciatori_evento[i].id_evento+"' " + 
                 " data-minuti='"+lista_calciatori_evento[i].minutaggio+"'  " + 
                 " data-valutaz='"+lista_calciatori_evento[i].valutazione+"' " + 
