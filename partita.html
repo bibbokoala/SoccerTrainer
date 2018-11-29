@@ -365,7 +365,7 @@
           btn_class="info";
         }
         var indice_calciatore = foundPlayerIndex(lista_calciatori_evento, i);
-        var index_event = foundPlayerIndex(lista_calciatori_evento[i].id_evento);
+        var index_event = foundEventIndex(lista_calciatori_evento[i].id_evento);
         html += "<div class='squadra'>";
         html += "<p class='presenza_calciatore'>";
         html += "<a href='javascript:void(0);' style='top: 0px;' onclick='delEventPlayers(" + index_event + "," +
