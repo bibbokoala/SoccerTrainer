@@ -109,8 +109,8 @@
        minDate: 0,
        minTime: 0,
        step: 15,
-       /*minTime:'08:00',
-       maxTime:'18:00', */
+       minTime:'00:01',
+       maxTime:'23:59',
        onChangeDateTime:function(dp,$input){
           console.log("start_date onchange value: " + $input.val());
           $('#start_date').val($input.val());
@@ -121,8 +121,8 @@
        minDate: 0,
        minTime: 0,
        step: 15,
-       /*minTime:'08:00',
-       maxTime:'22:00', */
+       minTime:'00:01',
+       maxTime:'23:59',
        onChangeDateTime:function(dp,$input){
           console.log("end_date onchange value: " + $input.val());
           $('#end_date').val($input.val());
@@ -134,8 +134,8 @@
        minDate: 0,
        minTime: 0,
        step: 15,
-       /*minTime:'08:00',
-       maxTime:'18:00',*/
+       minTime:'00:01',
+       maxTime:'23:59',
        onChangeDateTime:function(dp,$input){
           console.log("upd_start_date onchange value: " + $input.val());
           $('#upd_start_date').val($input.val());
@@ -146,8 +146,8 @@
        minDate: 0,
        minTime: 0,
        step: 15,
-       /*minTime:'08:00',
-       maxTime:'22:00',*/
+       minTime:'00:01',
+       maxTime:'23:59',
        onChangeDateTime:function(dp,$input){
           console.log("upd_end_date onchange value: " + $input.val());
           $('#upd_end_date').val($input.val());
@@ -327,7 +327,7 @@ $('#calendar').fullCalendar('option', 'height', 700);
         center: 'title',
         right: 'month,agendaWeek,agendaDay,listMonth'
       },
-      weekNumbers: true,
+      weekNumbers: false,
       eventLimit: true, // allow "more" link when too many events
         //defaultDate: '2015-01-20',
         selectable: true,
@@ -339,6 +339,7 @@ $('#calendar').fullCalendar('option', 'height', 700);
 
       dayClick: function(date, jsEvent, view) {
             //date contiene il giorno cliccato sul calendario nel formato: Wed Nov 30 2016 00:00:00 GMT+0000
+            /* Rimosso x SoccerTrainer
             var Time_ClickNuovoPNR;
             Time_ClickNuovoPNR = moment();
             var currentdate = new Date();
@@ -370,6 +371,12 @@ $('#calendar').fullCalendar('option', 'height', 700);
                }
                $('#new_event').modal();
             }
+            */
+            //Modifica x SoccerTrainer
+            $('#start_date').val(date.format("YYYY-MM-DD 08:00") );
+            $('#end_date').val(date.format("YYYY-MM-DD 10:00") );
+            $('#new_event').modal();
+
         }, //FINE dayClick
       eventClick: function(calEvent, jsEvent, view) {
         getPrenDetails(calEvent.id);

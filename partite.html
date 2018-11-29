@@ -221,8 +221,8 @@ $.fn.serializeObject = function()
        minDate: 0,
        minTime: 0,
        step: 15,
-       /*minTime:'08:00',
-       maxTime:'18:00',*/
+       minTime:'00:01',
+       maxTime:'23:59',
        onChangeDateTime:function(dp,$input){
           console.log("start_date onchange value: " + $input.val());
           $('#start_date').val($input.val());
@@ -233,8 +233,8 @@ $.fn.serializeObject = function()
        minDate: 0,
        minTime: 0,
        step: 15,
-       /*minTime:'08:00',
-       maxTime:'22:00',*/
+       minTime:'00:01',
+       maxTime:'23:59',
        onChangeDateTime:function(dp,$input){
           console.log("end_date onchange value: " + $input.val());
           $('#end_date').val($input.val());
