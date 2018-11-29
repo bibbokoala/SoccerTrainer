@@ -99,7 +99,7 @@
         success: function(s){
           var result_insert = s;
           console.log(JSON.stringify(result_insert));
-          window.location = "allenamenti.html";
+          window.location = "riunioni.html";
         } 
       });
     }
@@ -136,7 +136,7 @@
     });
 
     $("#btn_backward").click(function(){
-      window.location = "squadre.html";
+      window.location = "riunioni.html";
     });
 
     $("#btn_cancella_evento").click(function(){
@@ -238,8 +238,6 @@
             var result_insert = s;
             console.log(JSON.stringify(result_insert));
             $('#changeSquad').modal('hide');
-            /*var i = $("#indice_evento").val();
-            window.location = "allenamento.html?id=" + i;*/
             window.location = "riunioni.html";
           } 
         });
