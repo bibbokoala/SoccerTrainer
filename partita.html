@@ -361,9 +361,13 @@
         html += "<span class='glyphicon glyphicon-remove' aria-hidden='true' ></span> ";
         html += "</a>";
         html += "&nbsp;";
-        html += "<a href='javascript:void(0);' class='btn btn-primary pull-right open-addMinutePlayer' data-id='"+lista_calciatori_evento[i].id_evento+"' " + 
-                " data-minuti='"+lista_calciatori_evento[i].minutaggio+"' data-valutaz='"+lista_calciatori_evento[i].valutazione+"' " + 
-                " data-calciatore='"+lista_calciatori_evento[i].id_calciatore+"' data-toggle='modal' data-target='#addMinutePlayer'> ";
+        html += "<a href='javascript:void(0);' class='btn btn-primary pull-right open-addMinutePlayer'  " + 
+                " data-id='"+i+"' "+
+                " data-evento='"+lista_calciatori_evento[i].id_evento+"' " + 
+                " data-minuti='"+lista_calciatori_evento[i].minutaggio+"'  " + 
+                " data-valutaz='"+lista_calciatori_evento[i].valutazione+"' " + 
+                " data-calciatore='"+lista_calciatori_evento[i].id_calciatore+"'  " + 
+                " data-toggle='modal' data-target='#addMinutePlayer'> ";
         html += "<span class='glyphicon glyphicon-time' aria-hidden='true' ></span> ";
         html += "</a>";
         //html += "<a href='./calciatore.html?id=" + indice_calciatore + "' class='btn  btn-"+btn_class+"' style='width:250px;'>";
@@ -559,12 +563,14 @@
     debugLocalStorage();
 
     $(document).on("click", ".open-addMinutePlayer", function () {
-      var myBookId   = $(this).data('id');
+      var myId   = $(this).data('id');
+      var myBookId   = $(this).data('evento');
       var myPlayerId = $(this).data('calciatore');
       var myMinute   = $(this).data('minuti');
       var myValutaz  = $(this).data('valutaz');
-      $("#player_id").val( myPlayerId );
+      $("#indice_evento_minute").val( myId );
       $("#event_id").val( myBookId );
+      $("#player_id").val( myPlayerId );
       $("#minuti").val( myMinute );
       $("#valutaz").val( myValutaz );
     });
@@ -584,7 +590,7 @@
         <div class="modal-body">
           <form id='form_add_event_player_minute'>
             <div class="form-group">
-              <input type='hidden' name='indice_evento_minute' id='indice_evento' />
+              <input type='hidden' name='indice_evento_minute' id='indice_evento_minute' />
               <input type="text" name="id_evento" id="event_id" READONLY value=""/>
               <input type="text" name="id_calciatore" id="player_id" READONLY value=""/>
               <label for='minutaggio'>Minutaggio</label>
