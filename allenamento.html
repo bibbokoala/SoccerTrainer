@@ -317,6 +317,17 @@
       return(0);
     }
 
+    function foundEventIndex(id_evento){
+      var lista = localStorage.getItem("lista_eventi");
+      var lista_eventi = JSON.parse( lista );
+      for (var i=0; i<lista_eventi.length; i++) { 
+        if (lista_eventi[i].id_evento == id_evento){
+          return(i);
+        }
+      }
+      return(0);
+    }
+
     function getSquadPlayers(lista_calciatori_evento){
       //DEBUG 
       console.log("DEBUG lista_calciatori_evento: " + JSON.stringify(lista_calciatori_evento) );
@@ -328,13 +339,14 @@
           btn_class="info";
         }
         var indice_calciatore = foundPlayerIndex(lista_calciatori_evento, i);
+        var index_event = foundPlayerIndex(lista_calciatori_evento[i].id_evento);
         html += "<div class='squadra'>";
         //html += "<a href='./calciatore.html?id=" + indice_calciatore + "' class='btn  btn-"+btn_class+"' style='width:250px;'>";
         html += "<p class='presenza_calciatore'>";
         html += lista_calciatori_evento[i].nome +" "+ lista_calciatori_evento[i].cognome;
         //html += "</a>";
         html += "&nbsp;";
-        html += "<a href='javascript:void(0);' onclick='delEventPlayers(" + i + "," +
+        html += "<a href='javascript:void(0);' onclick='delEventPlayers(" + index_event + "," +
                 lista_calciatori_evento[i].id_calciatore+","+lista_calciatori_evento[i].id_evento+");' class='btn btn-danger pull-right' >";
         html += "<span class='glyphicon glyphicon-remove' aria-hidden='true' ></span> ";
         html += "</a>";
