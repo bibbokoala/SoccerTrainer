@@ -109,8 +109,8 @@
        minDate: 0,
        minTime: 0,
        step: 15,
-       minTime:'08:00',
-       maxTime:'18:00',
+       /*minTime:'08:00',
+       maxTime:'18:00', */
        onChangeDateTime:function(dp,$input){
           console.log("start_date onchange value: " + $input.val());
           $('#start_date').val($input.val());
@@ -121,8 +121,8 @@
        minDate: 0,
        minTime: 0,
        step: 15,
-       minTime:'08:00',
-       maxTime:'22:00',
+       /*minTime:'08:00',
+       maxTime:'22:00', */
        onChangeDateTime:function(dp,$input){
           console.log("end_date onchange value: " + $input.val());
           $('#end_date').val($input.val());
@@ -134,8 +134,8 @@
        minDate: 0,
        minTime: 0,
        step: 15,
-       minTime:'08:00',
-       maxTime:'18:00',
+       /*minTime:'08:00',
+       maxTime:'18:00',*/
        onChangeDateTime:function(dp,$input){
           console.log("upd_start_date onchange value: " + $input.val());
           $('#upd_start_date').val($input.val());
@@ -146,8 +146,8 @@
        minDate: 0,
        minTime: 0,
        step: 15,
-       minTime:'08:00',
-       maxTime:'22:00',
+       /*minTime:'08:00',
+       maxTime:'22:00',*/
        onChangeDateTime:function(dp,$input){
           console.log("upd_end_date onchange value: " + $input.val());
           $('#upd_end_date').val($input.val());
@@ -250,7 +250,7 @@
       var b = moment($("#upd_end_date").val(),'YYYY-MM-DD hh:mm');
       var diffHours = b.diff(a, 'hours');
       //alert(diffHours);
-      if(diffHours<=1){
+      if(diffHours<0){
         $("#upd_start_date").css('background-color', 'red');
         $("#upd_end_date").css('background-color', 'red');
         return false;
@@ -278,7 +278,7 @@
       var b = moment($("#end_date").val(),'YYYY-MM-DD hh:mm');
       var diffHours = b.diff(a, 'hours');
       //alert(diffHours);
-      if(diffHours<=1){
+      if(diffHours<=0){
         $("#start_date").css('background-color', 'red');
         $("#end_date").css('background-color', 'red');
         return false;
