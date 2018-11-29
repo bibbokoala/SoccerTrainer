@@ -117,7 +117,7 @@
         success: function(s){
           var result_insert = s;
           console.log(JSON.stringify(result_insert));
-          window.location = "allenamento.html?id=" + index_squad;
+          window.location = "partita.html?id=" + index_squad;
         } 
       });
     }
@@ -175,7 +175,7 @@
     });
 
     $('#btn_indietro').click(function() {
-      window.location.href = 'allenamenti.html';
+      window.location.href = 'partite.html';
     });
 
     function infoEvent(){
@@ -239,7 +239,7 @@
             $('#changeSquad').modal('hide');
             /*var i = $("#indice_evento").val();
             window.location = "allenamento.html?id=" + i;*/
-            window.location = "allenamenti.html";
+            window.location = "partite.html";
           } 
         });
       }
@@ -264,7 +264,7 @@
             console.log(JSON.stringify(result_insert));
             $('#addSquad').modal('hide');
             var i = $("#indice_evento").val();
-            window.location = "allenamento.html?id=" + i;
+            window.location = "partita.html?id=" + i;
           } 
         });
       }

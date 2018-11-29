@@ -117,7 +117,7 @@
         success: function(s){
           var result_insert = s;
           console.log(JSON.stringify(result_insert));
-          window.location = "allenamento.html?id=" + index_squad;
+          window.location = "riunione.html?id=" + index_squad;
         } 
       });
     }
@@ -175,7 +175,7 @@
     });
 
     $('#btn_indietro').click(function() {
-      window.location.href = 'allenamenti.html';
+      window.location.href = 'riunioni.html';
     });
 
     function infoEvent(){
@@ -192,6 +192,7 @@
       var html = "<div class='alert alert-calciatore' role='alert'>" + 
                  "<font size='5'><B>" + lista_eventi[i].start + "</font><br>" + 
                  "<font size='4'><B>" + lista_eventi[i].title + "</B></font><br>" + 
+                 "<font size='3'><B>" + lista_eventi[i].desc_evento + "</B></font><br>" + 
                  "</div>";
       $("#dati_evento").html(html);
       //servono x il modale changeSquad
@@ -239,7 +240,7 @@
             $('#changeSquad').modal('hide');
             /*var i = $("#indice_evento").val();
             window.location = "allenamento.html?id=" + i;*/
-            window.location = "allenamenti.html";
+            window.location = "riunioni.html";
           } 
         });
       }
@@ -264,7 +265,7 @@
             console.log(JSON.stringify(result_insert));
             $('#addSquad').modal('hide');
             var i = $("#indice_evento").val();
-            window.location = "allenamento.html?id=" + i;
+            window.location = "riunione.html?id=" + i;
           } 
         });
       }
@@ -303,7 +304,7 @@
 
     }
 
-    call();
+    //X LE RIUNIONI NO: call();
 
     function foundPlayerIndex(lista_calciatori_evento, ind){
       var lista = localStorage.getItem("lista_calciatori");
