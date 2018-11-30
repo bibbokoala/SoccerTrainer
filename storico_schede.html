@@ -197,7 +197,10 @@ function delPlayerCard(id, id_calciatore, id_card){
                   html += "<font style='font-size:13px;'>"+ lista[i].data_gara + " </font>";
                   html += "</a>";
                   html += "&nbsp;";
-                  html += "<a href='javascript:void(0);' onclick='delPlayerCard("+idListaPlayer+","+lista[i].id_calciatore+","+lista[i].id_scheda+");' class='btn  btn-danger' >";
+                  html += "<a href='http://linkin.it/Projects/SoccerTrainer/PDF_SchedaValutazione.php?id_scheda="+lista[i].id_scheda+"' class='btn btn-success' >";
+                  html += "&nbsp;<span class='glyphicon glyphicon-download-alt' aria-hidden='true' ></span> ";
+                  html += "</a>&nbsp;";
+                  html += "<a href='javascript:void(0);' onclick='delPlayerCard("+idListaPlayer+","+lista[i].id_calciatore+","+lista[i].id_scheda+");' class='btn  btn-danger' >&nbsp;";
                   html += "<span class='glyphicon glyphicon-minus' aria-hidden='true' ></span> ";
                   html += "</a>";
                   html += "</div>";        

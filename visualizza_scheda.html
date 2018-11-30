@@ -153,6 +153,7 @@ $.fn.serializeObject = function()
       var last_params = window.location.search.substr(1);
       var items = last_params.split("=");
       var id_scheda = items[1];
+      $("#download").attr("href", "http://linkin.it/Projects/SoccerTrainer/PDF_SchedaValutazione.php?id_scheda="+id_scheda+"");
       console.log("parametro - id_scheda=" + id_scheda );
       var lista_schede = JSON.parse(localStorage.getItem("lista_schede"));
       var lista_calciatori = JSON.parse(localStorage.getItem("lista_calciatori"));
@@ -430,6 +431,10 @@ $.fn.serializeObject = function()
 
 
           </div>
+          <a id='download' href='' class='btn btn-lg btn-success' >
+            <span class='glyphicon glyphicon-download-alt' aria-hidden='true' ></span> DOWNLOAD
+          </a>
+          &nbsp;
           <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
