@@ -211,9 +211,11 @@ $.fn.serializeObject = function()
         html += "<font style='font-size:13px;'>"+lista_eventi[i].start + " - "+lista_eventi[i].title+"  </font>";
         html += "</a>";
         html += "&nbsp;";
+        /* nascondo il bottone download
         html += "<a href='http://linkin.it/Projects/SoccerTrainer/PDF_Partita.php?id_partita="+lista_eventi[i].id+"' class='btn btn-success' >";
         html += "&nbsp;<span class='glyphicon glyphicon-download-alt' aria-hidden='true' ></span> ";
         html += "</a>&nbsp;";
+        */
         html += "</div>";
       }
       return(html);
