@@ -189,6 +189,8 @@
       var i = items[1];
       console.log("parametro - id=[" + i + "]");
       var lista_eventi = JSON.parse( localStorage.getItem("lista_eventi") );
+      var id_partita = lista_eventi[i].id;
+      $("#download").attr("href", "http://linkin.it/Projects/SoccerTrainer/PDF_Partita.php?id_partita="+id_partita+"");
       var html = "<div class='alert alert-calciatore' role='alert'>" + 
                  "<font size='5'><B>" + lista_eventi[i].start + "</font><br>" + 
                  "<font size='4'><B>" + lista_eventi[i].title + "</B></font><br>" + 
@@ -543,7 +545,11 @@
           <div class="row">
             <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori_evento" ></div>
           </div> <!-- close div row --> 
-          <button id='btn_indietro' class='btn  btn-warning' >INDIETRO</button> 
+          <a id='download' href='' class='btn btn-lg btn-success' >
+            <span class='glyphicon glyphicon-download-alt' aria-hidden='true' ></span> DOWNLOAD
+          </a>
+          &nbsp;
+          <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
           <br><span id='creatore' style='font-size:12px;'></span>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
@@ -582,7 +588,7 @@
       var myPlayerId = $(this).data('calciatore');
       var myMinute   = $(this).data('minuti');
       var myValutaz  = $(this).data('valutaz');
-      $("#indice_evento_minute").val( myId );
+      //$("#indice_evento_minute").val( myId );
       $("#event_id").val( myBookId );
       $("#player_id").val( myPlayerId );
       $("#minuti").val( myMinute );
