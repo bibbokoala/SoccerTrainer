@@ -116,6 +116,12 @@ $.fn.serializeObject = function()
       window.location = "home.html";
     });
 
+    $("#btn_ricerca").click(function(){
+      var stringa = $('#ricerca').val();
+      localStorage.setItem('ricerca', stringa);
+      window.location = "calciatori.html";
+    });
+
     $('#btn_exit').click(function() {
       if (confirm("Chiudere l'applicazione?")) {
         navigator.app.exitApp();
@@ -165,15 +171,19 @@ $.fn.serializeObject = function()
       if (id_profilo==null)
           id_profilo="3";
       var random = Math.random();
+      //GESTIONE RICERCA CALCIATORI
+      var stringa = localStorage.getItem('ricerca');
+      $('#ricerca').val(stringa);
+
       var xmlhttp = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&id_profilo="+id_profilo+"&ricerca="+stringa+"&random="+random;
       console.log("url:"+url);
       xmlhttp.onreadystatechange=function() {
           if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
               var lista = xmlhttp.responseText;
               localStorage.setItem("lista_calciatori", lista);
               var lista_calciatori = JSON.parse( lista );
-              var html = getPlayers(lista_calciatori);
+              var html = getPlayers(lista_calciatori, stringa);
               $("#lista_calciatori").html(html);
           }
       }
@@ -183,10 +193,10 @@ $.fn.serializeObject = function()
 
     call();
 
-    function getPlayers(lista_calciatori){
+    function getPlayers(lista_calciatori, stringa){
       //DEBUG console.log("DEBUG lista_calciatori: " + JSON.stringify(lista_calciatori) );
       var matricola = $("#matricola").val();
-      var html = "<h4>LISTA CALCIATORI</h4>";
+      var html = "<br><b>Lista Calciatori " + stringa + "</b>";
       for (i=0; i<lista_calciatori.length; i++) { 
         var btn_class = "primary";
         if (lista_calciatori[i].creatore!=matricola){
@@ -280,11 +290,20 @@ $.fn.serializeObject = function()
 
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="nuovo_calciatore" >
-            <button class='btn  btn-primary' data-toggle='modal' data-target='#addPlayer' >
-              <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
-              nuovo calciatore
-            </button>
-        </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+          <button class='btn  btn-primary' data-toggle='modal' data-target='#addPlayer' >
+            <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
+            nuovo calciatore
+          </button>
+        </div> 
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
+          <br>
+          <div class="input-group">
+            <input type="text" id='ricerca' class="form-control" placeholder="Cerca x iniziali cognome" onchange="javascript:{this.value = this.value.toUpperCase(); }" >
+                <span class="input-group-btn">
+                  <button class="btn btn-primary" id='btn_ricerca' type="button"><i class="fa fa-search fa-fw"></i>&nbsp;</button>
+                </span>
+          </div>
+        </div> 
       </div> <!-- close div row --> 
       <div class="row">
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori" >
