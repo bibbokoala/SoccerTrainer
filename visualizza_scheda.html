@@ -103,7 +103,7 @@ $.fn.serializeObject = function()
       }
     });
 
-    $('#btn_backward').click(function() {
+    $('#btn_backward,#btn_indietro').click(function() {
       window.history.back();
     });
 
@@ -137,9 +137,11 @@ $.fn.serializeObject = function()
       }
     });
 
+/*
     $('#btn_indietro').click(function() {
       window.location.href = 'home.html';
     });
+*/
 
     Object.size = function(obj) {
         var size = 0, key;

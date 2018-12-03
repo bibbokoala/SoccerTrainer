@@ -121,7 +121,7 @@ function delPlayerCard(id, id_calciatore, id_card){
       }
     });
 
-    $("#btn_backward").click(function(){
+    $("#btn_backward,#btn_indietro").click(function(){
       window.location = "calciatore.html?id=" + $("#id").val();
     });
 
@@ -155,9 +155,11 @@ function delPlayerCard(id, id_calciatore, id_card){
       }
     });
 
+    /*
     $('#btn_indietro').click(function() {
       window.location.href = 'home.html';
     });
+    */
 
     Object.size = function(obj) {
         var size = 0, key;

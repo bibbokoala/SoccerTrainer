@@ -176,6 +176,10 @@ $.fn.serializeObject = function()
       if (stringa!=null){
         $('#ricerca').val(stringa);
       }
+      else{
+        stringa="";
+        $('#ricerca').val(stringa); 
+      }
       var xmlhttp = new XMLHttpRequest();
       var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&id_profilo="+id_profilo+"&ricerca="+stringa+"&random="+random;
       console.log("url:"+url);
