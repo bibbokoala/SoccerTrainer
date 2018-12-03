@@ -133,10 +133,20 @@ $.fn.serializeObject = function()
           success: function(s){
             var result_insert = s;
             console.log(JSON.stringify(result_insert));
-            window.location = "calciatori.html";
+            if ($("#id").val()>=0){
+              window.location = "storico_schede.html?id=" + $("#id").val();
+            }
+            else{
+              window.location = "calciatori.html";;
+            }
           } 
         });
-        window.location = "calciatori.html";
+        if ($("#id").val()>=0){
+          window.location = "storico_schede.html?id=" + $("#id").val();
+        }
+        else{
+          window.location = "calciatori.html";;
+        }
       }
     });
 
