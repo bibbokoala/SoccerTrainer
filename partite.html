@@ -175,17 +175,26 @@ $.fn.serializeObject = function()
       if (id_profilo==null)
           id_profilo="1";
       var random = Math.random();
-
+      // GESTIONE MESE DA VISUALIZZARE
+      var mese = localStorage.getItem('mese_vis');
+      if (mese==null){
+        var d = new Date();
+        var month = d.getMonth()+1;
+        var year = d.getFullYear();
+        mese = year +'-'+ month;
+      }
+      $('#monthPicker').val(mese);
+      localStorage.setItem('mese_vis',mese);
       //LISTA PARTITE
       var xmlhttpSquad = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetEvents.php?matricola="+matricola+"&tipo_evento=PARTITA&id_profilo="+id_profilo+"&random="+random;
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetEvents.php?matricola="+matricola+"&tipo_evento=PARTITA&id_profilo="+id_profilo+"&random="+random+"&mese="+mese;
       console.log("url:"+url);
       xmlhttpSquad.onreadystatechange=function() {
         if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {
             var lista = xmlhttpSquad.responseText;
             localStorage.setItem("lista_eventi", lista);
             var lista_eventi = JSON.parse( lista );
-            var html = getEvents(lista_eventi);
+            var html = getEvents(lista_eventi, mese);
             $("#lista_eventi").html(html);
         }
       }
@@ -196,11 +205,11 @@ $.fn.serializeObject = function()
 
     call();
 
-    function getEvents(lista_eventi){
+    function getEvents(lista_eventi, mese){
       //DEBUG 
       console.log("DEBUG lista_eventi: " + JSON.stringify(lista_eventi) );
       var matricola = $("#matricola_squad").val();
-      var html = "<h4>PARTITE</h4>";
+      var html = "<br><b>Lista Partite "+mese+"</b>";
       for (i=0; i<lista_eventi.length; i++) { 
         var btn_class = "danger";
         if (lista_eventi[i].creatore!=matricola){
@@ -220,6 +229,20 @@ $.fn.serializeObject = function()
       }
       return(html);
     }
+
+    $('#monthPicker').datetimepicker({
+       format:'Y-m',
+       timepicker: false,
+       yearStart: 2017,
+       yearEnd: 2020,
+       closeOnDateSelect:true,
+       onChangeDateTime:function(dp,$input){
+          console.log("monthPicker onchange value: " + $input.val());
+          $('#monthPicker').val($input.val());
+          localStorage.setItem('mese_vis',$input.val());
+          call();
+       }
+    });
 
     $('#start_date').datetimepicker({
        format:'Y-m-d H:i',
@@ -245,6 +268,8 @@ $.fn.serializeObject = function()
           $('#end_date').val($input.val());
        }
     });
+    //DOCUMENTAZIONE: https://xdsoft.net/jqplugins/datetimepicker/
+    $.datetimepicker.setLocale('it');
 
     $('.modal').on('shown.bs.modal', function() {
       $(this).find('[autofocus]').focus();
@@ -315,7 +340,12 @@ $.fn.serializeObject = function()
               <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
               PARTITA 
             </button>
-        </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+        </div>
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
+          <br>
+          <label for='monthPicker' >Scegli il mese da visualizzare</label>
+            <input type="text" class="form-control" id="monthPicker" name="monthPicker"/>  
+        </div>
       </div> <!-- close div row --> 
       <div class="row">
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_eventi" ></div>
