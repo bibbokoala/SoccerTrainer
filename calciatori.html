@@ -173,8 +173,9 @@ $.fn.serializeObject = function()
       var random = Math.random();
       //GESTIONE RICERCA CALCIATORI
       var stringa = localStorage.getItem('ricerca');
-      $('#ricerca').val(stringa);
-
+      if (stringa!=null){
+        $('#ricerca').val(stringa);
+      }
       var xmlhttp = new XMLHttpRequest();
       var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&id_profilo="+id_profilo+"&ricerca="+stringa+"&random="+random;
       console.log("url:"+url);
@@ -298,7 +299,8 @@ $.fn.serializeObject = function()
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
           <br>
           <div class="input-group">
-            <input type="text" id='ricerca' class="form-control" placeholder="Cerca x iniziali cognome" onchange="javascript:{this.value = this.value.toUpperCase(); }" >
+            <input type="text" id='ricerca' class="form-control" placeholder="Cerca x iniziali cognome" value="" 
+                   onchange="javascript:{this.value = this.value.toUpperCase(); }" >
                 <span class="input-group-btn">
                   <button class="btn btn-primary" id='btn_ricerca' type="button"><i class="fa fa-search fa-fw"></i>&nbsp;</button>
                 </span>
