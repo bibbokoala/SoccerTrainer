@@ -137,8 +137,10 @@ $.fn.serializeObject = function()
             window.location = "storico_schede.html?id=" + $("#id").val();
           } 
         });
+        //window.location = "calciatore.html?id=" + $("#id").val();
         window.location = "storico_schede.html?id=" + $("#id").val();
-      }
+      } //chiude confirm
+
     });
 
     $("#logo_big").click(function(){
@@ -186,7 +188,7 @@ $.fn.serializeObject = function()
     });
 
     $('#btn_indietro').click(function() {
-      window.location.href = 'home.html';
+      window.location.href = 'calciatori.html';
     });
 
     function infoPlayer(){
@@ -556,11 +558,9 @@ $.fn.serializeObject = function()
                   </table>
                 </div>
               </div>
-
-              <br>
-              <button id="btn_add_player_card" class="btn btn-lg btn-success">INSERISCI</button>
-              <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
             </form>
+            <button id="btn_add_player_card" class="btn btn-lg btn-success">INSERISCI</button>
+            <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
           </div><br>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 

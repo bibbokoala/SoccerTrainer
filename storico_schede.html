@@ -121,6 +121,10 @@ function delPlayerCard(id, id_calciatore, id_card){
       }
     });
 
+    $("#btn_nuova_scheda").click(function(){
+      window.location = "nuova_scheda.html?id=" + $("#id").val();
+    });
+
     $("#btn_backward,#btn_indietro").click(function(){
       window.location = "calciatore.html?id=" + $("#id").val();
     });
@@ -301,7 +305,8 @@ function delPlayerCard(id, id_calciatore, id_card){
           <div id='dati_calciatore'></div>
           <div id='lista_schede'></div>
           <input type='hidden' name='id' id='id' >
-          <button id='btn_indietro' class='btn  btn-warning' >INDIETRO</button> 
+          <button id='btn_nuova_scheda' class='btn btn-success' ><span class='glyphicon glyphicon-plus' aria-hidden='true' ></span> NUOVA SCHEDA</button>
+          <button id='btn_indietro' class='btn btn-warning' >INDIETRO</button> 
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->
