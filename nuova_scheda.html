@@ -99,8 +99,7 @@ $.fn.serializeObject = function()
       if (confirm("Vuoi aggiungere una nuova scheda?")) {
         var formData = $("#form_add_player_card").serialize();
         console.log(formData);
-        //DEBUG 
-        alert(formData);
+        //DEBUG alert(formData);
 
         //check dei campi obbligatori club gara e data_gara
         var club = $("#club").val();
@@ -135,20 +134,10 @@ $.fn.serializeObject = function()
             var result_insert = s;
             console.log(JSON.stringify(result_insert));
             localStorage.setItem('result_insert', JSON.stringify(result_insert) );
-            if ($("#id").val()>=0){
-              window.location = "storico_schede.html?id=" + $("#id").val();
-            }
-            else{
-              window.location = "calciatori.html";
-            }
+            window.location = "storico_schede.html?id=" + $("#id").val();
           } 
         });
-        if ($("#id").val()>=0){
-          window.location = "storico_schede.html?id=" + $("#id").val();
-        }
-        else{
-          window.location = "calciatori.html";
-        }
+        window.location = "storico_schede.html?id=" + $("#id").val();
       }
     });
 
