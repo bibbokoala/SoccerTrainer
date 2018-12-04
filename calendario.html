@@ -16,6 +16,8 @@
    <script src="js/bootstrap-datepicker.min.js"></script>
    <script src="js/menu.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
+
 <script type="text/javascript" charset="utf-8">
     // Call onDeviceReady when Cordova is loaded.
     // At this point, the document has loaded but cordova-1.8.1.js has not.
@@ -54,6 +56,10 @@
         navigator.app.exitApp();
       }
     }
+    /* NON SO SE PUO' SERVIRE
+    localStorage.removeItem('inizio');
+    localStorage.removeItem('fine');
+    */
 </script>
     <link href="fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css"/>
     <style>
@@ -166,22 +172,29 @@
     $("#logo_big").click(function(){
       window.location = "home.html";
     });
-
     var matricola = localStorage.getItem("matricola");
     $("#matricola").val(matricola);
 
-    //RECUPERO TUTTI GLI EVENTI X CREATORE:
-    var remote_url = "http://linkin.it/Projects/SoccerTrainer/STGetEvents.php";
-    $.ajax({
-      url: remote_url,
-          type: 'POST', // Send post data
-          data: 'matricola=' + matricola,
-          async: false,
-          success: function(s){
-            obj_events = s;
-            console.log(JSON.stringify(obj_events));
-          }
-    });
+    function call(){
+      var inizio = localStorage.getItem("inizio");
+      var fine = localStorage.getItem("fine");
+      console.log("removeEvents");
+      $('#calendar').fullCalendar('removeEvents');
+      //RECUPERO TUTTI GLI EVENTI X CREATORE:
+      var remote_url = "http://linkin.it/Projects/SoccerTrainer/STGetEvents.php";
+      $.ajax({
+        url: remote_url,
+            type: 'POST', // Send post data
+          data : { matricola: matricola , inizio: inizio , fine: fine },
+            async: false,
+            success: function(s){
+              obj_events = s;
+              console.log(JSON.stringify(obj_events));
+              renderEvents();
+            }
+      });
+    }
+    call();
 
     //RECUPERO LE SQUADRE X CREATORE:
     var remote_url = "http://linkin.it/Projects/SoccerTrainer/STGetSquads.php";
@@ -336,7 +349,35 @@ $('#calendar').fullCalendar('option', 'height', 700);
             return event.rendering != 'background';
         },
       //events: obj_events,
-
+      eventAfterAllRender: function(date, jsEvent, view) {
+          var view = $('#calendar').fullCalendar('getView');
+          if (view.name=='month') {
+          console.log("The view's name is " + view.name);
+          console.log("The view's title is " + view.title);
+          console.log("The view's start is " + view.start);
+          console.log("The view's end is " + view.end);
+          console.log("The view's intervalStart is " + view.intervalStart);
+          console.log("The view's intervalEnd is " + view.intervalEnd);
+          var mesi = ["01","02","03","04","05","06","07","08","09","10","11","12","01"];
+          var date = new Date(view.start);
+          var month = date.getMonth();
+          var year = date.getFullYear();
+          var inizio = year+'-'+mesi[month]+'-31';
+          var date = new Date(view.end);
+          var month = date.getMonth();
+          var year = date.getFullYear();
+          var fine = year+'-'+mesi[month]+'-01';
+          console.log("mese between "+inizio + " and " + fine);
+          var matricola = localStorage.getItem('matricola');
+          $("#download").attr("href", "http://linkin.it/Projects/SoccerTrainer/PDF_Calendario.php?matricola="+matricola+"&inizio="+inizio+"&fine="+fine);
+          $("#download").show();
+          if(localStorage.getItem('inizio')!=inizio){
+            localStorage.setItem('inizio',inizio);
+            localStorage.setItem('fine',fine);
+            call();
+          }
+        }
+      },
       dayClick: function(date, jsEvent, view) {
             //date contiene il giorno cliccato sul calendario nel formato: Wed Nov 30 2016 00:00:00 GMT+0000
             /* Rimosso x SoccerTrainer
@@ -408,44 +449,48 @@ $('#calendar').fullCalendar('option', 'height', 700);
     });  /* close fullCalendar */
 
 //RENDERIZZO GLI EVENTI SUL CALENDARIO:
-    //console.log(JSON.stringify(obj_events));
-    for(i = 0; i < obj_events.length; i++) {
-      /*DEBUG element
-      console.log("id: " + obj_events[i].id);
-      console.log("title: " + obj_events[i].title);
-      console.log("start: " + obj_events[i].start);
-      console.log("end: " + obj_events[i].end);
-      console.log("status: " + status);
-      */
-      var status = obj_events[i].status;
-      var backgroundColor = "#CCCCCC";
-      var textColor = "#000";
-      if ( (status.localeCompare("PARTITA")==0) )
-      {
-          backgroundColor = "#f56954";
-          textColor = "#FFF";
+    function renderEvents(){
+      //console.log(JSON.stringify(obj_events));
+      for(i = 0; i < obj_events.length; i++) {
+        /*DEBUG element
+        console.log("id: " + obj_events[i].id);
+        console.log("title: " + obj_events[i].title);
+        console.log("start: " + obj_events[i].start);
+        console.log("end: " + obj_events[i].end);
+        console.log("status: " + status);
+        */
+        var status = obj_events[i].status;
+        var backgroundColor = "#CCCCCC";
+        var textColor = "#000";
+        if ( (status.localeCompare("PARTITA")==0) )
+        {
+            backgroundColor = "#f56954";
+            textColor = "#FFF";
+        }
+        if ( (status.localeCompare("ALLENAMENTO")==0) )
+        {
+            backgroundColor = "#00a65a";
+            textColor = "#FFF";
+        }
+        if ( (status.localeCompare("RIUNIONE")==0) )
+        {
+            backgroundColor = "#001f3f";
+            textColor = "#FFF";
+        }
+
+        $('#calendar').fullCalendar('renderEvent', {
+            "id": obj_events[i].id, 
+            "title": obj_events[i].title,
+            "start": obj_events[i].start,
+            "end": obj_events[i].end ,
+            "allDay": false,
+            "backgroundColor": backgroundColor,
+            "textColor": textColor,
+            "borderColor": "#333" 
+          },true);
       }
-      if ( (status.localeCompare("ALLENAMENTO")==0) )
-      {
-          backgroundColor = "#00a65a";
-          textColor = "#FFF";
-      }
-      if ( (status.localeCompare("RIUNIONE")==0) )
-      {
-          backgroundColor = "#001f3f";
-          textColor = "#FFF";
-      }
-      $('#calendar').fullCalendar('renderEvent', {
-          "id": obj_events[i].id, 
-          "title": obj_events[i].title,
-          "start": obj_events[i].start,
-          "end": obj_events[i].end ,
-          "allDay": false,
-          "backgroundColor": backgroundColor,
-          "textColor": textColor,
-          "borderColor": "#333" 
-        },true);
     }
+    //renderEvents();
 
   }); /* close document ready */
 
@@ -529,6 +574,11 @@ $('#calendar').fullCalendar('option', 'height', 700);
           <div id='calendar' style="margin-top: 20px;margin-right: -30px;margin-left: -30px;"></div>
         </div>
       </div>
+      <br>&nbsp;<br>
+      <a id='download' class='btn btn-warning' href='' >
+        <span class="glyphicon glyphicon-download" aria-hidden="true" ></span>&nbsp;&nbsp;DOWNLOAD PDF
+      </a>
+
     </div>
   </div>
 </body>
