@@ -199,9 +199,9 @@
       var i = items[1];
       console.log("parametro - id=[" + i + "]");
       var lista_squadre = JSON.parse( localStorage.getItem("lista_squadre") );
-      var html = "<div class='alert alert-calciatore' role='alert'>" + 
-                 "<font size='5'><B>" + lista_squadre[i].squadra + "</font><br>" + 
-                 "<font size='4'><B>" + lista_squadre[i].desc_squadra + "</B></font><br>" + 
+      var html = "<div class='alert alert-default' role='alert'>" + 
+                 "<span class='alert-default-title'>" + lista_squadre[i].squadra + "</span><br>" + 
+                 "<span class='alert-default-desc'>" + lista_squadre[i].desc_squadra + "</span><br>" + 
                  "</div>";
       $("#dati_squadra").html(html);
       //servono x il modale changeSquad
@@ -330,24 +330,27 @@
       //DEBUG 
       console.log("DEBUG lista_calciatori_squadra: " + JSON.stringify(lista_calciatori_squadra) );
       var matricola = localStorage.getItem("matricola");
-      var html = "<b>LISTA CALCIATORI ASSOCIATI</b><br>";
+      var html = "<font size=2 >Lista Calciatori Associati</font><br>";
       for (var i=0; i<lista_calciatori_squadra.length; i++) { 
-        var btn_class = "primary";
-        if (lista_calciatori_squadra[i].creatore!=matricola){
-          btn_class="info";
-        }
         var indice_calciatore = foundPlayerIndex(lista_calciatori_squadra, i);
         var indice_squadra = foundSquadIndex(lista_calciatori_squadra, i);
-        html += "<div class='squadra'>";
-        html += "<a href='./calciatore.html?id=" + indice_calciatore + "' class='btn  btn-"+btn_class+"' style='width:250px;'>";
-        html += "<font style='font-size:13px;'>"+lista_calciatori_squadra[i].nome +" "+ lista_calciatori_squadra[i].cognome + " </font>";
+        var bgcolor = "#337ab7";
+        if (lista_calciatori_squadra[i].creatore!=matricola){
+          bgcolor="#80c0f6";
+        }
+        html += "<div class='calciatore'>";
+        html += "<a href='./calciatore.html?id=" + indice_calciatore + "' >";
+        html += "<span class='glyphicon glyphicon-user' aria-hidden='true' ";
+        html += "      style='background-color:"+bgcolor+";color:#FFF;font-size:17px;padding:3px;border-radius:3px;' >";
+        html += "</span>&nbsp;&nbsp;";
+        html += ""  +lista_calciatori_squadra[i].cognome + " " + lista_calciatori_squadra[i].nome + "";
         html += "</a>";
-        html += "&nbsp;";
         html += "<a href='javascript:void(0);' onclick='delSquadPlayers(" + indice_squadra + "," +
-                lista_calciatori_squadra[i].id_calciatore+","+lista_calciatori_squadra[i].id_squadra+");' class='btn  btn-danger' >";
+                lista_calciatori_squadra[i].id_calciatore+","+lista_calciatori_squadra[i].id_squadra+");' class='btn pull-right btn-danger' >";
         html += "<span class='glyphicon glyphicon-remove' aria-hidden='true' ></span> ";
         html += "</a>";
         html += "</div>";
+
       }
       return(html);
     }
@@ -379,6 +382,13 @@
   });  
 </script>
 <style>
+  .calciatore{
+    font-size: 13px;
+    background: #FFF;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #e6e6e6;
+    line-height: 25px;
+  }
   .squadra{
     background: #FFF;
     margin-bottom: 5px;
@@ -401,6 +411,9 @@
           <div class="navbar-header" style="line-height: 56px;" id="testata" >
             <a id="btn_backward" type="button" class='.navbar-toggle pull-left' style="color: #FFF;" >
                &nbsp;&nbsp;&nbsp;<span class="  glyphicon glyphicon-step-backward" aria-hidden="true" style="color: #FFF;" ></span>
+            </a>
+            <a id="btn_home" href="home.html" type="button" class='.navbar-toggle' style="color: #000;" >
+               <span class="glyphicon glyphicon-home" aria-hidden="true" ></span>&nbsp;&nbsp;&nbsp;
             </a>
             <b id='logo_big' >Soccer Trainer</b>
             <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
@@ -441,27 +454,29 @@
 
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
-          <div id='dati_squadra' ></div>
-          <div class='alert alert-identificativi' role='alert'>
-            <input type='hidden' name='id_squadra' id='id_squadra' >
-            <input type='hidden' name='indice_squadra' id='indice_squadra' >
-            <button id='btn_associa_calciatore' class='btn  btn-success' data-toggle='modal' data-target='#addSquadPlayer' >
-              <span class='glyphicon glyphicon-plus' aria-hidden='true' ></span> 
-              <span class='glyphicon glyphicon-user' aria-hidden='true' ></span> 
-            </button>
-            <button id='btn_modifica_squadra' class='btn  btn-warning' data-toggle='modal' data-target='#changeSquad' >
-              <span class='glyphicon glyphicon-pencil' aria-hidden='true' ></span> 
-              <span class='glyphicon glyphicon-transfer' aria-hidden='true' ></span> 
-            </button>
-            <button id='btn_cancella_squadra' class='btn  btn-danger' >
-              <span class='glyphicon glyphicon-remove' aria-hidden='true' ></span> 
-              <span class='glyphicon glyphicon-transfer' aria-hidden='true' ></span> 
+          <input type='hidden' name='id_squadra' id='id_squadra' >
+          <input type='hidden' name='indice_squadra' id='indice_squadra' >
+          <div class='pull-left' >
+            <button id='btn_indietro' class='btn  btn-primary' >
+              &nbsp;<span class='glyphicon glyphicon-chevron-left' aria-hidden='true' ></span> &nbsp;
             </button>
           </div>
+          <div class="btn-group pull-right">
+            <button id='btn_associa_calciatore' type="button" class="btn btn-success" data-toggle='modal' data-target='#addSquadPlayer'>
+              &nbsp;<span class='glyphicon glyphicon-plus' aria-hidden='true' ></span>&nbsp;
+            </button>
+            <button id='btn_modifica_squadra' type="button" class="btn btn-warning" data-toggle='modal' data-target='#changeSquad'>
+              &nbsp;<span class='glyphicon glyphicon-pencil' aria-hidden='true' ></span>&nbsp;
+            </button>
+            <button id='btn_cancella_squadra' type="button" class="btn btn-danger">
+              &nbsp;<span class='glyphicon glyphicon-remove' aria-hidden='true' ></span>&nbsp;
+            </button>
+          </div>
+          <br><br>
+          <div id='dati_squadra' ></div>
           <div class="row">
             <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori_squadra" ></div>
           </div> <!-- close div row --> 
-          <button id='btn_indietro' class='btn  btn-warning' >INDIETRO</button> 
           <br><span id='creatore' style='font-size:12px;'></span>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
@@ -512,7 +527,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Chiudi</button>
           <button type="button" class="btn btn-success" id='btn_add_squad_player' >Salva</button>
         </div>
       </div>
@@ -544,7 +559,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Chiudi</button>
           <button type="button" class="btn btn-success" id='btn_change_squad' >Salva</button>
         </div>
       </div>

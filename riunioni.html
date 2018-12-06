@@ -14,6 +14,7 @@
    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
    <script src="js/jquery.min.js"></script>
    <!-- DOCUMENTAZIONE DATEPICKER: https://bootstrap-datepicker.readthedocs.io/en/stable/index.html -->
+   <script src="js/bootstrap-datepicker.min.js" ></script>
   <script src="js/jquery.datetimepicker.full.min.js" type="text/javascript"></script>
   <script src="js/moment_with_locales.js"></script>
    <script src="js/menu.js"></script>
@@ -176,16 +177,27 @@ $.fn.serializeObject = function()
           id_profilo="1";
       var random = Math.random();
 
+      // GESTIONE MESE DA VISUALIZZARE
+      var mese = localStorage.getItem('mese_vis');
+      if (mese==null){
+        var d = new Date();
+        var month = d.getMonth()+1;
+        var year = d.getFullYear();
+        mese = year +'-'+ month;
+      }
+      $('#monthPicker').val(mese);
+      localStorage.setItem('mese_vis',mese);
+
       //LISTA PARTITE
       var xmlhttpSquad = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetEvents.php?matricola="+matricola+"&tipo_evento=RIUNIONE&id_profilo="+id_profilo+"&random="+random;
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetEvents.php?matricola="+matricola+"&tipo_evento=RIUNIONE&id_profilo="+id_profilo+"&random="+random+"&mese="+mese;
       console.log("url:"+url);
       xmlhttpSquad.onreadystatechange=function() {
         if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {
             var lista = xmlhttpSquad.responseText;
             localStorage.setItem("lista_eventi", lista);
             var lista_eventi = JSON.parse( lista );
-            var html = getEvents(lista_eventi);
+            var html = getEvents(lista_eventi, mese);
             $("#lista_eventi").html(html);
         }
       }
@@ -196,25 +208,49 @@ $.fn.serializeObject = function()
 
     call();
 
-    function getEvents(lista_eventi){
+    function getEvents(lista_eventi, mese){
       //DEBUG 
       console.log("DEBUG lista_eventi: " + JSON.stringify(lista_eventi) );
       var matricola = $("#matricola_squad").val();
-      var html = "<h4>PARTITE</h4>";
+      var html = "<br><b>Lista riunioni "+mese+"</b>";
       for (i=0; i<lista_eventi.length; i++) { 
         var btn_class = "danger";
         if (lista_eventi[i].creatore!=matricola){
           btn_class="primary";
         }
         html += "<div class='riunione'>";
-        html += "<a href='./riunione.html?id=" + i + "' class='btn  btn-"+btn_class+"' style='width: 300px;'>";
+        html += "<a href='./riunione.html?id=" + i + "' class='btn btn-block btn-"+btn_class+"' >";
         html += "<font style='font-size:13px;'>"+lista_eventi[i].start + " - "+lista_eventi[i].title+"  </font>";
         html += "</a>";
-        html += "&nbsp;";
         html += "</div>";
       }
       return(html);
     }
+
+    $.fn.datepicker.dates['it'] = {
+      days: ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"],
+      daysShort: ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"],
+      daysMin: ["Do", "Lu", "Ma", "Me", "Gi", "Ve", "Sa"],
+      months: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+      monthsShort: ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"],
+      today: "Oggi",
+      monthsTitle: "Mesi",
+      clear: "Cancella",
+      weekStart: 1,
+      format: "dd/mm/yyyy"
+    };
+
+    $('#monthPicker').datepicker({
+      autoclose: true,
+      minViewMode: 1,
+      orientation: 'top',
+      language: 'it',
+      format: 'yyyy-mm'
+      }).on('changeDate', function(selected){
+          console.log("monthPicker onchange val: " + $('#monthPicker').val() );
+          localStorage.setItem('mese_vis',$('#monthPicker').val());
+          call();
+    }); 
 
     $('#start_date').datetimepicker({
        format:'Y-m-d H:i',
@@ -267,6 +303,9 @@ $.fn.serializeObject = function()
             </button>
           <!-- solo per la pagina index.html NON ESISTE IL MENU ed il logo ha un margine di 40 pixel -->
           <div class="navbar-header" style="line-height: 56px;" id="testata" >
+            <a id="btn_home" href="home.html" type="button" class='.navbar-toggle' style="color: #000;" >
+               <span class="glyphicon glyphicon-home" aria-hidden="true" ></span>&nbsp;&nbsp;&nbsp;
+            </a>
             <b id='logo_big' >Soccer Trainer</b>
             <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
                <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
@@ -306,11 +345,16 @@ $.fn.serializeObject = function()
 
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
-            <button class='btn btn-primary' data-toggle='modal' data-target='#new_event' >
-              <span class="glyphicon glyphicon-plus" aria-hidden="true" ></span> 
-              RIUNIONE 
+          <div class="title">Lista Riunioni
+            <button class='btn pull-right btn-success add' data-toggle='modal' data-target='#new_event' >
+              &nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;
             </button>
+          </div>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
+          <label for='monthPicker' >Scegli il mese da visualizzare</label>
+            <input type="text" class="form-control" id="monthPicker" name="monthPicker"/>  
+        </div> 
       </div> <!-- close div row --> 
       <div class="row">
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_eventi" ></div>
