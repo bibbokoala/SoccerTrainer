@@ -263,7 +263,8 @@
             var result_insert = s;
             console.log(JSON.stringify(result_insert));
             $('#addSquad').modal('hide');
-            window.location = "squadre.html";
+            var i = $("#indice_squadra").val();
+            window.location = "squadra.html?id="+i;
           } 
         });
       }
