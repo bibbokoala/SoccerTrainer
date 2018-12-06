@@ -92,9 +92,14 @@ html {
 .alert-default-title {
     font-size: 20px;
     font-weight: bold;
+    border-bottom:1px solid #E6E6E6;
 }
 .alert-default-desc {
     font-size: 12px;
+}
+.alert-default-descPlayer {
+    font-size: 12px;
+    margin-left: 10px;
 }
 
 .alert-identificativi {
