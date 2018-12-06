@@ -118,7 +118,7 @@ function delPlayerCard(id, id_calciatore, id_card){
       success: function(s){
         var result_insert = s;
         console.log(JSON.stringify(result_insert));
-        window.location = "storico_schede.html?id=" + id ;
+        window.location = "calciatore.html?id=" + id ;
       } 
     });
   }
@@ -141,9 +141,11 @@ function delPlayerCard(id, id_calciatore, id_card){
       window.location = "nuova_scheda.html?id=" + $("#indice_calciatore").val();
     });
 
+/***
     $("#btn_storico_schede").click(function(){
       window.location = "storico_schede.html?id=" + $("#indice_calciatore").val();
     });
+***/
 
     $("#btn_backward").click(function(){
       window.location = "calciatori.html";
@@ -348,23 +350,26 @@ function delPlayerCard(id, id_calciatore, id_card){
     <nav class="navbar navbar-default navbar-fixed-top gradienti">
       <div class="container">
         <div class="navbar-header">
-          <!-- BUTTON FOR TOGGLE LEFT MENU -->
+          <!-- BUTTON FOR TOGGLE LEFT MENU 
             <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
              <span class="icon-bar" style="background-color: #FFF;"></span>
              <span class="icon-bar" style="background-color: #FFF;"></span>
              <span class="icon-bar" style="background-color: #FFF;"></span>
             </button>
+          -->
           <!-- solo per la pagina index.html NON ESISTE IL MENU ed il logo ha un margine di 40 pixel -->
           <div class="navbar-header" style="line-height: 56px;" id="testata" >
-            <a id="btn_backward" type="button" class='.navbar-toggle pull-left' style="color: #FFF;" >
-               &nbsp;&nbsp;&nbsp;<span class="  glyphicon glyphicon-step-backward" aria-hidden="true" style="color: #FFF;" ></span>
+            <a id="btn_home" href="home.html" class="navbar-toggle" style="color: #000;" >
+               <span class="glyphicon glyphicon-home" aria-hidden="true" ></span>
             </a>
             <b id='logo_big' >Soccer Trainer</b>
+            <!--
             <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
                <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
             </a>
-            <a id="btn_logout" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
-               <span class="  glyphicon glyphicon-log-out" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
+            -->
+            <a id="btn_logout" type="button" class='.navbar-toggle pull-right' >
+               <span class="  glyphicon glyphicon-log-out" aria-hidden="true" style="color: #000;" ></span>&nbsp;&nbsp;&nbsp;
             </a>
           </div>
         </div>
@@ -375,7 +380,7 @@ function delPlayerCard(id, id_calciatore, id_card){
       <div class="row">
 
 
-      <!-- sidebar LEFT MENU -->      <!-- sidebar -->
+      <!-- sidebar LEFT MENU
       <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
         <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
           <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
@@ -392,9 +397,9 @@ function delPlayerCard(id, id_calciatore, id_card){
             <li><a href="impostazioni.html"> <span class="glyphicon glyphicon-info-sign" aria-hidden="true" ></span>&nbsp;&nbsp;INFORMAZIONI</a></li>
             <li><a id="btn_logout"> <span class="glyphicon glyphicon-log-out" aria-hidden="true" ></span>&nbsp;&nbsp;LOGOUT</a></li>
           </ul>
-        </div> <!-- chiude prova -->  
+        </div> 
       </div>
-
+      -->
 
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
@@ -501,7 +506,7 @@ function delPlayerCard(id, id_calciatore, id_card){
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Chiudi</button>
           <button type="button" class="btn btn-success" id='btn_change_player' >Salva</button>
         </div>
       </div>
