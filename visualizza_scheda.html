@@ -177,15 +177,28 @@ $.fn.serializeObject = function()
             ind_calciatori=n;
           }
         }
-        var dati = "<div class='alert alert-calciatore' role='alert'>" + 
-                   "<font size='6'><B>" + lista_calciatori[ind_calciatori].nome + " " + lista_calciatori[ind_calciatori].cognome + "</B></font><br>" + 
-                   //"[id: " + lista_calciatori[ind_calciatori].id_calciatore + "]<br>" + 
-                   "nato il <b>" + lista_calciatori[ind_calciatori].data_nascita + "</b> a <b>" + lista_calciatori[ind_calciatori].luogo_nascita + "</b> " + 
-                   "nazionalit&agrave;: <b>" + lista_calciatori[ind_calciatori].nazionalita + "</b> " + 
-                   "altezza <b>" + lista_calciatori[ind_calciatori].altezza_cm + "</b> cm " + 
-                   "peso <b>" + lista_calciatori[ind_calciatori].peso_kg + "</b> kg " + 
-                   "</div>";
-        $("#dati_calciatore").html(dati);
+        var html = "<div class='alert alert-default' role='alert'>" + 
+           "<table border=0><tr>" + 
+           "<td colspan=2>"+
+           "<span class='alert-default-title' >" + 
+           lista_calciatori[ind_calciatori].nome + " " + lista_calciatori[ind_calciatori].cognome + "</span>" + 
+           "</td></tr><tr>"+
+           "<td><br style='line-height:10px;'>"+
+           "<span style='font-size:70px; color:#999; background-color:#e6e6e6; ' class='glyphicon glyphicon-user pull-left '>" + 
+           "</span></td>"+
+           "<td><br style='line-height:10px;'>"+
+           "<span class='alert-default-descPlayer'>" + "Luogo di Nascita: " + "<b>" + lista_calciatori[ind_calciatori].luogo_nascita + "</b>" + 
+           "</span><br>" +
+           "<span class='alert-default-descPlayer'>" + "Data di Nascita: " + "<b>" + lista_calciatori[ind_calciatori].data_nascita + "</b>" + 
+           "</span><br>" +
+           "<span class='alert-default-descPlayer'>" + "Nazionalit&agrave;: " + "<b>" + lista_calciatori[ind_calciatori].nazionalita + "</b>" + 
+           "</span><br>" +
+           "<span class='alert-default-descPlayer'>" + "Altezza: " + "<b>" + lista_calciatori[ind_calciatori].altezza_cm + "</b>" + "</span><br>" +
+           "<span class='alert-default-descPlayer'>" + "Peso " + "<b>" + lista_calciatori[ind_calciatori].peso_kg + "</b>" + " kg " + "</span><br>" + 
+           "</td>"+
+           "</table>"+
+           "</div>";
+        $("#dati_calciatore").html(html);
         //DATI SCHEDA
         html = "<div class='alert alert-calciatore' role='alert'>DEVO VISUALIZZARE LA SCHEDA "+lista_schede[ind_schede].data_gara +"</div>";
         $("#ruolo").val(lista_schede[ind_schede].ruolo);
@@ -294,61 +307,72 @@ $.fn.serializeObject = function()
       </div>
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
+
+          <div class='pull-left' >
+            <button id='btn_indietro' class='btn  btn-primary' >
+              &nbsp;<span class='glyphicon glyphicon-chevron-left' aria-hidden='true' ></span> &nbsp;
+            </button>
+          </div>
+          
+          <br><br>
           <div id='dati_calciatore'></div>
           <div id='dettaglio_scheda'>
 
+          <div style="text-align: center;" class="title_scheda">DATI IDENTIFICATIVI</div>
             <form class="form-inline" id='form_add_player_card' >
               <input type='hidden' name='id_calciatore' id='id_calciatore' >
               <input type='hidden' name='matricola' id='matricola' >
               <div class="alert alert-identificativi" role="alert">
                 <div class="form-group">
-                  <B>DATI IDENTIFICATIVI</B><br>
-                  <label for="ruolo">Ruolo</label><input type='text' readonly class="form-control" id="ruolo" name="ruolo" />
-                  <label for="club">Club di Appartenenza</label><input type='text' readonly class="form-control" id="club" name="club" />
-                  <label for="campionato">Campionato / Categoria</label><input type='text' readonly class="form-control" id="campionato" name="campionato" />
-                  <label for="gara">Gara</label><input type='text' readonly class="form-control" id="gara" name="gara" />
-                  <label for="data_gara">Data Gara</label><input type='text' readonly class="form-control" id="data_gara" name="data_gara" />
-                  <label for="situazione_campo">Situazione Campo</label><input type='text' readonly class="form-control" id="situazione_campo" name="situazione_campo" />
-                  <label for="temperatura">Temperatura</label><input type='text' readonly class="form-control" id="temperatura" name="temperatura" />
-                  <label for="spettatori">N. Spettatori</label><input type='text' readonly class="form-control" id="spettatori" name="spettatori" />
-                  <label for="importanza_gara">Importanza Gara</label><input type='text' readonly class="form-control" id="importanza_gara" name="importanza_gara" />
-                  <label for="costituzione">Costituzione</label><input type='text' readonly class="form-control" id="costituzione" name="costituzione" />
+                  <label class='title_nuova' for="ruolo">Ruolo</label><input type='text' readonly class="form-control" id="ruolo" name="ruolo" />
+                  <label class='title_nuova' for="club">Club di Appartenenza</label><input type='text' readonly class="form-control" id="club" name="club" />
+                  <label class='title_nuova' for="campionato">Campionato / Categoria</label><input type='text' readonly class="form-control" id="campionato" name="campionato" />
+                  <label class='title_nuova' for="gara">Gara</label><input type='text' readonly class="form-control" id="gara" name="gara" />
+                  <label class='title_nuova' for="data_gara">Data Gara</label><input type='text' readonly class="form-control" id="data_gara" name="data_gara" />
+                  <label class='title_nuova' for="situazione_campo">Situazione Campo</label><input type='text' readonly class="form-control" id="situazione_campo" name="situazione_campo" />
+                  <label class='title_nuova' for="temperatura">Temperatura</label><input type='text' readonly class="form-control" id="temperatura" name="temperatura" />
+                  <label class='title_nuova' for="spettatori">N. Spettatori</label><input type='text' readonly class="form-control" id="spettatori" name="spettatori" />
+                  <label class='title_nuova' for="importanza_gara">Importanza Gara</label><input type='text' readonly class="form-control" id="importanza_gara" name="importanza_gara" />
+                  <label class='title_nuova' for="costituzione">Costituzione</label><input type='text' readonly class="form-control" id="costituzione" name="costituzione" />
                 </div>
               </div>
-              <div class="alert alert-fisiche" role="alert">
+            </div>
+
+
+              <div class="alert alert-default-mid" role="alert">
                 <div class="form-group">
-                  <B>NOTE FISICHE</B><br>
-                  <table border=1>
+                  <div class="title_scheda">NOTE FISICHE</div>
+                  <table class="scheda" border=1>
                   <tr>
                   <td width='160px'><label for="agilita">AGILITA'</label></td>
-                  <td><input type='text' readonly class="form-control" id="agilita" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="agilita" style='border:0px;' /></td>
                   <tr>
                   <td><label for="coordinazione">COORDINAZIONE</label></td>
-                  <td><input type='text' readonly class="form-control" id="coordinazione" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="coordinazione" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="elevazione">ELEVAZIONE ESPLOSIVA</label></td>
-                  <td><input type='text' readonly class="form-control" id="elevazione" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="elevazione" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="forza">FORZA</label></td>
-                  <td><input type='text' readonly class="form-control" id="forza" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="forza" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="resistenza">RESISTENZA</label></td>
-                  <td><input type='text' readonly class="form-control" id="resistenza" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="resistenza" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="struttura_fisica">STRUTTURA FISICA</label></td>
-                  <td><input type='text' readonly class="form-control" id="struttura_fisica" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="struttura_fisica" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="velocita_nel_breve">VELOCITA' NEL BREVE</label></td>
-                  <td><input type='text' readonly class="form-control" id="velocita_nel_breve" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="velocita_nel_breve" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="velocita_nel_lungo">VELOCITA' NEL LUNGO</label></td>
-                  <td><input type='text' readonly class="form-control" id="velocita_nel_lungo" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="velocita_nel_lungo" style='border:0px;' /></td>
                   </tr>
                   </table>
                 </div>
@@ -356,79 +380,79 @@ $.fn.serializeObject = function()
 
 
 
-              <div class="alert alert-tecniche" role="alert">
+              <div class="alert alert-default-mid" role="alert">
                 <div class="form-group">
-                  <B>NOTE TECNICHE</B><br>
-                  <table border=1>
+                  <div class="title_scheda">NOTE TECNICHE</div>
+                  <table class="scheda" border=1>
                   <tr>
                   <td width='160px'><label for="controllo">CONTROLLO</label></td>
-                  <td><input type='text' readonly class="form-control" id="controllo" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="controllo" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="dribbling">DRIBBLING</label></td>
-                  <td><input type='text' readonly class="form-control" id="dribbling" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="dribbling" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="gioco_aereo">GIOCO AEREO</label></td>
-                  <td><input type='text' readonly class="form-control" id="gioco_aereo" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="gioco_aereo" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="modo_di_calciare">MODO DI CALCIARE</label></td>
-                  <td><input type='text' readonly class="form-control" id="modo_di_calciare" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="modo_di_calciare" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="uso_piede_destro">USO PIEDE DESTRO</label></td>
-                  <td><input type='text' readonly class="form-control" id="uso_piede_destro" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="uso_piede_destro" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="uso_piede_sinistro">USO PIEDE SINISTRO</label></td>
-                  <td><input type='text' readonly class="form-control" id="uso_piede_sinistro" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="uso_piede_sinistro" style='border:0px;' /></td>
                   </tr>
                   </table>
                 </div>
               </div>
 
-              <div class="alert alert-tattiche" role="alert">
+              <div class="alert alert-default-mid" role="alert">
                 <div class="form-group">
-                  <B>NOTE TATTICHE</B><br>
-                  <table border=1>
+                  <div class="title_scheda">NOTE TATTICHE</div>
+                  <table class="scheda" border=1>
                   <tr>
                   <td width='160px'><label for="posizionamento_in_campo">POSIZIONAMENTO IN CAMPO</label></td>
-                  <td><input type='text' readonly class="form-control" id="posizionamento_in_campo" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="posizionamento_in_campo" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="marcamento">MARCAMENTO</label></td>
-                  <td><input type='text' readonly class="form-control" id="marcamento" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="marcamento" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="smarcamento">SMARCAMENTO</label></td>
-                  <td><input type='text' readonly class="form-control" id="smarcamento" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="smarcamento" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="visione_di_gioco">VISIONE DI GIOCO</label></td>
-                  <td><input type='text' readonly class="form-control" id="visione_di_gioco" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="visione_di_gioco" style='border:0px;' /></td>
                   </table>
                 </div>
               </div>
 
-              <div class="alert alert-caratteriali" role="alert">
+              <div class="alert alert-default-mid" role="alert">
                 <div class="form-group">
-                  <B>NOTE CARATTERIALI</B><br>
-                  <table border=1>
+                  <div class="title_scheda">NOTE CARATTERIALI</div>
+                  <table class="scheda" border=1>
                   <tr>
                   <td width='160px'><label for="autorita_nel_gioco">AUTORITA' NEL GIOCO</label></td>
-                  <td><input type='text' readonly class="form-control" id="autorita_nel_gioco" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="autorita_nel_gioco" style='border:0px;' /></td>
                   <tr>
                   <td><label for="concentrazione">CONCENTRAZIONE</label></td>
-                  <td><input type='text' readonly class="form-control" id="concentrazione" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="concentrazione" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="motivazione">MOTIVAZIONE</label></td>
-                  <td><input type='text' readonly class="form-control" id="motivazione" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="motivazione" style='border:0px;' /></td>
                   </tr>
                   <tr>
                   <td><label for="spirito_di_sacrificio">SPIRITO DI SACRIFICIO</label></td>
-                  <td><input type='text' readonly class="form-control" id="spirito_di_sacrificio" /></td>
+                  <td bgcolor='#EEE'><input type='text' readonly class="form-control" id="spirito_di_sacrificio" style='border:0px;' /></td>
                   </table>
                 </div>
               </div>
@@ -436,11 +460,10 @@ $.fn.serializeObject = function()
 
 
           </div>
-          <a id='download' href='' class='btn btn-lg btn-success' >
+          <a id='download' href='' class='btn btn-block btn-warning' >
             <span class='glyphicon glyphicon-download-alt' aria-hidden='true' ></span> DOWNLOAD
           </a>
-          &nbsp;
-          <button id='btn_indietro' class='btn btn-lg btn-warning' >INDIETRO</button> 
+          <br>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->

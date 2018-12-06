@@ -105,6 +105,25 @@
     }
   }
 
+function delPlayerCard(id, id_calciatore, id_card){
+  if (confirm("Vuoi veramente eliminare la scheda?")) {
+    var url = "http://linkin.it/Projects/SoccerTrainer/STDelPlayerCard.php";
+    console.log("url: " + url + "- id_calciatore: " + id_calciatore + "- id_card: " + id_card );
+    //DEBUG alert("url: " + url + "- id_calciatore: " + id_calciatore + "- id_card: " + id_card );
+    $.ajax({
+      url: url,
+      cache : false,
+      dataType : "json",
+      data : { id_card: id_card ,  id_calciatore: id_calciatore },
+      success: function(s){
+        var result_insert = s;
+        console.log(JSON.stringify(result_insert));
+        window.location = "storico_schede.html?id=" + id ;
+      } 
+    });
+  }
+}
+
   $(document).ready(function() {
 
     $("#logo_big").click(function(){
@@ -169,6 +188,65 @@
       window.location.href = 'calciatori.html';
     });
 
+    Object.size = function(obj) {
+        var size = 0, key;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) size++;
+        }
+        return size;
+    };
+
+
+    function getPlayersCards(idListaPlayer, playerId){
+      //DEBUG alert("getPlayersCards");
+      var matricola = localStorage.getItem("matricola");
+      if (matricola==null)
+          matricola="simone";
+      var random = Math.random();
+      var xmlhttp = new XMLHttpRequest();
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayersCard.php?matricola="+matricola+"&id_player="+playerId+"&random="+random;
+      console.log("url:"+url);
+      //DEBUG alert("url:"+url);
+      xmlhttp.onreadystatechange=function() {
+          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              var result = xmlhttp.responseText;
+              localStorage.setItem("lista_schede", result);
+              var lista = JSON.parse(result);
+              var size = Object.size(lista);
+              //DEBUG alert("lista: " + lista);
+              console.log("lista: " + lista);
+              if (size>0){
+                //NON LO SO SE SERVE localStorage.setItem("lista_schede", lista);
+                var html = "<font size=2 >Lista Schede di Valutazione</font><br>";
+                for (i=0; i<lista.length; i++) { 
+                  var bgcolor = "#337ab7";
+                  html += "<div class='calciatore'>";
+                  html += "<a href='./visualizza_scheda.html?id=" +lista[i].id_scheda+"' >";
+                  html += "<span class='glyphicon glyphicon-list' aria-hidden='true' ";
+                  html += "      style='background-color:"+bgcolor+";color:#FFF;font-size:17px;padding:3px;border-radius:3px;' >";
+                  html += "</span>&nbsp;&nbsp;Valutazione del " + lista[i].data_gara + "";
+                  html += "</a>";
+                  html += "<a href='javascript:void(0);' style='margin-left:5px;' onclick='delPlayerCard(" + idListaPlayer + "," +
+                          lista[i].id_calciatore+","+lista[i].id_scheda+");' class='btn pull-right btn-danger' >";
+                  html += "<span class='glyphicon glyphicon-remove' aria-hidden='true' ></span> ";
+                  html += "</a>";
+                  html += "<a href='http://linkin.it/Projects/SoccerTrainer/PDF_SchedaValutazione.php?id_scheda="+lista[i].id_scheda+"' "+
+                          " class='btn pull-right btn-warning' >";
+                  html += "<span class='glyphicon glyphicon-download-alt' aria-hidden='true' ></span> ";
+                  html += "</a>";
+                  html += "</div>";
+                }
+                html += "</div>";
+                $("#lista_schede").html(html);
+              }
+              else
+                $("#lista_schede").html("<div class='alert alert-calciatore' role='alert'>NON CI SONO SCHEDE</div>");
+          }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+    }
+
     function infoPlayer(){
       var last_params = window.location.search.substr(1);
       var pos = last_params.indexOf("&");
@@ -201,19 +279,6 @@
                  "<span class='alert-default-descPlayer'>" + "Peso " + "<b>" + lista_calciatori[i].peso_kg + "</b>" + " kg " + "</span><br>" + 
                  "</td>"+
                  "</table>"+
-      /*
-                 "<span style='font-size:70px; color:#999; background-color:#e6e6e6; ' class='glyphicon glyphicon-user pull-left '>" + 
-                 "</span><br>" + 
-                 "<span class='alert-default-title'>" + lista_calciatori[i].nome + " " + lista_calciatori[i].cognome + "</span><br>" + 
-                 "<span class='alert-default-descPlayer'>" + "Luogo di Nascita: " + "<b>" + lista_calciatori[i].luogo_nascita + "</b>" + 
-                 "</span><br>" +
-                 "<span class='alert-default-descPlayer'>" + "Data di Nascita: " + "<b>" + lista_calciatori[i].data_nascita + "</b>" + 
-                 "</span><br>" +
-                 "<span class='alert-default-descPlayer'>" + "Nazionalit&agrave;: " + "<b>" + lista_calciatori[i].nazionalita + "</b>" + 
-                 "</span><br>" +
-                 "<span class='alert-default-descPlayer'>" + "Altezza: " + "<b>" + lista_calciatori[i].altezza_cm + "</b>" + "</span><br>" +
-                 "<span class='alert-default-descPlayer'>" + "Peso " + "<b>" + lista_calciatori[i].peso_kg + "</b>" + " kg " + "</span><br>" + 
-      */
                  "</div>";
 
       $("#dati_calciatore").html(html);
@@ -237,7 +302,8 @@
       else{
         $('#btn_cancella_calciatore').prop("disabled", false);
       }
-      $("#creatore").html("<br><i>creatore: " + lista_calciatori[i].creatore + "</i>");
+      $("#creatore").html("<i>creatore: " + lista_calciatori[i].creatore + "</i>");
+      getPlayersCards(i, lista_calciatori[i].id_calciatore);
     }
     infoPlayer();
 
@@ -267,7 +333,15 @@
 
   });  
 </script>
-
+<style>
+  .calciatore{
+    font-size: 13px;
+    background: #FFF;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #e6e6e6;
+    line-height: 25px;
+  }
+</style>
 </head>
 <body onload="onLoad()">
     <!-- Static navbar -->
@@ -335,9 +409,11 @@
                 <button id='btn_nuova_scheda' type="button" class="btn btn-success" >
                   &nbsp;<span class='glyphicon glyphicon-plus' aria-hidden='true' ></span>&nbsp;
                 </button>
+                <!--
                 <button id='btn_storico_schede' type="button" class="btn btn-info" >
                   &nbsp;<span class='glyphicon glyphicon-list' aria-hidden='true' ></span>&nbsp;
                 </button>
+                -->
                 <button type="button" class="btn btn-warning" data-toggle='modal' data-target='#changePlayer'>
                   &nbsp;<span class='glyphicon glyphicon-pencil' aria-hidden='true' ></span>&nbsp;
                 </button>
@@ -347,6 +423,9 @@
             </div>
             <br><br>
           <div id='dati_calciatore' ></div>
+          <div class="row">
+            <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_schede" ></div>
+          </div> <!-- close div row --> 
           <br><span id='creatore' style='font-size:12px;'></span>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 

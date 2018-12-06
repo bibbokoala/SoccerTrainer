@@ -229,13 +229,26 @@ function delPlayerCard(id, id_calciatore, id_card){
       var i = items[1];
       console.log("parametro - id=" + i );
       var lista_calciatori = JSON.parse( localStorage.getItem("lista_calciatori") );
-      var html = "<div class='alert alert-calciatore' role='alert'>" + 
-                 "<font size='6'><B>" + lista_calciatori[i].nome + " " + lista_calciatori[i].cognome + "</B></font><br>" + 
-                 //"[id: " + lista_calciatori[i].id_calciatore + "]<br>" + 
-                 "nato il <b>" + lista_calciatori[i].data_nascita + "</b> a <b>" + lista_calciatori[i].luogo_nascita + "</b> " + 
-                 "nazionalit&agrave;: <b>" + lista_calciatori[i].nazionalita + "</b> " + 
-                 "altezza <b>" + lista_calciatori[i].altezza_cm + "</b> cm " + 
-                 "peso <b>" + lista_calciatori[i].peso_kg + "</b> kg " + 
+      var html = "<div class='alert alert-default' role='alert'>" + 
+                 "<table border=0><tr>" + 
+                 "<td colspan=2>"+
+                 "<span class='alert-default-title' >" + 
+                 lista_calciatori[i].nome + " " + lista_calciatori[i].cognome + "</span>" + 
+                 "</td></tr><tr>"+
+                 "<td><br style='line-height:10px;'>"+
+                 "<span style='font-size:70px; color:#999; background-color:#e6e6e6; ' class='glyphicon glyphicon-user pull-left '>" + 
+                 "</span></td>"+
+                 "<td><br style='line-height:10px;'>"+
+                 "<span class='alert-default-descPlayer'>" + "Luogo di Nascita: " + "<b>" + lista_calciatori[i].luogo_nascita + "</b>" + 
+                 "</span><br>" +
+                 "<span class='alert-default-descPlayer'>" + "Data di Nascita: " + "<b>" + lista_calciatori[i].data_nascita + "</b>" + 
+                 "</span><br>" +
+                 "<span class='alert-default-descPlayer'>" + "Nazionalit&agrave;: " + "<b>" + lista_calciatori[i].nazionalita + "</b>" + 
+                 "</span><br>" +
+                 "<span class='alert-default-descPlayer'>" + "Altezza: " + "<b>" + lista_calciatori[i].altezza_cm + "</b>" + "</span><br>" +
+                 "<span class='alert-default-descPlayer'>" + "Peso " + "<b>" + lista_calciatori[i].peso_kg + "</b>" + " kg " + "</span><br>" + 
+                 "</td>"+
+                 "</table>"+
                  "</div>";
       $("#dati_calciatore").html(html);
       $("#id").val(i);
