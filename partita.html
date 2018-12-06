@@ -105,8 +105,9 @@
     }
   }
 
-  function delEventPlayers(index_event, id_player, booking_id){
+  function delEventPlayers(id_player, booking_id){
     if (confirm("Vuoi veramente togliere la presenza al calciatore?")) {
+      var i = $("#indice_evento_minute").val();
       var url = "http://linkin.it/Projects/SoccerTrainer/STDelEventPlayers.php";
       console.log("url: " + url + " - id_calciatore: " + id_player  + " - booking_id: " + booking_id );
       $.ajax({
@@ -117,7 +118,7 @@
         success: function(s){
           var result_insert = s;
           console.log(JSON.stringify(result_insert));
-          window.location = "partita.html?id=" + index_event;
+          window.location = "partita.html?id=" + i;
         } 
       });
     }
@@ -372,8 +373,8 @@
         var index_event = foundEventIndex(lista_calciatori_evento[i].id_evento);
         html += "<div class='squadra'>";
         html += "<p class='presenza_calciatore'>";
-        html += "<a href='javascript:void(0);' style='top: 0px;' onclick='delEventPlayers(" + index_event + "," +
-                lista_calciatori_evento[i].id_calciatore+","+lista_calciatori_evento[i].id_evento+");' class='btn btn-danger pull-right' >";
+        html += "<a href='javascript:void(0);' style='top: 0px;' class='btn btn-danger pull-right' "+
+                " onclick='delEventPlayers("+ lista_calciatori_evento[i].id_calciatore+","+lista_calciatori_evento[i].id_evento+");' >";
         html += "<span class='glyphicon glyphicon-remove' aria-hidden='true' ></span> ";
         html += "</a>";
         html += "&nbsp;";
@@ -387,7 +388,7 @@
         html += "<span class='glyphicon glyphicon-time' aria-hidden='true' ></span> ";
         html += "</a>";
         //html += "<a href='./calciatore.html?id=" + indice_calciatore + "' class='btn  btn-"+btn_class+"' style='width:250px;'>";
-        html += lista_calciatori_evento[i].nome +" "+ lista_calciatori_evento[i].cognome;
+        html += lista_calciatori_evento[i].cognome +" "+ lista_calciatori_evento[i].nome;
         html += "<br><i>minutaggio: " + lista_calciatori_evento[i].minutaggio;
         var valutazione = 'n.d.';
         if (lista_calciatori_evento[i].valutazione!=null)

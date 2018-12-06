@@ -105,7 +105,7 @@
     }
   }
 
-  function delEventPlayers(index_event, id_player, booking_id){
+  function delEventPlayers(id_player, booking_id){
     if (confirm("Vuoi veramente togliere la presenza al calciatore?")) {
       var url = "http://linkin.it/Projects/SoccerTrainer/STDelEventPlayers.php";
       console.log("url: " + url + " - id_calciatore: " + id_player  + " - booking_id: " + booking_id );
@@ -117,7 +117,8 @@
         success: function(s){
           var result_insert = s;
           console.log(JSON.stringify(result_insert));
-          window.location = "allenamento.html?id=" + index_event;
+          var i = $("#indice_evento").val();
+          window.location = "allenamento.html?id=" + i;
         } 
       });
     }
@@ -348,8 +349,8 @@
         html += lista_calciatori_evento[i].nome +" "+ lista_calciatori_evento[i].cognome;
         //html += "</a>";
         html += "&nbsp;";
-        html += "<a href='javascript:void(0);' onclick='delEventPlayers(" + index_event + "," +
-                lista_calciatori_evento[i].id_calciatore+","+lista_calciatori_evento[i].id_evento+");' class='btn btn-danger pull-right' >";
+        html += "<a href='javascript:void(0);' class='btn btn-danger pull-right' "+
+                " onclick='delEventPlayers(" + lista_calciatori_evento[i].id_calciatore+","+lista_calciatori_evento[i].id_evento+");' >";
         html += "<span class='glyphicon glyphicon-remove' aria-hidden='true' ></span> ";
         html += "</a>";
         html += " </p>";
