@@ -34,7 +34,7 @@
     <preference name="ios-statusbarstyle"         value="black-opaque" />   <!-- ios: black-translucent will appear black because the PhoneGap webview doesn't go beneath the status bar -->
     <preference name="detect-data-types"          value="true" />           <!-- ios: controls whether data types (such as phone no. and dates) are automatically turned into links by the system -->
     <preference name="exit-on-suspend"            value="false" />          <!-- ios: if set to true, app will terminate when home button is pressed -->
-    <preference name="show-splash-screen-spinner" value="true" />           <!-- ios: if set to false, the spinner won't appear on the splash screen during app loading -->
+    <preference name="show-splash-screen-spinner" value="false" />           <!-- ios: if set to false, the spinner won't appear on the splash screen during app loading -->
     <preference name="auto-hide-splash-screen"    value="true" />           <!-- ios: if set to false, the splash screen must be hidden using a JavaScript API -->
     <preference name="disable-cursor"             value="false" />          <!-- blackberry: prevents a mouse-icon/cursor from being displayed on the app -->
     <preference name="android-installLocation"    value="auto" />           <!-- android: app install location. 'auto' will choose. 'internalOnly' is device memory. 'preferExternal' is SDCard. -->
@@ -62,28 +62,13 @@
     <!-- <icon src="res/icon/windows-phone/icon-173.png" gap:platform="winphone"   gap:role="background" /> -->
     
 
-    <!-- Define app splash screen for each platform. -->
+    <!-- Define app splash screen for each platform.
     <gap:splash src="splash.jpg" />
     <gap:splash src="splash.jpg"           gap:platform="android" gap:qualifier="port-ldpi" />
     <gap:splash src="splash.jpg"           gap:platform="android" gap:qualifier="port-mdpi" />
     <gap:splash src="splash.jpg"           gap:platform="android" gap:qualifier="port-hdpi" />
     <gap:splash src="splash.jpg"           gap:platform="android" gap:qualifier="port-xhdpi" />
-    <!--
-    <gap:splash src="pics/splash320x480.jpg"    gap:platform="ios"     width="320" height="480" />
-    <gap:splash src="pics/splash640x960.jpg"    gap:platform="ios"     width="640" height="960" />
-    <gap:splash src="pics/splash640x1136.jpg"   gap:platform="ios"     width="640" height="1136" />
-    <gap:splash src="pics/splash750x1334.jpg"   gap:platform="ios"     width="750" height="1334" />
-    <gap:splash src="pics/splash768x1024.jpg"   gap:platform="ios"     width="768" height="1024" />
-    <gap:splash src="pics/splash1024x768.jpg"   gap:platform="ios"     width="1024" height="768" />
-    <gap:splash src="pics/splash1242x2208.jpg"  gap:platform="ios"     width="1242" height="2208" />
-    -->
-    <!--
-    <gap:splash src="pics/splash1536x2048.jpg"  gap:platform="ios"     width="1536" height="2048" />
-    <gap:splash src="pics/splash2048x1536.jpg"  gap:platform="ios"     width="2048" height="1536" />
-    <gap:spalsh src="pics/splash2208x1242.jpg"  gap:platform="ios"     width="2208" height="1242" />
-    -->
-    <!-- <gap:splash src="pics/splash.jpg"          gap:platform="blackberry" /> -->
-    <!-- <gap:splash src="pics/splash.jpg"          gap:platform="winphone" /> -->
+     -->
 
 
     <gap:config-file platform="ios" parent="CFBundleShortVersionString">
