@@ -189,10 +189,10 @@
       var i = items[1];
       console.log("parametro - id=[" + i + "]");
       var lista_eventi = JSON.parse( localStorage.getItem("lista_eventi") );
-      var html = "<div class='alert alert-calciatore' role='alert'>" + 
-                 "<font size='5'><B>" + lista_eventi[i].start + "</font><br>" + 
-                 "<font size='4'><B>" + lista_eventi[i].title + "</B></font><br>" + 
-                 "<font size='3'><B>" + lista_eventi[i].desc_evento + "</B></font><br>" + 
+      var html = "<div class='alert alert-default' role='alert'>" + 
+                 "<span class='alert-default-title'>" + lista_eventi[i].title + "</span><br>" + 
+                 "<B>" + lista_eventi[i].start + "</b><br>" + 
+                 "<span class='alert-default-desc'>" + lista_eventi[i].desc_evento + "</span><br>" +  
                  "</div>";
       $("#dati_evento").html(html);
       //servono x il modale changeSquad
