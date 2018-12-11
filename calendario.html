@@ -61,7 +61,7 @@
 </script>
     <link href="fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css"/>
     <style>
-      .badge{margin-bottom:2px;width:180px;}
+      .badge{margin-bottom:2px;}
       /* Background colors */
       .bg-red,
       .bg-green,
@@ -578,7 +578,10 @@ $('#calendar').fullCalendar('option', 'height', 700);
           <div id='calendar' style="margin-top: 20px;margin-right: -30px;margin-left: -30px;"></div>
         </div>
       </div>
-      <br>&nbsp;<br>
+                <label>Legenda:</label>
+                <small class="badge bg-green"><font color="white">ALLENAMENTO</font></small>
+                <small class="badge bg-red"><font color="white">PARTITA</font></small>
+                <small class="badge bg-navy"><font color="white">RIUNIONE</font></small>
       <a id='download' class='btn btn-block btn-warning' href='' >
         <span class="glyphicon glyphicon-download" aria-hidden="true" ></span>&nbsp;&nbsp;DOWNLOAD PDF
       </a>
