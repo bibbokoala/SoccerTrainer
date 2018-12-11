@@ -170,6 +170,7 @@ $.fn.serializeObject = function()
       var id_profilo = localStorage.getItem("id_profilo");
       if (id_profilo==null)
           id_profilo="3";
+      var id_gruppo = localStorage.getItem("id_gruppo");
       var random = Math.random();
       //GESTIONE RICERCA CALCIATORI
       var stringa = localStorage.getItem('ricerca');
@@ -181,7 +182,8 @@ $.fn.serializeObject = function()
         $('#ricerca').val(stringa); 
       }
       var xmlhttp = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+matricola+"&id_profilo="+id_profilo+"&ricerca="+stringa+"&random="+random;
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayers.php?matricola="+
+               matricola+"&id_profilo="+id_profilo+"&id_gruppo="+id_gruppo+"&ricerca="+stringa+"&random="+random;
       console.log("url:"+url);
       xmlhttp.onreadystatechange=function() {
           if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {

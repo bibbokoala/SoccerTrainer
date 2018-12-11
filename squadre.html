@@ -174,11 +174,12 @@ $.fn.serializeObject = function()
       var id_profilo = localStorage.getItem("id_profilo");
       if (id_profilo==null)
           id_profilo="1";
+      var id_gruppo = localStorage.getItem("id_gruppo");
       var random = Math.random();
 
       //LISTA SQUADRE
       var xmlhttpSquad = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetSquads.php?matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetSquads.php?matricola="+matricola+"&id_profilo="+id_profilo+"&id_gruppo="+id_gruppo+"&random="+random;
       console.log("url:"+url);
       xmlhttpSquad.onreadystatechange=function() {
         if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {

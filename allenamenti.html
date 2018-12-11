@@ -175,6 +175,7 @@ $.fn.serializeObject = function()
       var id_profilo = localStorage.getItem("id_profilo");
       if (id_profilo==null)
           id_profilo="1";
+      var id_gruppo = localStorage.getItem("id_gruppo");
       var random = Math.random();
       // GESTIONE MESE DA VISUALIZZARE
       var mese = localStorage.getItem('mese_vis');
@@ -188,7 +189,7 @@ $.fn.serializeObject = function()
       localStorage.setItem('mese_vis',mese);
       //LISTA ALLENAMENTI
       var xmlhttpSquad = new XMLHttpRequest();
-      var url="http://linkin.it/Projects/SoccerTrainer/STGetEvents.php?matricola="+matricola+"&tipo_evento=ALLENAMENTO&id_profilo="+id_profilo+"&random="+random+"&mese="+mese;
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetEvents.php?matricola="+matricola+"&tipo_evento=ALLENAMENTO&id_profilo="+id_profilo+"&id_gruppo="+id_gruppo+"&random="+random+"&mese="+mese;
       console.log("url:"+url);
       xmlhttpSquad.onreadystatechange=function() {
         if (xmlhttpSquad.readyState == 4 && xmlhttpSquad.status == 200) {

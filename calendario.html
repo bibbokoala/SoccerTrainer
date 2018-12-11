@@ -171,6 +171,8 @@
       window.location = "home.html";
     });
     var matricola = localStorage.getItem("matricola");
+    var id_profilo = localStorage.getItem("id_profilo");
+    var id_gruppo = localStorage.getItem("id_gruppo");
     $("#matricola").val(matricola);
 
     function call(){
@@ -180,10 +182,11 @@
       $('#calendar').fullCalendar('removeEvents');
       //RECUPERO TUTTI GLI EVENTI X CREATORE:
       var remote_url = "http://linkin.it/Projects/SoccerTrainer/STGetEvents.php";
+      console.log("remote_url: " + remote_url);
       $.ajax({
         url: remote_url,
             type: 'POST', // Send post data
-          data : { matricola: matricola , inizio: inizio , fine: fine },
+          data : { matricola: matricola , id_profilo: id_profilo , id_gruppo: id_gruppo , inizio: inizio , fine: fine },
             async: false,
             success: function(s){
               obj_events = s;
@@ -199,7 +202,7 @@
     $.ajax({
       url: remote_url,
           type: 'POST', // Send post data
-          data: 'matricola=' + matricola,
+          data : { matricola: matricola , id_profilo: id_profilo , id_gruppo: id_gruppo },
           async: false,
           success: function(s){
             obj_squads = s;
