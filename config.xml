@@ -87,10 +87,9 @@
     <platform name="android">
         <allow-intent href="market:*" />
     </platform>
-    <!-- <platform name="ios">
+    <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    -->
 
 </widget>
