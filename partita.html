@@ -568,7 +568,10 @@
           <div class="row">
             <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="grafico_partita" ></div>
           </div> <!-- close div row --> 
-          <div id='png' ></div>
+          <!-- <div id='png' ></div> -->
+          <a id='immagine' href='' class="btn btn-block btn-danger" >
+            <i class="fa fa-print fa-fw"></i>Stampa il grafico</a>
+          </a>
           <br><span id='creatore' style='font-size:12px;'></span>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
@@ -610,7 +613,8 @@
           console.log(chart_div.innerHTML);
         });
         chart.draw(data, options);
-        document.getElementById('png').outerHTML = '<a href="' + chart.getImageURI() + '" class="btn btn-block btn-warning" ><i class="fa fa-print fa-fw"></i>Stampa il grafico</a>';
+        //document.getElementById('png').outerHTML = '<a href="' + chart.getImageURI() + '" class="btn btn-block btn-warning" ><i class="fa fa-print fa-fw"></i>Stampa il grafico</a>';
+        $("#immagine").attr("href",chart.getImageURI());
       }
 
       
