@@ -14,6 +14,7 @@
    <script src="js/menu.js"></script>
  <script type="text/javascript" charset="utf-8">
     var arrayGrafico = new Array();
+    var titoloGrafico = "";
     // Call onDeviceReady when Cordova is loaded.
     // At this point, the document has loaded but cordova-1.8.1.js has not.
     // When Cordova is loaded and talking with the native device,
@@ -200,6 +201,7 @@
                  "<span class='alert-default-desc'>" + lista_eventi[i].desc_evento + "</span><br>" +  
                  "</div>";
       $("#dati_evento").html(html);
+      titoloGrafico = lista_eventi[i].title + ' - ' + lista_eventi[i].start
       //servono x il modale changeSquad
       $("#upd_nome_evento").val(lista_eventi[i].title);
       $("#upd_desc_evento").val(lista_eventi[i].desc_evento);
@@ -595,7 +597,7 @@
         */
         var data = google.visualization.arrayToDataTable(arrayGrafico);
         var options = {
-          title: 'PROVA',
+          title: titoloGrafico,
           bar: {groupWidth: '100%'},
           width: '1000', 
           height: '500',
@@ -604,11 +606,11 @@
         var chart = new google.visualization.ColumnChart(chart_div);
         // Wait for the chart to finish drawing before calling the getImageURI() method.
         google.visualization.events.addListener(chart, 'ready', function () {
-          chart_div.innerHTML = '<img src="' + chart.getImageURI() + '">';
+          chart_div.innerHTML = '<img src="' + chart.getImageURI() + '" height="180" width="320"> ';
           console.log(chart_div.innerHTML);
         });
         chart.draw(data, options);
-        document.getElementById('png').outerHTML = '<a href="' + chart.getImageURI() + '" class="btn btn-lg btn-warning" ><i class="fa fa-print fa-2x fa-fw"></i>Stampa il grafico</a>';
+        document.getElementById('png').outerHTML = '<a href="' + chart.getImageURI() + '" class="btn btn-block btn-warning" ><i class="fa fa-print fa-fw"></i>Stampa il grafico</a>';
       }
 
       
