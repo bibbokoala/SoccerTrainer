@@ -569,9 +569,16 @@
             <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="grafico_partita" ></div>
           </div> <!-- close div row --> 
           <!-- <div id='png' ></div> -->
+          <!--
           <a id='immagine' href='' class="btn btn-block btn-danger" >
             <i class="fa fa-print fa-fw"></i>Stampa il grafico</a>
           </a>
+          -->
+<form method='post' action='http://linkin.it/Projects/SoccerTrainer/PNG_Prova.php' >
+  <input type='hidden' name='image' id='image' />
+  <input type='submit' class="btn btn-block btn-danger" value='SCARICA GRAFICO' />
+</form>
+
           <br><span id='creatore' style='font-size:12px;'></span>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
@@ -614,7 +621,9 @@
         });
         chart.draw(data, options);
         //document.getElementById('png').outerHTML = '<a href="' + chart.getImageURI() + '" class="btn btn-block btn-warning" ><i class="fa fa-print fa-fw"></i>Stampa il grafico</a>';
-        $("#immagine").attr("href",chart.getImageURI());
+        //$("#immagine").attr("href",chart.getImageURI());
+        $("#image").val(chart.getImageURI());
+        //$("#immagine").attr("href", "http://linkin.it/Projects/SoccerTrainer/PNG_Prova.php?image="+chart.getImageURI()+"");
       }
 
       
