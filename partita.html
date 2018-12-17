@@ -13,6 +13,7 @@
    <script src="js/jquery.min.js"></script>
    <script src="js/menu.js"></script>
  <script type="text/javascript" charset="utf-8">
+    var arrayGrafico = new Array();
     // Call onDeviceReady when Cordova is loaded.
     // At this point, the document has loaded but cordova-1.8.1.js has not.
     // When Cordova is loaded and talking with the native device,
@@ -365,11 +366,16 @@
       console.log("DEBUG lista_calciatori_evento: " + JSON.stringify(lista_calciatori_evento) );
       var matricola = localStorage.getItem("matricola");
       var html = "<b>LISTA PRESENZE CALCIATORI</b><br>";
+      arrayGrafico[0] = ['Calciatori', 'Minutaggio', 'Valutazione'];
       for (var i=0; i<lista_calciatori_evento.length; i++) { 
         var btn_class = "primary";
         if (lista_calciatori_evento[i].creatore!=matricola){
           btn_class="info";
         }
+        arrayGrafico[i+1] = [ lista_calciatori_evento[i].nome + ' ' + lista_calciatori_evento[i].cognome, 
+                              parseInt(lista_calciatori_evento[i].minutaggio),
+                              parseInt(lista_calciatori_evento[i].voto),
+                            ];
         var indice_calciatore = foundPlayerIndex(lista_calciatori_evento, i);
         var index_event = foundEventIndex(lista_calciatori_evento[i].id_evento);
         html += "<div class='squadra'>";
@@ -572,9 +578,39 @@
   <script src="js/jquery.datetimepicker.full.min.js" type="text/javascript"></script>
 <!-- DOCUMENTATIONS AND EXAMPLES: http://xdsoft.net/jqplugins/datetimepicker/ -->
   <script src="js/moment_with_locales.js"></script>
+<script type="text/javascript" src="js/google_chart_loader.js"></script>
     <script>    
-
     $(document).ready(function() {
+
+      google.charts.load("current", {packages:['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        /*
+        var arrayGrafico = [
+         ['Calciatori', 'Minutaggio', 'Valutazione'],
+         ['Simone Tonni', 50, 8],
+         ['Manuel Tonni', 60, 9],
+         ['Cristiano Tonni', 40, 7],
+        ];
+        */
+        var data = google.visualization.arrayToDataTable(arrayGrafico);
+        var options = {
+          title: 'PROVA',
+          bar: {groupWidth: '100%'},
+          width: '1000', 
+          height: '500',
+        };
+        var chart_div = document.getElementById('grafico_partita');
+        var chart = new google.visualization.ColumnChart(chart_div);
+        // Wait for the chart to finish drawing before calling the getImageURI() method.
+        google.visualization.events.addListener(chart, 'ready', function () {
+          chart_div.innerHTML = '<img src="' + chart.getImageURI() + '">';
+          console.log(chart_div.innerHTML);
+        });
+        chart.draw(data, options);
+        document.getElementById('png').outerHTML = '<a href="' + chart.getImageURI() + '" class="btn btn-lg btn-warning" ><i class="fa fa-print fa-2x fa-fw"></i>Stampa il grafico</a>';
+      }
+
       
       $('[data-toggle=offcanvas]').click(function() {
         if ($( ".sidebar-offcanvas-right" ).hasClass( "active" )){
