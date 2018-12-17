@@ -127,9 +127,6 @@
 
   $(document).ready(function() {
 
-    //VARIABILE GLOBALE PER DISEGNARE IL GRAFICO DELLA PARTITA
-    var arrayGrafico = ['Calciatori', 'Minutaggio', 'Valutazione'];
-
     $("#logo_big").click(function(){
       window.location = "home.html";
     });
@@ -373,9 +370,6 @@
         if (lista_calciatori_evento[i].creatore!=matricola){
           btn_class="info";
         }
-        arrayGrafico.push(lista_calciatori_evento[i].nome+' '+lista_calciatori_evento[i].cognome, 
-                          lista_calciatori_evento[i].minutaggio, 
-                          lista_calciatori_evento[i].valutazione); 
         var indice_calciatore = foundPlayerIndex(lista_calciatori_evento, i);
         var index_event = foundEventIndex(lista_calciatori_evento[i].id_evento);
         html += "<div class='squadra'>";
@@ -564,48 +558,6 @@
           </a>
           &nbsp;
           <div class="row">
-
-          <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-          <script type="text/javascript">
-            google.charts.load("current", {packages:['corechart']});
-            google.charts.setOnLoadCallback(drawChart);
-            function drawChart() {
-              var array = [
-                    ['Calciatori', 'Minutaggio', 'Valutazione'],
-                    ['ALIMONTI LUCA', 50, 8], 
-                    ['BELLO MIRKO', 25, 8], 
-                    ['DE LUCA FRANCESCO', 50, 8], 
-                    ['DI FRANCO LORENZO', 50, 8], 
-                    ['DISAURO DIEGO', 10, 4], 
-                    ['FABRIZI FRANCESCO', 50, 8], 
-                    ['MARANO  SAMUEL', 35, 6], 
-                    ['PIETROPAOLI IVAN', 50, 8], 
-                    ['PROSCIO EMANUELE ', 50, 6], 
-                    ['SALMERI STEFANO', 35, 8], 
-                    ['SIMEONI GIANLUCA', 10, 4], 
-                    ['TEDESCHI GABRIELE ', 40, 8], 
-                    ['ZAMBELLI  MATTIA ', 10, 4],         
-              ]
-              var data = google.visualization.arrayToDataTable(arrayGrafico);
-              var options = {
-                title: 'PARTITA La Pelota 07 Lazio 2018-12-16 17:00:00',
-                bar: {groupWidth: '100%'},
-                width: '320', 
-                height: '180',
-              };
-                
-              var chart_div = document.getElementById('grafico_partita');
-              var chart = new google.visualization.ColumnChart(chart_div);
-              // Wait for the chart to finish drawing before calling the getImageURI() method.
-              google.visualization.events.addListener(chart, 'ready', function () {
-                chart_div.innerHTML = '<img src="' + chart.getImageURI() + '">';
-                console.log(chart_div.innerHTML);
-              });
-              chart.draw(data, options);
-              document.getElementById('png').outerHTML = '<a href="' + chart.getImageURI() + '" class="btn btn-block btn-primary" ><i class="fa fa-print fa-fw"></i>DOWNLOAD GRAFICO</a>';
-            } 
-          </script>
-
             <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="grafico_partita" ></div>
           </div> <!-- close div row --> 
           <div id='png' ></div>
