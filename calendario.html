@@ -49,13 +49,15 @@
         }
         //alert("onDeviceReady");
     }
-    // Handle the back browser button
+    /* Handle the back browser button
     document.addEventListener("backbutton", onBackKeyDown, false);
     function onBackKeyDown() {
       if (confirm("Chiudere l'applicazione?")) {
         navigator.app.exitApp();
       }
     }
+    */
+
     localStorage.removeItem('inizio');
     localStorage.removeItem('fine');
 </script>
@@ -353,24 +355,26 @@ $('#calendar').fullCalendar('option', 'height', 700);
       eventAfterAllRender: function(date, jsEvent, view) {
           var view = $('#calendar').fullCalendar('getView');
           if (view.name=='month') {
+          /* DEBUG VALORI CALENDAR:
           console.log("The view's name is " + view.name);
           console.log("The view's title is " + view.title);
           console.log("The view's start is " + view.start);
           console.log("The view's end is " + view.end);
           console.log("The view's intervalStart is " + view.intervalStart);
           console.log("The view's intervalEnd is " + view.intervalEnd);
-          var mesi = ["01","02","03","04","05","06","07","08","09","10","11","12","01"];
-          var date = new Date(view.start);
-          var month = date.getMonth();
-          var year = date.getFullYear();
-          var inizio = year+'-'+mesi[month]+'-31';
-          var date = new Date(view.end);
-          var month = date.getMonth();
-          var year = date.getFullYear();
-          var fine = year+'-'+mesi[month]+'-01';
+          */
+          var mesi = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "01"];
+          var date_start = new Date(view.start);
+          var year = date_start.getFullYear();
+          var month = date_start.getMonth();
+          var inizio = year+'-'+mesi[month]+'-01';
+          var date_end = new Date(view.end);
+          var year = date_end.getFullYear();
+          var month = date_end.getMonth();
+          var fine = year+'-'+mesi[month]+'-31';
           console.log("mese between "+inizio + " and " + fine);
           var matricola = localStorage.getItem('matricola');
-          $("#download").attr("href", "http://linkin.it/Projects/SoccerTrainer/PDF_Calendario.php?matricola="+matricola+"&inizio="+inizio+"&fine="+fine);
+        $("#download").attr("href", "http://linkin.it/Projects/SoccerTrainer/PDF_Calendario.php?matricola="+matricola+"&inizio="+inizio+"&fine="+fine);
           $("#download").show();
           if(localStorage.getItem('inizio')!=inizio){
             localStorage.setItem('inizio',inizio);
