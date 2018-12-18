@@ -618,6 +618,7 @@
           width: '1000', 
           height: '500',
         };
+        var id_evento = $('#id_evento').val();
         var chart_div = document.getElementById('grafico_partita');
         var chart = new google.visualization.ColumnChart(chart_div);
         // Wait for the chart to finish drawing before calling the getImageURI() method.
@@ -632,7 +633,6 @@
         //$("#immagine").attr("href",chart.getImageURI());
         //$("#immagine").attr("download",titoloGrafico+".png");
         //$("#image").val(chart.getImageURI());
-        var id_evento = $('#id_evento').val();
         //$("#immagine").attr("href", "http://linkin.it/Projects/SoccerTrainer/PNG_PartitaTest.php?id_evento="+id_evento+"");
       }
 
