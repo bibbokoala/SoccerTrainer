@@ -571,12 +571,10 @@
             <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="grafico_partita" ></div>
           </div> <!-- close div row --> 
           <!-- <div id='png' ></div> -->
-        <!--
           <a id='immagine' href='' class="btn btn-block btn-danger" download="" >
             <i class="fa fa-print fa-fw"></i>Stampa il grafico</a>
           </a>
           <br>
-        -->
 <!--<a href="http://www.burresiefossati.it/images/download.png"><img src="http://www.burresiefossati.it/images/download.png"  data-rel="external"/></a>-->
 <!--
 <form method='post' action='http://linkin.it/Projects/SoccerTrainer/PNG_Partita.php' >
@@ -620,7 +618,7 @@
         var chart = new google.visualization.ColumnChart(chart_div);
         // Wait for the chart to finish drawing before calling the getImageURI() method.
         google.visualization.events.addListener(chart, 'ready', function () {
-          chart_div.innerHTML = '<a href=' + chart.getImageURI() + ' ><img src="' + chart.getImageURI() + '" height="180" width="320"></a>';
+          chart_div.innerHTML = '<a href="' + chart.getImageURI() + '" ><img src="' + chart.getImageURI() + '" height="180" width="320"></a>';
           console.log(chart_div.innerHTML);
         });
         chart.draw(data, options);
@@ -628,7 +626,8 @@
         //$("#immagine").attr("href",chart.getImageURI());
         //$("#immagine").attr("download",titoloGrafico+".png");
         //$("#image").val(chart.getImageURI());
-        //$("#immagine").attr("href", "http://linkin.it/Projects/SoccerTrainer/PNG_Prova.php?image="+chart.getImageURI()+"");
+        var id_evento = $('#id_evento').val();
+        $("#immagine").attr("href", "http://linkin.it/Projects/SoccerTrainer/PNG_PartitaTest.php?id_evento="+id_evento+"");
       }
 
       
