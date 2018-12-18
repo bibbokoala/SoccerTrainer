@@ -217,17 +217,17 @@ function delPlayerCard(id, id_calciatore, id_card){
               var lista = JSON.parse(result);
               var size = Object.size(lista);
               //DEBUG alert("lista: " + lista);
-              console.log("lista: " + lista);
+              console.log("lista_schede: " + JSON.stringify(lista));
               if (size>0){
                 //NON LO SO SE SERVE localStorage.setItem("lista_schede", lista);
-                var html = "<font size=2 >Lista Schede di Valutazione</font><br>";
+                var html = "<font size=1 style='font-weight: bold;' >LISTA SCHEDE DI VALUTAZIONE</font><br>";
                 for (i=0; i<lista.length; i++) { 
                   var bgcolor = "#337ab7";
                   html += "<div class='calciatore'>";
                   html += "<a href='./visualizza_scheda.html?id=" +lista[i].id_scheda+"' >";
                   html += "<span class='glyphicon glyphicon-list' aria-hidden='true' ";
                   html += "      style='background-color:"+bgcolor+";color:#FFF;font-size:17px;padding:3px;border-radius:3px;' >";
-                  html += "</span>&nbsp;&nbsp;Valutazione del " + lista[i].data_gara + "";
+                  html += "</span><font size='1' >&nbsp;SCHEDA " + lista[i].data_gara + " " + lista[i].ruolo + "</font>";
                   html += "</a>";
                   html += "<a href='javascript:void(0);' style='margin-left:5px;' onclick='delPlayerCard(" + idListaPlayer + "," +
                           lista[i].id_calciatore+","+lista[i].id_scheda+");' class='btn pull-right btn-danger' >";
@@ -244,6 +244,53 @@ function delPlayerCard(id, id_calciatore, id_card){
               }
               else
                 $("#lista_schede").html("<div class='alert alert-calciatore' role='alert'>NON CI SONO SCHEDE</div>");
+          }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+    }
+
+    function getPlayersStats(idListaPlayer, playerId){
+      //DEBUG alert("getPlayersStats");
+      var matricola = localStorage.getItem("matricola");
+      if (matricola==null)
+          matricola="simone";
+      var random = Math.random();
+      var xmlhttp = new XMLHttpRequest();
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetPlayersStats.php?matricola="+matricola+"&id_player="+playerId+"&random="+random;
+      console.log("url:"+url);
+      //DEBUG alert("url:"+url);
+      xmlhttp.onreadystatechange=function() {
+          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              var result = xmlhttp.responseText;
+              localStorage.setItem("lista_stats", result);
+              var lista = JSON.parse(result);
+              var size = Object.size(lista);
+              //DEBUG alert("lista: " + lista);
+              console.log("lista_stats: " + JSON.stringify(lista));
+              if (size>0){
+                //NON LO SO SE SERVE localStorage.setItem("lista_schede", lista);
+                var html = "<font size=1 style='font-weight: bold;' >LISTA STATISTICHE</font><br>";
+                html += "<table width='100%' border=1 style='font-size:9px;' >";
+                html += "<tr style='text-align:center;font-weight: bold;background-color:yellow' >";
+                html += "<td>MESE</td>";
+                html += "<td>PARTITE</td>";
+                html += "<td>MEDIA MIN</td>";
+                html += "<td>MEDIA VOTO</td>";
+                html += "</tr>";
+                for (i=0; i<lista.length; i++) {
+                  html += "<tr>";
+                  html += "<td>&nbsp;" + lista[i].mese + "</td>";
+                  html += "<td>&nbsp;" + lista[i].partite_giocate + "</td>";
+                  html += "<td>&nbsp;" + lista[i].media_minuti + "</td>";
+                  html += "<td>&nbsp;" + lista[i].media_voto + "</td>";
+                  html += "</tr>";
+                }
+                html += "</table>";
+                $("#lista_stats").html(html);
+              }
+              else
+                $("#lista_stats").html("<div class='alert alert-calciatore' role='alert'>NON CI SONO SCHEDE</div>");
           }
       }
       xmlhttp.open("GET", url, true);
@@ -307,6 +354,7 @@ function delPlayerCard(id, id_calciatore, id_card){
       }
       $("#creatore").html("<i>creatore: " + lista_calciatori[i].creatore + "</i>");
       getPlayersCards(i, lista_calciatori[i].id_calciatore);
+      getPlayersStats(i, lista_calciatori[i].id_calciatore);
     }
     infoPlayer();
 
@@ -431,6 +479,9 @@ function delPlayerCard(id, id_calciatore, id_card){
           <div id='dati_calciatore' ></div>
           <div class="row">
             <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_schede" ></div>
+          </div> <!-- close div row --> 
+          <div class="row">
+            <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_stats" ></div>
           </div> <!-- close div row --> 
           <br><span id='creatore' style='font-size:12px;'></span>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
