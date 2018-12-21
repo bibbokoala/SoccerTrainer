@@ -204,7 +204,7 @@ $.fn.serializeObject = function()
     function getPlayers(lista_calciatori, stringa){
       var matricola = $("#matricola").val();
       var html = "";
-      for (i=0; i<lista_calciatori.length; i++) { 
+      for (i=0; i<lista_calciatori.length; i++) {
         var bgcolor = "#337ab7";
         if (lista_calciatori[i].creatore!=matricola){
           bgcolor="#80c0f6";
@@ -216,6 +216,15 @@ $.fn.serializeObject = function()
         html += "<span class='glyphicon glyphicon-list pull-right' aria-hidden='true' style='margin-top:5;margin-right:2;' ></span>";
         html += "<span class='pull-right' style='margin-top: 1;' >"+lista_calciatori[i].num_calc + " &nbsp; </span>";
         html += "</div>";
+        var profilo = localStorage.getItem('profilo');
+        if ( i >= 24 ){
+          if (profilo=='FREE'){
+            $('#add_player').attr("disabled","disabled");
+            html += "<br><div class='alert alert-danger' role='alert' style='font-size:12px;'>";
+            html += "Con il profilo "+profilo+" e' possibile gestire massimo 25 calciatori!</div>";
+            return(html);    
+          }
+        }
       }
       return(html);
     }
@@ -306,7 +315,7 @@ $.fn.serializeObject = function()
 
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="nuovo_calciatore" >
           <div class="title">Lista Calciatori
-            <button class='btn pull-right btn-success add' data-toggle='modal' data-target='#addPlayer' >
+            <button class='btn pull-right btn-success add' data-toggle='modal' id='add_player' data-target='#addPlayer' >
               &nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;
             </button>
           </div> 

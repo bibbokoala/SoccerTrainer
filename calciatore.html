@@ -243,7 +243,7 @@ function delPlayerCard(id, id_calciatore, id_card){
                 $("#lista_schede").html(html);
               }
               else
-                $("#lista_schede").html("<div class='alert alert-calciatore' role='alert'>NON CI SONO SCHEDE</div>");
+                $("#lista_schede").html("<div class='alert alert-calciatore' role='alert' style='font-size:12px;'>NON CI SONO SCHEDE</div>");
           }
       }
       xmlhttp.open("GET", url, true);
@@ -290,7 +290,7 @@ function delPlayerCard(id, id_calciatore, id_card){
                 $("#lista_stats").html(html);
               }
               else
-                $("#lista_stats").html("<div class='alert alert-calciatore' role='alert'>NON CI SONO SCHEDE</div>");
+                $("#lista_stats").html("<div class='alert alert-calciatore' role='alert' style='font-size:12px;'>NON CI SONO STATISTICHE</div>");
           }
       }
       xmlhttp.open("GET", url, true);

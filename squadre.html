@@ -215,6 +215,13 @@ $.fn.serializeObject = function()
         html += "<span class='glyphicon glyphicon-user pull-right' aria-hidden='true' style='margin-top:5;margin-right:2;' ></span>";
         html += "<span class='pull-right' style='margin-top: 1;' >"+lista_squadre[i].num_calc + " &nbsp; </span>";
         html += "</div>";
+        var profilo = localStorage.getItem('profilo');
+        if (profilo=='FREE'){
+          $('#add_squad').attr("disabled","disabled");
+          html += "<br><div class='alert alert-danger' role='alert' style='font-size:12px;'>",
+          html += "Con il profilo "+profilo+" e' possibile gestire una sola squadra!</div>";
+          return(html);    
+        }
       }
       return(html);
     }
@@ -306,7 +313,7 @@ $.fn.serializeObject = function()
 
       <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" >
           <div class="title">Lista Squadre
-          <button class='btn pull-right btn-success add' data-toggle='modal' data-target='#addSquad' >
+          <button class='btn pull-right btn-success add' id='add_squad' data-toggle='modal' data-target='#addSquad' >
             &nbsp;<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;
           </button>
       </div>
