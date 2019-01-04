@@ -272,7 +272,7 @@ function delPlayerCard(id, id_calciatore, id_card){
                 //NON LO SO SE SERVE localStorage.setItem("lista_schede", lista);
                 var html = "<font size=1 style='font-weight: bold;' >LISTA STATISTICHE</font><br>";
                 html += "<table width='100%' border=1 style='font-size:9px;' >";
-                html += "<tr style='text-align:center;font-weight: bold;background-color:yellow' >";
+                html += "<tr style='text-align:center;font-weight: bold;background-color:#E6E6E6' >";
                 html += "<td>MESE</td>";
                 html += "<td>PARTITE</td>";
                 html += "<td>MEDIA MIN</td>";
@@ -478,10 +478,11 @@ function delPlayerCard(id, id_calciatore, id_card){
             <br><br>
           <div id='dati_calciatore' ></div>
           <div class="row">
-            <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_schede" ></div>
+            <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_stats" ></div>
+            <br>
           </div> <!-- close div row --> 
           <div class="row">
-            <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_stats" ></div>
+            <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_schede" ></div>
           </div> <!-- close div row --> 
           <br><span id='creatore' style='font-size:12px;'></span>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->

@@ -145,6 +145,7 @@ CREATE TABLE IF NOT EXISTS `st_eventi` (
   PRIMARY KEY (`id_evento`),
   UNIQUE KEY `id_evento` (`id_evento`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+ALTER TABLE st_eventi ADD risultato  enum('VITTORIA','PAREGGIO','SCONFITTA') DEFAULT NULL;
 
 
 

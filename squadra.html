@@ -275,6 +275,14 @@
       }
     });
 
+    Object.size = function(obj) {
+        var size = 0, key;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) size++;
+        }
+        return size;
+    };
+
     function call(){
       var matricola = localStorage.getItem("matricola");
       if (matricola==null)
@@ -283,10 +291,10 @@
       if (id_profilo==null)
           id_profilo="1";
       var random = Math.random();
-
       //LISTA CALCIATORI ASSOCIATI
       var xmlhttpSquad = new XMLHttpRequest();
       var id_squadra = $("#id_squadra").val();
+      getSquadStats(id_squadra);
       var url="http://linkin.it/Projects/SoccerTrainer/STGetSquadPlayers.php?id_squadra="+id_squadra+"&matricola="+matricola+"&id_profilo="+id_profilo+"&random="+random;
       console.log("url:"+url);
       xmlhttpSquad.onreadystatechange=function() {
@@ -332,7 +340,7 @@
       //DEBUG 
       console.log("DEBUG lista_calciatori_squadra: " + JSON.stringify(lista_calciatori_squadra) );
       var matricola = localStorage.getItem("matricola");
-      var html = "<font size=2 >Lista Calciatori Associati</font><br>";
+      var html = "<font size=1 style='font-weight: bold;' >LISTA CALCIATORI ASSOCIATI</font><br>";
       for (var i=0; i<lista_calciatori_squadra.length; i++) { 
         var indice_calciatore = foundPlayerIndex(lista_calciatori_squadra, i);
         var indice_squadra = foundSquadIndex(lista_calciatori_squadra, i);
@@ -380,6 +388,66 @@
         }
         $('#id_calciatore').html(html);
       }
+
+
+    function getSquadStats(id_squad){
+      //DEBUG alert("getPlayersStats");
+      var matricola = localStorage.getItem("matricola");
+      if (matricola==null)
+          matricola="simone";
+      var random = Math.random();
+      var xmlhttp = new XMLHttpRequest();
+      var url="http://linkin.it/Projects/SoccerTrainer/STGetSquadsStats.php?matricola="+matricola+"&id_squad="+id_squad+"&random="+random;
+      console.log("url:"+url);
+      //DEBUG alert("url:"+url);
+      xmlhttp.onreadystatechange=function() {
+          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              var result = xmlhttp.responseText;
+              localStorage.setItem("lista_stats", result);
+              var lista = JSON.parse(result);
+              var size = Object.size(lista);
+              //DEBUG alert("lista: " + lista);
+              console.log("lista_stats: " + JSON.stringify(lista));
+              if (size>0){
+                //NON LO SO SE SERVE localStorage.setItem("lista_schede", lista);
+                var html = "<font size=1 style='font-weight: bold;' >LISTA STATISTICHE</font><br>";
+                html += "<table width='100%' border=1 style='font-size:9px;' >";
+                html += "<tr style='text-align:center;font-weight: bold;background-color:#E6E6E6' >";
+                html += "<td>MESE</td>";
+                html += "<td>TIPO EVENTO</td>";
+                html += "<td>NUMERO</td>";
+                html += "<td>VITTORIE</td>";
+                html += "<td>PAREGGI</td>";
+                html += "<td>SCONFITTE</td>";
+                html += "</tr>";
+                for (i=0; i<lista.length; i++) {
+                  html += "<tr>";
+                  html += "<td>&nbsp;" + lista[i].mese + "</td>";
+                  html += "<td>&nbsp;" + lista[i].tipo_evento + "</td>";
+                  html += "<td>&nbsp;" + lista[i].numero + "</td>";
+                  if (lista[i].tipo_evento=='PARTITA'){
+                    html += "<td>&nbsp;" + lista[i].vittorie + "</td>";
+                    html += "<td>&nbsp;" + lista[i].pareggi + "</td>";
+                    html += "<td>&nbsp;" + lista[i].sconfitte + "</td>";
+                  }
+                  else{
+                    html += "<td>&nbsp;-&nbsp;</td>";
+                    html += "<td>&nbsp;-&nbsp;</td>";
+                    html += "<td>&nbsp;-&nbsp;</td>";
+                  }
+                  html += "</tr>";
+                }
+                html += "</table>";
+                $("#lista_stats").html(html);
+              }
+              else
+                $("#lista_stats").html("<div class='alert alert-calciatore' role='alert' style='font-size:12px;'>NON CI SONO STATISTICHE</div>");
+          }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+    }
+
 
   });  
 </script>
@@ -477,6 +545,10 @@
           </div>
           <br><br>
           <div id='dati_squadra' ></div>
+          <div class="row">
+            <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_stats" ></div>
+            <br>
+          </div> <!-- close div row --> 
           <div class="row">
             <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="lista_calciatori_squadra" ></div>
           </div> <!-- close div row --> 
