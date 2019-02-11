@@ -185,6 +185,8 @@ $.fn.serializeObject = function()
         var d = new Date();
         var month = d.getMonth()+1;
         var year = d.getFullYear();
+        if(month<=9)
+          month = "0" + month;
         mese = year +'-'+ month;
       }
       $('#monthPicker').val(mese);
